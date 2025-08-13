@@ -120,24 +120,4 @@
   SITE_NAME = "Omar Hamid Portfolio Store (Preview)"
   SITE_DESCRIPTION = "Technical Portfolio Store - Flutter, React Native, Odoo Developer"
   CONTACT_EMAIL = "oooomar123450@gmail.com"
-  CONTACT_PHONE = "+966-55-853-9717"
-
-# Form handling for contact forms
-[[plugins]]
-  package = "@netlify/plugin-forms"
-
-# Analytics and monitoring
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-
-# Image optimization
-[[plugins]]
-  package = "@netlify/plugin-image-optim"
-
-# SEO optimization
-[[plugins]]
-  package = "@netlify/plugin-sitemap"
-
-# Performance monitoring
-[[plugins]]
-  package = "@netlify/plugin-webpack-bundle-analyzer" 
+  CONTACT_PHONE = "+966-55-853-9717" 
