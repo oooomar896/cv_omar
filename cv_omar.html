@@ -1,0 +1,4206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر عمر حميد العديني - مشاريع تقنية احترافية</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* AI Neural Network Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: neuralFloat 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes neuralFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(1deg); }
+            50% { transform: translateY(-10px) rotate(-1deg); }
+            75% { transform: translateY(-15px) rotate(0.5deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* AI Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea);
+            background-size: 200% 100%;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .store-title {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 300% 300%;
+            animation: gradientShift 4s ease infinite;
+            position: relative;
+        }
+
+        .store-title::after {
+            content: '🤖';
+            position: absolute;
+            top: -10px;
+            right: -40px;
+            font-size: 2rem;
+            animation: robotBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes robotBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+
+        .store-subtitle {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .store-subtitle::before {
+            content: '🧠';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            animation: brainPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes brainPulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .theme-toggle {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .theme-toggle:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-input {
+            padding: 15px 25px;
+            border: 2px solid #ecf0f1;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            width: 400px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .search-input::placeholder {
+            color: #95a5a6;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus::placeholder {
+            color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .search-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .search-btn:hover::before {
+            left: 100%;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #ecf0f1;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+
+        .filter-btn:hover::before,
+        .filter-btn.active::before {
+            transform: scaleX(1);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* AI Stats Section */
+        .stats-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-section::before {
+            content: '📊';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            animation: statsRotate 4s linear infinite;
+        }
+
+        @keyframes statsRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-section h2 {
+            position: relative;
+            display: inline-block;
+        }
+
+        .stats-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 2px;
+            animation: statsGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes statsGlow {
+            0% { box-shadow: 0 0 10px rgba(102, 126, 234, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: rgba(236, 240, 241, 0.5);
+            border-radius: 10px;
+            margin: 15px 0 0 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Store Grid */
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        /* AI Neural Network Pattern for Product Images */
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.1) 70%, transparent 70%),
+                linear-gradient(-45deg, transparent 30%, rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.1) 70%, transparent 70%);
+            background-size: 20px 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: neuralPattern 3s linear infinite;
+        }
+
+        @keyframes neuralPattern {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(20px) translateY(20px); }
+        }
+
+        .product-card:hover .product-image::after {
+            opacity: 1;
+        }
+
+        /* Category-specific colors for product images */
+        .product-card[data-category="mobile"] .product-image {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .product-card[data-category="web"] .product-image {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .product-card[data-category="odoo"] .product-image {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .product-card[data-category="open-source"] .product-image {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+        }
+
+        /* Category-specific badge colors */
+        .product-card[data-category="mobile"] .product-badge {
+            background: #4CAF50;
+        }
+
+        .product-card[data-category="web"] .product-badge {
+            background: #2196F3;
+        }
+
+        .product-card[data-category="odoo"] .product-badge {
+            background: #FF9800;
+        }
+
+        .product-card[data-category="open-source"] .product-badge {
+            background: #9C27B0;
+        }
+
+        /* Category-specific action button colors */
+        .product-card[data-category="mobile"] .btn-primary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .product-card[data-category="web"] .btn-primary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .product-card[data-category="odoo"] .btn-primary {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .product-card[data-category="open-source"] .btn-primary {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+        }
+
+        /* Category-specific hover effects */
+        .product-card[data-category="mobile"]:hover .product-image::before {
+            background: linear-gradient(45deg, rgba(76, 175, 80, 0.8), rgba(69, 160, 73, 0.8));
+        }
+
+        .product-card[data-category="web"]:hover .product-image::before {
+            background: linear-gradient(45deg, rgba(33, 150, 243, 0.8), rgba(25, 118, 210, 0.8));
+        }
+
+        .product-card[data-category="odoo"]:hover .product-image::before {
+            background: linear-gradient(45deg, rgba(255, 152, 0, 0.8), rgba(245, 124, 0, 0.8));
+        }
+
+        .product-card[data-category="open-source"]:hover .product-image::before {
+            background: linear-gradient(45deg, rgba(156, 39, 176, 0.8), rgba(123, 31, 162, 0.8));
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 3;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .product-content {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .product-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .product-card:hover .product-title::after {
+            width: 100%;
+        }
+
+        .product-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            transition: color 0.3s;
+        }
+
+        .product-card:hover .product-description {
+            color: #2c3e50;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-meta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover .product-meta::before {
+            left: 100%;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #f39c12;
+        }
+
+        .stars i {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .stars i:hover {
+            transform: scale(1.2);
+            color: #f1c40f;
+            animation: starTwinkle 0.5s ease-in-out;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { transform: scale(1.2) rotate(0deg); }
+            50% { transform: scale(1.4) rotate(180deg); }
+        }
+
+        .rating-text {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .product-card:hover .rating-text {
+            color: #2c3e50;
+        }
+
+        .product-price {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-price::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .product-card:hover .product-price::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+        }
+
+        .comments-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .comment-date {
+            color: #95a5a6;
+            font-size: 0.8rem;
+        }
+
+        .comment-text {
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        .add-comment {
+            margin-top: 15px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-comment {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .store-title {
+                font-size: 2rem;
+            }
+            
+            .search-input {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .store-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bounce {
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Dark Mode Styles */
+        .dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .dark-mode .header,
+        .dark-mode .stats-section {
+            background: rgba(26, 26, 46, 0.95);
+            color: #ffffff;
+        }
+
+        .dark-mode .product-card {
+            background: #2d3748;
+            color: #ffffff;
+        }
+
+        .dark-mode .product-title {
+            color: #ffffff;
+        }
+
+        .dark-mode .product-description {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .product-meta {
+            background: #4a5568;
+        }
+
+        .dark-mode .comment {
+            background: #4a5568;
+        }
+
+        .dark-mode .comment-input {
+            background: #4a5568;
+            color: #ffffff;
+            border-color: #718096;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.info {
+            background: #3498db;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Project Counter Animation */
+        .counter-animation {
+            animation: countUp 2s ease-out;
+        }
+
+        @keyframes countUp {
+            from { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            to { transform: scale(1); }
+        }
+
+        /* Rating Stars Animation */
+        .stars i {
+            transition: all 0.3s;
+        }
+
+        .stars i:hover {
+            transform: scale(1.2);
+            color: #f1c40f;
+        }
+
+        /* Product Card Shine Effect */
+        .product-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: #ecf0f1;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* Category-specific progress bars */
+        .product-card[data-category="mobile"] .progress-bar {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .product-card[data-category="web"] .progress-bar {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .product-card[data-category="odoo"] .progress-bar {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .product-card[data-category="open-source"] .progress-bar {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+        }
+
+        /* Floating Elements */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Pulse Effect */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Typewriter Effect */
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #667eea;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #667eea; }
+        }
+
+        /* 3D Card Effect */
+        .product-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .product-card:hover {
+            transform: rotateY(5deg) rotateX(5deg);
+        }
+
+        /* Gradient Text Animation */
+        .gradient-text {
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Category-specific price tags */
+        .product-card[data-category="mobile"] .product-price {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .product-card[data-category="web"] .product-price {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .product-card[data-category="odoo"] .product-price {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .product-card[data-category="open-source"] .product-price {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+        }
+
+        /* Category-specific filter button colors */
+        .filter-btn[data-filter="mobile"]:hover,
+        .filter-btn[data-filter="mobile"].active {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .filter-btn[data-filter="web"]:hover,
+        .filter-btn[data-filter="web"].active {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .filter-btn[data-filter="odoo"]:hover,
+        .filter-btn[data-filter="odoo"].active {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .filter-btn[data-filter="open-source"]:hover,
+        .filter-btn[data-filter="open-source"].active {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+        }
+
+        /* Contact Section Styles */
+        .contact-section {
+            margin-bottom: 30px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border: 1px solid #ecf0f1;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .contact-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card:hover .contact-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .contact-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .contact-card:hover .contact-icon::after {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .contact-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .contact-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .contact-card:hover h3::after {
+            width: 80%;
+        }
+
+        .contact-card p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            transition: color 0.3s;
+        }
+
+        .contact-card:hover p {
+            color: #2c3e50;
+        }
+
+        .contact-card .location {
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .contact-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: block;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .contact-link:hover::before {
+            width: 100%;
+        }
+
+        .contact-link:hover {
+            color: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s;
+            min-width: 120px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .social-link:hover::before {
+            left: 100%;
+        }
+
+        .social-link.linkedin {
+            background: #0077b5;
+        }
+
+        .social-link.github {
+            background: #333;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-link.linkedin:hover {
+            background: #005885;
+        }
+
+        .social-link.github:hover {
+            background: #000;
+        }
+
+        /* Dark Mode for Contact Section */
+        .dark-mode .contact-card {
+            background: #2d3748;
+            color: #ffffff;
+        }
+
+        .dark-mode .contact-card h3 {
+            color: #ffffff;
+        }
+
+        .dark-mode .contact-card p {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .contact-link {
+            color: #90cdf4;
+        }
+
+        .dark-mode .contact-link:hover {
+            color: #63b3ed;
+        }
+
+        /* Enhanced Comments Section */
+        .comments-section {
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+            position: relative;
+        }
+
+        .comments-section::before {
+            content: '💬';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            animation: commentBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes commentBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .comments-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .comments-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .comments-section:hover .comments-title::after {
+            width: 100%;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .comment:hover::before {
+            left: 100%;
+        }
+
+        .comment:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #2c3e50;
+            transition: color 0.3s;
+        }
+
+        .comment:hover .comment-author {
+            color: #667eea;
+        }
+
+        .comment-date {
+            color: #95a5a6;
+            font-size: 0.8rem;
+        }
+
+        .comment-text {
+            color: #7f8c8d;
+            line-height: 1.5;
+            transition: color 0.3s;
+        }
+
+        .comment:hover .comment-text {
+            color: #2c3e50;
+        }
+
+        .add-comment {
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 60px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .comment-input::placeholder {
+            color: #95a5a6;
+            transition: all 0.3s;
+        }
+
+        .comment-input:focus::placeholder {
+            color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .submit-comment {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-comment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-comment:hover::before {
+            left: 100%;
+        }
+
+        .submit-comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer::before {
+            content: '🚀';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            animation: rocketFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+            50% { transform: translateX(-50%) translateY(-10px) rotate(5deg); }
+        }
+
+        .footer p {
+            margin: 10px 0;
+            transition: color 0.3s;
+        }
+
+        .footer:hover p {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        /* Enhanced Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fab::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .fab:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Enhanced Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            animation: toastGradient 2s linear infinite;
+        }
+
+        @keyframes toastGradient {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.info {
+            background: #3498db;
+        }
+
+        .toast.success {
+            background: #27ae60;
+        }
+
+        /* Enhanced Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 2px solid transparent;
+            border-top: 2px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: rgba(236, 240, 241, 0.5);
+            border-radius: 10px;
+            margin: 15px 0 0 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Enhanced Floating Elements */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Enhanced Pulse Effect */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Enhanced Typewriter Effect */
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #667eea;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #667eea; }
+        }
+
+        /* Enhanced 3D Card Effect */
+        .product-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .product-card:hover {
+            transform: rotateY(5deg) rotateX(5deg) scale(1.02);
+        }
+
+        /* Enhanced Gradient Text Animation */
+        .gradient-text {
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Dark Mode Enhancements */
+        .dark-mode .contact-card {
+            background: #2d3748;
+            color: #ffffff;
+        }
+
+        .dark-mode .contact-card h3 {
+            color: #ffffff;
+        }
+
+        .dark-mode .contact-card p {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .contact-link {
+            color: #90cdf4;
+        }
+
+        .dark-mode .contact-link:hover {
+            color: #63b3ed;
+        }
+
+        .dark-mode .comment {
+            background: #4a5568;
+        }
+
+        .dark-mode .comment-input {
+            background: #4a5568;
+            color: #ffffff;
+            border-color: #718096;
+        }
+
+        .dark-mode .product-card {
+            background: #2d3748;
+            color: #ffffff;
+        }
+
+        .dark-mode .product-title {
+            color: #ffffff;
+        }
+
+        .dark-mode .product-description {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .product-meta {
+            background: #4a5568;
+        }
+
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .store-title {
+                font-size: 2rem;
+            }
+            
+            .store-title::after {
+                font-size: 1.5rem;
+                right: -30px;
+            }
+            
+            .store-subtitle::before {
+                left: -25px;
+                font-size: 1rem;
+            }
+            
+            .search-input {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .store-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .social-link {
+                min-width: 200px;
+            }
+        }
+
+        /* Skills Section Styles */
+        .skills-section {
+            margin-bottom: 30px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .skill-category {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border: 1px solid #ecf0f1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .skill-category:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .skill-category h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+        }
+
+        .skill-category h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .skill-category:hover h3::after {
+            width: 80%;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .skill-tag:hover::before {
+            left: 100%;
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Call to Action Section */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: ctaFloat 10s ease-in-out infinite;
+        }
+
+        @keyframes ctaFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button.primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-button.secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        /* Dark Mode for Skills and CTA */
+        .dark-mode .skill-category {
+            background: #2d3748;
+            color: #ffffff;
+        }
+
+        .dark-mode .skill-category h3 {
+            color: #ffffff;
+        }
+
+        .dark-mode .cta-section {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        }
+
+        /* Responsive for Skills and CTA */
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                min-width: 250px;
+            }
+        }
+
+        /* Enhanced Text Readability */
+        .product-title {
+            font-size: 1.4rem;
+            color: #1a202c;
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-description {
+            color: #2d3748;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .product-card:hover .product-description {
+            color: #1a202c;
+        }
+
+        .rating-text {
+            color: #4a5568;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .product-card:hover .rating-text {
+            color: #2d3748;
+        }
+
+        .comment-author {
+            font-weight: 700;
+            color: #1a202c;
+            transition: color 0.3s;
+        }
+
+        .comment:hover .comment-author {
+            color: #667eea;
+        }
+
+        .comment-text {
+            color: #2d3748;
+            line-height: 1.6;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .comment:hover .comment-text {
+            color: #1a202c;
+        }
+
+        .comment-date {
+            color: #718096;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .contact-card h3 {
+            color: #1a202c;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-card p {
+            color: #2d3748;
+            margin-bottom: 15px;
+            line-height: 1.7;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .contact-card:hover p {
+            color: #1a202c;
+        }
+
+        .contact-card .location {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .contact-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: block;
+            margin: 10px 0;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #2563eb;
+            transition: width 0.3s ease;
+        }
+
+        .contact-link:hover::before {
+            width: 100%;
+        }
+
+        .contact-link:hover {
+            color: #1d4ed8;
+            transform: scale(1.05);
+        }
+
+        .skill-category h3 {
+            color: #1a202c;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .store-subtitle {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1a202c;
+            font-size: 2rem;
+            position: relative;
+            font-weight: 800;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .comments-title {
+            font-size: 1.1rem;
+            color: #1a202c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            font-weight: 700;
+        }
+
+        .comment-input::placeholder {
+            color: #718096;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .comment-input:focus::placeholder {
+            color: #2563eb;
+            transform: translateX(10px);
+        }
+
+        /* Enhanced Dark Mode Text Readability */
+        .dark-mode .product-title {
+            color: #f7fafc;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .product-description {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .product-card:hover .product-description {
+            color: #f7fafc;
+        }
+
+        .dark-mode .rating-text {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .product-card:hover .rating-text {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .comment-author {
+            color: #f7fafc;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .comment:hover .comment-author {
+            color: #90cdf4;
+        }
+
+        .dark-mode .comment-text {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .comment:hover .comment-text {
+            color: #f7fafc;
+        }
+
+        .dark-mode .comment-date {
+            color: #a0aec0;
+        }
+
+        .dark-mode .contact-card h3 {
+            color: #f7fafc;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .contact-card p {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .contact-card:hover p {
+            color: #f7fafc;
+        }
+
+        .dark-mode .contact-card .location {
+            color: #90cdf4;
+        }
+
+        .dark-mode .contact-link {
+            color: #90cdf4;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .contact-link:hover {
+            color: #63b3ed;
+        }
+
+        .dark-mode .skill-category h3 {
+            color: #f7fafc;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .section-title {
+            color: #f7fafc;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .comments-title {
+            color: #f7fafc;
+        }
+
+        .dark-mode .comment-input::placeholder {
+            color: #a0aec0;
+        }
+
+        .dark-mode .comment-input:focus::placeholder {
+            color: #90cdf4;
+        }
+
+        .dark-mode .stat-label {
+            color: #cbd5e0;
+        }
+
+        .dark-mode .store-subtitle {
+            color: #cbd5e0;
+        }
+
+        /* Enhanced Button Text Readability */
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 700;
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #2d3748;
+            border: 2px solid #e2e8f0;
+            font-weight: 700;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            color: #1a202c;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+            font-weight: 700;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+
+        .submit-comment {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Enhanced Filter Button Text */
+        .filter-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #f7fafc;
+            color: #2d3748;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: white;
+            transform: translateY(-2px);
+            font-weight: 800;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Enhanced Search Input Text */
+        .search-input {
+            padding: 15px 25px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            width: 400px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #1a202c;
+            font-weight: 500;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
+            background: rgba(255, 255, 255, 1);
+            color: #1a202c;
+        }
+
+        .dark-mode .search-input {
+            background: rgba(45, 55, 72, 0.95);
+            color: #f7fafc;
+            border-color: #4a5568;
+        }
+
+        .dark-mode .search-input:focus {
+            background: rgba(45, 55, 72, 1);
+            color: #f7fafc;
+            border-color: #90cdf4;
+        }
+
+        /* Enhanced Progress Bar Labels */
+        .progress-container {
+            width: 100%;
+            background: rgba(237, 242, 247, 0.8);
+            border-radius: 10px;
+            margin: 15px 0 0 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dark-mode .progress-container {
+            background: rgba(74, 85, 104, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-controls">
+                <button id="darkModeToggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <h1 class="store-title gradient-text">🏪 متجر عمر التقني</h1>
+            <p class="store-subtitle typewriter">مشاريع تقنية احترافية</p>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="🔍 ابحث في المشاريع..." id="searchInput">
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="mobile">تطبيقات موبايل</button>
+                <button class="filter-btn" data-filter="web">مواقع إلكترونية</button>
+                <button class="filter-btn" data-filter="odoo">موديولات Odoo</button>
+                <button class="filter-btn" data-filter="open-source">مشاريع مفتوحة</button>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <h2 class="floating">📊 إحصائيات المتجر</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number counter-animation" id="totalProjects" data-target="8">0</div>
+                    <div class="stat-label">إجمالي المشاريع</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number counter-animation" id="totalRating" data-target="4.8">0.0</div>
+                    <div class="stat-label">متوسط التقييم</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 96%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number counter-animation" id="totalComments" data-target="12">0</div>
+                    <div class="stat-label">إجمالي التعليقات</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 60%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number counter-animation" id="totalDownloads" data-target="15420">0</div>
+                    <div class="stat-label">إجمالي التحميلات</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information Section -->
+        <div class="store-section contact-section">
+            <h2 class="section-title">📞 معلومات التواصل</h2>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>عمر حميد العديني</h3>
+                    <p>خبير حلول التطبيقات والأنظمة المحاسبية</p>
+                    <p class="location">📍 الرياض - المملكة العربية السعودية</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>البريد الإلكتروني</h3>
+                    <a href="mailto:oooomar123450@gmail.com" class="contact-link">
+                        oooomar123450@gmail.com
+                    </a>
+                    <p>للتواصل المباشر والاستفسارات</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>رقم الهاتف</h3>
+                    <a href="tel:+966558539717" class="contact-link">
+                        +966-55-853-9717
+                    </a>
+                    <p>متاح للاتصال والواتساب</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>المواقع الرسمية</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/omar-hamid-288385235" class="social-link linkedin" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                            LinkedIn
+                        </a>
+                        <a href="https://github.com/oooomar896" class="social-link github" target="_blank">
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </a>
+                    </div>
+                    <p>تابع أعمالي ومشاريعي</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Store Grid -->
+        <div class="store-grid" id="storeGrid">
+            <!-- Mobile Apps -->
+            <div class="product-card fade-in" data-category="mobile">
+                <div class="product-image">
+                    <i class="fas fa-exchange-alt"></i>
+                    <div class="product-badge">🔥 جديد</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">تطبيق المقايضة - Swap App</h3>
+                    <p class="product-description">تطبيق متخصص في عمليات المقايضة بين المستخدمين مع واجهة سهلة الاستخدام ونظام أمان متقدم</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (128 تقييم)</span>
+                        </div>
+                        <div class="product-price">مجاني</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://play.google.com/store/apps/details?id=com.molhimah.swap" class="action-btn btn-success" target="_blank">
+                            <i class="fab fa-google-play"></i>
+                            تحميل
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('swap-app')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="swap-app-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المستخدمين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">أحمد محمد</span>
+                                <span class="comment-date">منذ يومين</span>
+                            </div>
+                            <p class="comment-text">تطبيق ممتاز! سهل الاستخدام ويوفر الكثير من الوقت في عمليات المقايضة</p>
+                        </div>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">سارة أحمد</span>
+                                <span class="comment-date">منذ أسبوع</span>
+                            </div>
+                            <p class="comment-text">واجهة جميلة وسهلة، أنصح الجميع بتجربته</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('swap-app')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="mobile">
+                <div class="product-image">
+                    <i class="fas fa-gavel"></i>
+                    <div class="product-badge">⭐ مميز</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">مزادات لايف - Auction Live</h3>
+                    <p class="product-description">منصة مزادات مباشرة تتيح للمستخدمين المشاركة في المزادات بسهولة مع نظام دفع آمن</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.5 (89 تقييم)</span>
+                        </div>
+                        <div class="product-price">مجاني</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://play.google.com/store/apps/details?id=com.mulhmah_auctionlive" class="action-btn btn-success" target="_blank">
+                            <i class="fab fa-google-play"></i>
+                            تحميل
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('auction-live')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="auction-live-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المستخدمين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">محمد علي</span>
+                                <span class="comment-date">منذ 3 أيام</span>
+                            </div>
+                            <p class="comment-text">أفضل تطبيق مزادات استخدمته! سهل وسريع</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('auction-live')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="mobile">
+                <div class="product-image">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">التطبيق الخيري - Charity App</h3>
+                    <p class="product-description">تطبيق مخصص للعمل الخيري والتبرعات مع تتبع المشاريع الخيرية وإدارة التبرعات</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (67 تقييم)</span>
+                        </div>
+                        <div class="product-price">مجاني</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://play.google.com/store/apps/details?id=com.charity_show" class="action-btn btn-success" target="_blank">
+                            <i class="fab fa-google-play"></i>
+                            تحميل
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('charity-app')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="charity-app-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المستخدمين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">فاطمة أحمد</span>
+                                <span class="comment-date">منذ أسبوع</span>
+                            </div>
+                            <p class="comment-text">تطبيق رائع للعمل الخيري، يساعد في تتبع التبرعات بسهولة</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('charity-app')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Sites -->
+            <div class="product-card fade-in" data-category="web">
+                <div class="product-image">
+                    <i class="fas fa-building"></i>
+                    <div class="product-badge">🌐 ويب</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">الرؤية العقارية</h3>
+                    <p class="product-description">منصة متخصصة في الاستشارات العقارية مع خدمات شاملة للمستثمرين وتقارير مفصلة</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (45 تقييم)</span>
+                        </div>
+                        <div class="product-price">خدمة</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://real-estateconsultations.netlify.app" class="action-btn btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            زيارة الموقع
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('real-estate')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="real-estate-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات العملاء
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">عبدالله السعد</span>
+                                <span class="comment-date">منذ أسبوعين</span>
+                            </div>
+                            <p class="comment-text">موقع احترافي جداً، ساعدني في اختيار استثماراتي العقارية</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('real-estate')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="web">
+                <div class="product-image">
+                    <i class="fas fa-gavel"></i>
+                    <div class="product-badge">🔥 شائع</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">مزادلي - Mzadly.com</h3>
+                    <p class="product-description">منصة مزادات إلكترونية متطورة مع نظام دفع آمن وإدارة شاملة للمزادات</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.8 (156 تقييم)</span>
+                        </div>
+                        <div class="product-price">خدمة</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://mzadly.com" class="action-btn btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            زيارة الموقع
+                        </a>
+                        <a href="https://github.com/oooomar896/Api_auction" class="action-btn btn-secondary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            API
+                        </a>
+                    </div>
+
+                    <div class="comments-section" id="mzadly-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات العملاء
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">خالد المطيري</span>
+                                <span class="comment-date">منذ شهر</span>
+                            </div>
+                            <p class="comment-text">أفضل منصة مزادات في السعودية، نظام دفع آمن وسهل الاستخدام</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('mzadly')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Odoo Modules -->
+            <div class="product-card fade-in" data-category="odoo">
+                <div class="product-image">
+                    <i class="fas fa-home"></i>
+                    <div class="product-badge">⚙️ Odoo</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">نظام إدارة الأملاك</h3>
+                    <p class="product-description">موديول Odoo متخصص في إدارة العقارات والعقود والمستأجرين مع تقارير متقدمة</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (23 تقييم)</span>
+                        </div>
+                        <div class="product-price">موديول</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/module-Real-state" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('real-estate-module')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="real-estate-module-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">أحمد المطور</span>
+                                <span class="comment-date">منذ شهرين</span>
+                            </div>
+                            <p class="comment-text">موديول ممتاز! سهل التثبيت والتخصيص</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('real-estate-module')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Source Projects -->
+            <div class="product-card fade-in" data-category="open-source">
+                <div class="product-image">
+                    <i class="fas fa-coffee"></i>
+                    <div class="product-badge">🔧 مفتوح</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">تطبيق القهوة (UI/Animation)</h3>
+                    <p class="product-description">تطبيق يعرض واجهات مستخدم متقدمة مع رسوم متحركة احترافية وتصميم عصري</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (34 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/coffee_app" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('coffee-app')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="coffee-app-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">سارة المطورة</span>
+                                <span class="comment-date">منذ 3 أسابيع</span>
+                            </div>
+                            <p class="comment-text">تصميم رائع! استفدت كثيراً من الكود في مشاريعي</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('coffee-app')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Open Source Projects -->
+            <div class="product-card fade-in" data-category="open-source">
+                <div class="product-image">
+                    <i class="fas fa-bolt"></i>
+                    <div class="product-badge">⚡ سريع</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">متجر الكهرباء</h3>
+                    <p class="product-description">تطبيق متجر متخصص في المنتجات الكهربائية مع نظام إدارة متكامل</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.5 (28 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/electrical_store_app" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('electrical-store')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="electrical-store-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">أحمد المطور</span>
+                                <span class="comment-date">منذ أسبوعين</span>
+                            </div>
+                            <p class="comment-text">كود منظم ومفهوم، سهل التطوير عليه</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('electrical-store')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="open-source">
+                <div class="product-image">
+                    <i class="fas fa-calculator"></i>
+                    <div class="product-badge">🧮 أدوات</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">الآلة الحاسبة</h3>
+                    <p class="product-description">تطبيق آلة حاسبة متقدم مع واجهة مستخدم عصرية</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (42 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/Calculter" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('calculator')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="calculator-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">محمد المطور</span>
+                                <span class="comment-date">منذ شهر</span>
+                            </div>
+                            <p class="comment-text">واجهة جميلة وسهلة الاستخدام</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('calculator')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Odoo Modules -->
+            <div class="product-card fade-in" data-category="odoo">
+                <div class="product-image">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="product-badge">📅 جدولة</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">نظام حجز القاعات</h3>
+                    <p class="product-description">موديول Odoo لإدارة حجز القاعات والاجتماعات مع تقويم تفاعلي</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (31 تقييم)</span>
+                        </div>
+                        <div class="product-price">موديول</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/module-room-bookung" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('room-booking')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="room-booking-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">علي المطور</span>
+                                <span class="comment-date">منذ 3 أسابيع</span>
+                            </div>
+                            <p class="comment-text">موديول ممتاز لإدارة المواعيد والاجتماعات</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('room-booking')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="odoo">
+                <div class="product-image">
+                    <i class="fas fa-users"></i>
+                    <div class="product-badge">👥 موارد بشرية</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">نظام الموارد البشرية</h3>
+                    <p class="product-description">موديول متكامل لإدارة الموظفين والحضور والإجازات</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.8 (56 تقييم)</span>
+                        </div>
+                        <div class="product-price">موديول</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/mangemen_HR" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('hr-system')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="hr-system-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">فاطمة المطورة</span>
+                                <span class="comment-date">منذ أسبوع</span>
+                            </div>
+                            <p class="comment-text">نظام شامل ومفيد لإدارة الموظفين</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('hr-system')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Web Projects -->
+            <div class="product-card fade-in" data-category="web">
+                <div class="product-image">
+                    <i class="fas fa-home"></i>
+                    <div class="product-badge">🏠 عقارات</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">ملهمة العقارية - Molhimah.sa</h3>
+                    <p class="product-description">موقع عقاري احترافي يقدم خدمات متكاملة في مجال العقارات</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (78 تقييم)</span>
+                        </div>
+                        <div class="product-price">خدمة</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://molhimah.sa" class="action-btn btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            زيارة الموقع
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('molhimah')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="molhimah-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات العملاء
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">خالد العقاري</span>
+                                <span class="comment-date">منذ أسبوعين</span>
+                            </div>
+                            <p class="comment-text">موقع احترافي جداً، ساعدني في بيع عقاري بسرعة</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('molhimah')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Projects -->
+            <div class="product-card fade-in" data-category="web">
+                <div class="product-image">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <div class="product-badge">📊 لوحة تحكم</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">لوحة تحكم تطبيق المقايضة</h3>
+                    <p class="product-description">لوحة تحكم متقدمة لإدارة تطبيق المقايضة مع إحصائيات شاملة</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.7 (35 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/-dashboard-swap" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('swap-dashboard')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="swap-dashboard-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">أحمد المطور</span>
+                                <span class="comment-date">منذ أسبوع</span>
+                            </div>
+                            <p class="comment-text">لوحة تحكم ممتازة مع واجهة سهلة الاستخدام</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('swap-dashboard')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="web">
+                <div class="product-image">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="product-badge">📈 إحصائيات</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">لوحة تحكم مزاد لايف</h3>
+                    <p class="product-description">لوحة تحكم متخصصة في إدارة المزادات مع تتبع الإحصائيات</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (42 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/-dashboard-auction-live" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('auction-dashboard')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="auction-dashboard-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">سارة المطورة</span>
+                                <span class="comment-date">منذ 3 أيام</span>
+                            </div>
+                            <p class="comment-text">إحصائيات مفصلة ومفيدة جداً</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('auction-dashboard')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Odoo Modules -->
+            <div class="product-card fade-in" data-category="odoo">
+                <div class="product-image">
+                    <i class="fas fa-gavel"></i>
+                    <div class="product-badge">🏷️ مزادات</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">نظام المزادات - API</h3>
+                    <p class="product-description">موديول Odoo مع واجهة برمجية متقدمة لإدارة المزادات</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (29 تقييم)</span>
+                        </div>
+                        <div class="product-price">موديول</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/api_get-_or_post_data" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('auction-api')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="auction-api-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">محمد المطور</span>
+                                <span class="comment-date">منذ أسبوعين</span>
+                            </div>
+                            <p class="comment-text">API ممتاز وسهل الاستخدام</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('auction-api')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="odoo">
+                <div class="product-image">
+                    <i class="fas fa-database"></i>
+                    <div class="product-badge">💾 قاعدة بيانات</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">استخراج بيانات من السيرفر</h3>
+                    <p class="product-description">موديول Odoo لاستخراج البيانات من السيرفر باستخدام SSH</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.6 (18 تقييم)</span>
+                        </div>
+                        <div class="product-price">موديول</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/Module-get-data-from-Db-to-view-code-html/tree/main" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('data-extraction')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="data-extraction-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">علي المطور</span>
+                                <span class="comment-date">منذ شهر</span>
+                            </div>
+                            <p class="comment-text">مفيد جداً لاستخراج البيانات</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('data-extraction')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Open Source Projects -->
+            <div class="product-card fade-in" data-category="open-source">
+                <div class="product-image">
+                    <i class="fas fa-users"></i>
+                    <div class="product-badge">👥 لاعبين</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">تطبيق اللاعبين</h3>
+                    <p class="product-description">تطبيق لإدارة اللاعبين والفرق الرياضية مع واجهة متقدمة</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">5.0 (38 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/players" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('players-app')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="players-app-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">أحمد الرياضي</span>
+                                <span class="comment-date">منذ أسبوع</span>
+                            </div>
+                            <p class="comment-text">تطبيق ممتاز لإدارة الفرق الرياضية</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('players-app')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card fade-in" data-category="open-source">
+                <div class="product-image">
+                    <i class="fas fa-sticky-note"></i>
+                    <div class="product-badge">📝 ملاحظات</div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">تطبيق الملاحظات</h3>
+                    <p class="product-description">تطبيق متقدم لإدارة الملاحظات مع تصنيفات وتنظيم ذكي</p>
+                    
+                    <div class="product-meta">
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.8 (45 تقييم)</span>
+                        </div>
+                        <div class="product-price">مفتوح</div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="https://github.com/oooomar896/note2" class="action-btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            عرض الكود
+                        </a>
+                        <button class="action-btn btn-secondary" onclick="showComments('notes-app')">
+                            <i class="fas fa-comments"></i>
+                            تعليقات
+                        </button>
+                    </div>
+
+                    <div class="comments-section" id="notes-app-comments" style="display: none;">
+                        <h4 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            تعليقات المطورين
+                        </h4>
+                        <div class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author">فاطمة الطالبة</span>
+                                <span class="comment-date">منذ أسبوعين</span>
+                            </div>
+                            <p class="comment-text">يساعدني كثيراً في تنظيم دراستي</p>
+                        </div>
+                        <div class="add-comment">
+                            <textarea class="comment-input" placeholder="أضف تعليقك هنا..."></textarea>
+                            <button class="submit-comment" onclick="addComment('notes-app')">إرسال التعليق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills & Technologies Section -->
+        <div class="store-section skills-section">
+            <h2 class="section-title">🛠️ المهارات التقنية والتقنيات</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>📱 تطوير التطبيقات</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Flutter</span>
+                        <span class="skill-tag">React Native</span>
+                        <span class="skill-tag">Next.js</span>
+                        <span class="skill-tag">Android</span>
+                        <span class="skill-tag">iOS</span>
+                        <span class="skill-tag">Web</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>⚙️ أنظمة ERP</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Odoo</span>
+                        <span class="skill-tag">تطوير موديولات</span>
+                        <span class="skill-tag">الأتمتة</span>
+                        <span class="skill-tag">التقارير</span>
+                        <span class="skill-tag">API</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>🔧 البرمجة الخلفية</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">PHP</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Firebase</span>
+                        <span class="skill-tag">TypeScript</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>💾 قواعد البيانات</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MySQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">SQLite</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action Section -->
+        <div class="cta-section">
+            <h2 class="cta-title">🚀 هل تريد مشروع مخصص؟</h2>
+            <p class="cta-description">أنا متخصص في بناء حلول تقنية مخصصة تناسب احتياجات عملك</p>
+            <div class="cta-buttons">
+                <a href="mailto:oooomar123450@gmail.com" class="cta-button primary">
+                    <i class="fas fa-paper-plane"></i>
+                    تواصل معي الآن
+                </a>
+                <a href="tel:+966558539717" class="cta-button secondary">
+                    <i class="fas fa-phone"></i>
+                    اتصل بي مباشرة
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 متجر عمر التقني - جميع الحقوق محفوظة</p>
+            <p>مطور تطبيقات شغوف بخبرة واسعة في Flutter و React Native و Odoo</p>
+        </div>
+
+        <!-- Floating Action Button -->
+        <div class="fab" id="fab" onclick="scrollToTop()">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toastContainer"></div>
+    </div>
+
+    <script>
+        // Initialize store data
+        let storeData = {
+            totalProjects: 8,
+            totalRating: 4.8,
+            totalComments: 12,
+            totalDownloads: 15420
+        };
+
+        // Update stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            addAnimationClasses();
+            setupDarkModeToggle();
+            setupSearch();
+            setupScrollEffects();
+            setupRatingSystem();
+            setupProjectCounter();
+            setupParallaxEffects();
+        });
+
+        // Update statistics with counter animation
+        function updateStats() {
+            animateCounter('totalProjects', 0, storeData.totalProjects, 2000);
+            animateCounter('totalRating', 0, storeData.totalRating, 2000);
+            animateCounter('totalComments', 0, storeData.totalComments, 2000);
+            animateCounter('totalDownloads', 0, storeData.totalDownloads, 2000);
+        }
+
+        // Animate counter numbers
+        function animateCounter(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                    element.classList.add('counter-animation');
+                    setTimeout(() => element.classList.remove('counter-animation'), 2000);
+                }
+                
+                if (elementId === 'totalDownloads') {
+                    element.textContent = Math.floor(current).toLocaleString();
+                } else if (elementId === 'totalRating') {
+                    element.textContent = current.toFixed(1);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // Add animation classes
+        function addAnimationClasses() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-in');
+                }, index * 100);
+            });
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                filterProducts(filter);
+                
+                // Show toast notification
+                showToast(`تم عرض ${filter === 'all' ? 'جميع' : filter} المشاريع`, 'info');
+            });
+        });
+
+        function filterProducts(category) {
+            const products = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+            
+            products.forEach(product => {
+                if (category === 'all' || product.getAttribute('data-category') === category) {
+                    product.style.display = 'block';
+                    product.classList.add('bounce');
+                    setTimeout(() => product.classList.remove('bounce'), 600);
+                    visibleCount++;
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            
+            // Update project counter
+            document.getElementById('totalProjects').textContent = visibleCount;
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const products = document.querySelectorAll('.product-card');
+
+            searchBtn.addEventListener('click', function() {
+                performSearch();
+            });
+
+            searchInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    performSearch();
+                }
+            });
+
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                let foundCount = 0;
+                
+                products.forEach(product => {
+                    const title = product.querySelector('.product-title').textContent.toLowerCase();
+                    const description = product.querySelector('.product-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        product.style.display = 'block';
+                        product.classList.add('pulse');
+                        setTimeout(() => product.classList.remove('pulse'), 1000);
+                        foundCount++;
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+                
+                if (searchTerm) {
+                    showToast(`تم العثور على ${foundCount} مشروع`, foundCount > 0 ? 'success' : 'error');
+                }
+            }
+        }
+
+        // Show/hide comments
+        function showComments(productId) {
+            const commentsSection = document.getElementById(productId + '-comments');
+            const allComments = document.querySelectorAll('.comments-section');
+            
+            // Hide all other comment sections
+            allComments.forEach(section => {
+                if (section !== commentsSection) {
+                    section.style.display = 'none';
+                }
+            });
+            
+            // Toggle current comment section
+            if (commentsSection.style.display === 'none') {
+                commentsSection.style.display = 'block';
+                commentsSection.classList.add('bounce');
+                setTimeout(() => commentsSection.classList.remove('bounce'), 600);
+                showToast('تم فتح التعليقات', 'info');
+            } else {
+                commentsSection.style.display = 'none';
+            }
+        }
+
+        // Add comment functionality
+        function addComment(productId) {
+            const commentInput = document.querySelector(`#${productId}-comments .comment-input`);
+            const commentText = commentInput.value.trim();
+            
+            if (commentText) {
+                const commentsContainer = document.querySelector(`#${productId}-comments`);
+                const newComment = document.createElement('div');
+                newComment.className = 'comment';
+                newComment.innerHTML = `
+                    <div class="comment-header">
+                        <span class="comment-author">مستخدم جديد</span>
+                        <span class="comment-date">الآن</span>
+                    </div>
+                    <p class="comment-text">${commentText}</p>
+                `;
+                
+                // Insert before the add-comment section
+                const addCommentSection = commentsContainer.querySelector('.add-comment');
+                commentsContainer.insertBefore(newComment, addCommentSection);
+                
+                // Clear input
+                commentInput.value = '';
+                
+                // Update stats
+                storeData.totalComments++;
+                updateStats();
+                
+                // Add animation
+                newComment.classList.add('bounce');
+                setTimeout(() => newComment.classList.remove('bounce'), 600);
+                
+                showToast('تم إضافة التعليق بنجاح!', 'success');
+            } else {
+                showToast('يرجى كتابة تعليق', 'error');
+            }
+        }
+
+        // Dark Mode Toggle
+        function setupDarkModeToggle() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            const currentMode = localStorage.getItem('darkMode');
+
+            if (currentMode === 'true') {
+                body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+
+            darkModeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                if (body.classList.contains('dark-mode')) {
+                    darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('darkMode', 'true');
+                    showToast('تم تفعيل الوضع الليلي', 'info');
+                } else {
+                    darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                    localStorage.setItem('darkMode', 'false');
+                    showToast('تم تفعيل الوضع النهاري', 'info');
+                }
+            });
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Scroll effects
+        function setupScrollEffects() {
+            const fab = document.getElementById('fab');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    fab.style.display = 'flex';
+                } else {
+                    fab.style.display = 'none';
+                }
+            });
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            showToast('تم العودة إلى الأعلى', 'info');
+        }
+
+        // Rating system
+        function setupRatingSystem() {
+            const stars = document.querySelectorAll('.stars i');
+            stars.forEach((star, index) => {
+                star.addEventListener('click', function() {
+                    const rating = index + 1;
+                    showToast(`تم التقييم بـ ${rating} نجوم`, 'success');
+                    
+                    // Add pulse effect
+                    this.classList.add('pulse');
+                    setTimeout(() => this.classList.remove('pulse'), 1000);
+                });
+            });
+        }
+
+        // Project counter with animation
+        function setupProjectCounter() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('counter-animation');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                observer.observe(stat);
+            });
+        }
+
+        // Parallax effects
+        function setupParallaxEffects() {
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const parallaxElements = document.querySelectorAll('.floating');
+                
+                parallaxElements.forEach(element => {
+                    const speed = 0.5;
+                    element.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+        }
+
+        // Hover effects for product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'rotateY(5deg) rotateX(5deg) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'Escape':
+                    // Close all comment sections
+                    document.querySelectorAll('.comments-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    break;
+                case 'd':
+                    if (event.ctrlKey) {
+                        event.preventDefault();
+                        document.getElementById('darkModeToggle').click();
+                    }
+                    break;
+            }
+        });
+
+        // Auto-save comments
+        function autoSaveComment(productId, text) {
+            localStorage.setItem(`comment_${productId}`, text);
+        }
+
+        // Load saved comments
+        function loadSavedComments() {
+            document.querySelectorAll('.comment-input').forEach(input => {
+                const productId = input.closest('.comments-section').id.replace('-comments', '');
+                const savedText = localStorage.getItem(`comment_${productId}`);
+                if (savedText) {
+                    input.value = savedText;
+                }
+            });
+        }
+
+        // Initialize auto-save
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedComments();
+            
+            document.querySelectorAll('.comment-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const productId = this.closest('.comments-section').id.replace('-comments', '');
+                    autoSaveComment(productId, this.value);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

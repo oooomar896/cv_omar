@@ -1,0 +1,143 @@
+[build]
+  command = "echo 'Static HTML site - no build required'"
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; font-src 'self' cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https:;"
+
+# Cache static assets
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.gif"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.woff"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.ttf"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.eot"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Redirects for better SEO
+[[redirects]]
+  from = "/cv"
+  to = "/cv_omar.html"
+  status = 301
+
+[[redirects]]
+  from = "/portfolio"
+  to = "/cv_omar.html"
+  status = 301
+
+[[redirects]]
+  from = "/store"
+  to = "/cv_omar.html"
+  status = 301
+
+[[redirects]]
+  from = "/projects"
+  to = "/cv_omar.html"
+  status = 301
+
+# SPA fallback for better routing
+[[redirects]]
+  from = "/*"
+  to = "/cv_omar.html"
+  status = 200
+
+# Environment variables for the portfolio
+[context.production.environment]
+  SITE_NAME = "Omar Hamid Portfolio Store"
+  SITE_DESCRIPTION = "Technical Portfolio Store - Flutter, React Native, Odoo Developer"
+  CONTACT_EMAIL = "oooomar123450@gmail.com"
+  CONTACT_PHONE = "+966-55-853-9717"
+
+[context.deploy-preview.environment]
+  SITE_NAME = "Omar Hamid Portfolio Store (Preview)"
+  SITE_DESCRIPTION = "Technical Portfolio Store - Flutter, React Native, Odoo Developer"
+  CONTACT_EMAIL = "oooomar123450@gmail.com"
+  CONTACT_PHONE = "+966-55-853-9717"
+
+# Form handling for contact forms
+[[plugins]]
+  package = "@netlify/plugin-forms"
+
+# Analytics and monitoring
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+# Image optimization
+[[plugins]]
+  package = "@netlify/plugin-image-optim"
+
+# SEO optimization
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+# Performance monitoring
+[[plugins]]
+  package = "@netlify/plugin-webpack-bundle-analyzer" 
