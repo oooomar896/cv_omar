@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { GraduationCap, Award, Target, Users, Clock, CheckCircle } from 'lucide-react';
 
@@ -38,7 +38,7 @@ const About = () => {
         >
           <h2 className="section-title">عني</h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            مطور تطبيقات شغوف بخبرة واسعة في بناء أنظمة قوية ومرنة للمؤسسات، 
+            مطور تطبيقات شغوف بخبرة واسعة في بناء أنظمة قوية ومرنة للمؤسسات،
             مع التركيز على الأداء، سهولة الاستخدام، وقابلية التوسع.
           </p>
         </motion.div>
@@ -61,7 +61,7 @@ const About = () => {
                 <p className="text-gray-400">بكالوريوس تقنية المعلومات (مرتبة الشرف)</p>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="bg-dark-800 border border-gray-700 rounded-xl p-6">
                 <h4 className="text-xl font-semibold text-white mb-2">جامعة المدينة العالمية (MEDIU)</h4>
@@ -133,8 +133,8 @@ const About = () => {
           <div className="bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border border-primary-500/20 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-white mb-4">مهمتي</h3>
             <p className="text-lg text-gray-300 leading-relaxed max-w-4xl mx-auto">
-              أسعى دومًا لتقديم قيمة حقيقية عبر الابتكار والانضباط التقني، 
-              مع التركيز على بناء حلول تقنية متقدمة تساعد المؤسسات على النمو والتطور 
+              أسعى دومًا لتقديم قيمة حقيقية عبر الابتكار والانضباط التقني،
+              مع التركيز على بناء حلول تقنية متقدمة تساعد المؤسسات على النمو والتطور
               في العصر الرقمي.
             </p>
           </div>

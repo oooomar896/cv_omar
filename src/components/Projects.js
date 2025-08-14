@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, Play, Globe, Database, Smartphone } from 'lucide-react';
 
@@ -129,7 +129,7 @@ const Projects = () => {
     ]
   };
 
-  const filteredProjects = activeCategory === 'all' 
+  const filteredProjects = activeCategory === 'all'
     ? Object.values(projects).flat()
     : projects[activeCategory] || [];
 
@@ -193,16 +193,16 @@ const Projects = () => {
               <div className={`w-full h-32 bg-gradient-to-br ${project.color} rounded-t-xl mb-4 flex items-center justify-center`}>
                 <project.icon className="h-12 w-12 text-white" />
               </div>
-              
+
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors duration-300">
                   {project.title}
                 </h3>
-                
+
                 <p className="text-gray-400 leading-relaxed">
                   {project.description}
                 </p>
-                
+
                 <div className="flex items-center justify-between">
                   <a
                     href={project.link}
@@ -213,7 +213,7 @@ const Projects = () => {
                     <span>عرض المشروع</span>
                     <ExternalLink className="h-4 w-4" />
                   </a>
-                  
+
                   <div className="flex space-x-2 space-x-reverse">
                     {project.icon === Github && (
                       <a

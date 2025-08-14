@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Smartphone, Globe, Database, Palette, Zap } from 'lucide-react';
 
@@ -46,7 +46,7 @@ const Skills = () => {
     ]
   };
 
-  const filteredSkills = activeCategory === 'all' 
+  const filteredSkills = activeCategory === 'all'
     ? Object.values(skills).flat()
     : skills[activeCategory] || [];
 
@@ -111,7 +111,7 @@ const Skills = () => {
                 <h3 className="text-lg font-semibold text-white">{skill.name}</h3>
                 <span className="text-sm text-gray-400">{skill.level}%</span>
               </div>
-              
+
               <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
                 <motion.div
                   initial={{ width: 0 }}
@@ -121,7 +121,7 @@ const Skills = () => {
                   className={`h-2 rounded-full bg-gradient-to-r ${skill.color}`}
                 />
               </div>
-              
+
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">مبتدئ</span>
                 <span className="text-gray-400">متقدم</span>
@@ -139,7 +139,7 @@ const Skills = () => {
           className="mt-20"
         >
           <h3 className="text-3xl font-bold text-center text-white mb-12">مهارات إضافية</h3>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               'Git & GitHub', 'Docker', 'REST APIs', 'GraphQL',

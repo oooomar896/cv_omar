@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { Download, Mail, Linkedin, Github, ArrowDown } from 'lucide-react';
 
@@ -27,7 +27,7 @@ const Hero = () => {
               >
                 <span className="gradient-text">عمر حميد العديني</span>
               </motion.h1>
-              
+
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -36,7 +36,7 @@ const Hero = () => {
               >
                 مطور تطبيقات محترف
               </motion.h2>
-              
+
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -81,8 +81,8 @@ const Hero = () => {
                 <Download className="h-5 w-5" />
                 <span>تحميل السيرة الذاتية</span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={scrollToAbout}
                 className="btn-secondary flex items-center space-x-2 space-x-reverse"
               >
@@ -147,7 +147,7 @@ const Hero = () => {
                         e.target.nextSibling.style.display = 'flex';
                       }}
                     />
-                    <div 
+                    <div
                       className="w-full h-full hidden items-center justify-center text-6xl font-bold text-primary-500 bg-dark-800"
                       style={{ display: 'none' }}
                     >
@@ -155,7 +155,7 @@ const Hero = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Floating Elements */}
                 <motion.div
                   animate={{ rotate: 360 }}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, Linkedin, Github, MapPin, Send, Copy, Check } from 'lucide-react';
 
@@ -78,7 +78,7 @@ const Contact = () => {
         >
           <h2 className="section-title">تواصل معي</h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            هل لديك مشروع تريد مناقشته؟ أو تريد معرفة المزيد عن خدماتي؟ 
+            هل لديك مشروع تريد مناقشته؟ أو تريد معرفة المزيد عن خدماتي؟
             لا تتردد في التواصل معي
           </p>
         </motion.div>
@@ -93,7 +93,7 @@ const Contact = () => {
             className="space-y-6"
           >
             <h3 className="text-2xl font-bold text-white mb-8">معلومات التواصل</h3>
-            
+
             {contactInfo.map((contact, index) => (
               <motion.div
                 key={contact.title}
@@ -106,12 +106,12 @@ const Contact = () => {
                 <div className={`p-3 bg-gradient-to-br ${contact.color} rounded-full`}>
                   <contact.icon className="h-6 w-6 text-white" />
                 </div>
-                
+
                 <div className="flex-1">
                   <h4 className="font-semibold text-white mb-1">{contact.title}</h4>
                   <p className="text-gray-400">{contact.value}</p>
                 </div>
-                
+
                 <div className="flex space-x-2 space-x-reverse">
                   <a
                     href={contact.link}
@@ -121,7 +121,7 @@ const Contact = () => {
                   >
                     <contact.icon className="h-4 w-4 text-gray-400 hover:text-primary-500" />
                   </a>
-                  
+
                   <button
                     onClick={() => copyToClipboard(contact.value, contact.title)}
                     className="p-2 bg-dark-700 rounded-full hover:bg-primary-500/20 transition-colors duration-300"
@@ -165,7 +165,7 @@ const Contact = () => {
             className="space-y-6"
           >
             <h3 className="text-2xl font-bold text-white mb-8">أرسل رسالة</h3>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
@@ -183,7 +183,7 @@ const Contact = () => {
                     placeholder="أدخل اسمك الكامل"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                     البريد الإلكتروني
@@ -200,7 +200,7 @@ const Contact = () => {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
                   الموضوع
@@ -216,7 +216,7 @@ const Contact = () => {
                   placeholder="أدخل موضوع الرسالة"
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
                   الرسالة
@@ -232,7 +232,7 @@ const Contact = () => {
                   placeholder="اكتب رسالتك هنا..."
                 />
               </div>
-              
+
               <button
                 type="submit"
                 className="w-full btn-primary flex items-center justify-center space-x-2 space-x-reverse"
@@ -255,7 +255,7 @@ const Contact = () => {
           <div className="bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border border-primary-500/20 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-white mb-4">متاح للعمل</h3>
             <p className="text-lg text-gray-300 mb-6">
-              أنا متاح للعمل على مشاريع جديدة ومثيرة. سواء كنت تريد تطبيق موبايل، 
+              أنا متاح للعمل على مشاريع جديدة ومثيرة. سواء كنت تريد تطبيق موبايل،
               موقع إلكتروني، أو نظام إدارة، يمكنني مساعدتك في تحقيق رؤيتك.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
