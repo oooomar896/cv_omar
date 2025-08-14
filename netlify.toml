@@ -8,92 +8,78 @@
 
 [[headers]]
   for = "/*"
-  values = {
+  [headers.values]
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
-  }
 
 [[headers]]
   for = "*.html"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-  }
 
 [[headers]]
   for = "*.css"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.js"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.png"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.jpg"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.jpeg"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.gif"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.svg"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.ico"
-  values = {
-    Cache-Control = "public, max-age=31536000, immutable"
-  }
+  [headers.values]
+    Cache-Control = "public, maxage=31536000, immutable"
 
 [[headers]]
   for = "*.woff"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.woff2"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.ttf"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[headers]]
   for = "*.eot"
-  values = {
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-  }
 
 [[redirects]]
   from = "/cv"
@@ -131,4 +117,4 @@
   SITE_NAME = "Omar Hamid Portfolio Store (Preview)"
   SITE_DESCRIPTION = "Technical Portfolio Store - Flutter, React Native, Odoo Developer"
   CONTACT_EMAIL = "oooomar123450@gmail.com"
-  CONTACT_PHONE = "+966-55-853-9717" 
+  CONTACT_PHONE = "+966-55-853-9717"
