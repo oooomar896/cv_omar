@@ -1,112 +1,123 @@
 [build]
-  command = "echo 'Static HTML site - no build required'"
-  publish = "."
+  command = "npm run build"
+  publish = "build"
 
 [build.environment]
   NODE_VERSION = "18"
+  NPM_VERSION = "9"
 
-# Security headers
 [[headers]]
   for = "/*"
-  [headers.values]
+  values = {
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; font-src 'self' cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https:;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
+  }
 
-# Cache static assets
 [[headers]]
   for = "*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=3600, must-revalidate"
+  values = {
+    Cache-Control = "public, max-age=0, must-revalidate"
+  }
 
 [[headers]]
   for = "*.css"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.js"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.png"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.jpg"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.jpeg"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.gif"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.svg"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.ico"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.woff"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.woff2"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.ttf"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
 [[headers]]
   for = "*.eot"
-  [headers.values]
+  values = {
     Cache-Control = "public, max-age=31536000, immutable"
+  }
 
-# Redirects for better SEO
 [[redirects]]
   from = "/cv"
-  to = "/cv_omar.html"
+  to = "/"
   status = 301
 
 [[redirects]]
   from = "/portfolio"
-  to = "/cv_omar.html"
+  to = "/"
   status = 301
 
 [[redirects]]
   from = "/store"
-  to = "/cv_omar.html"
+  to = "/"
   status = 301
 
 [[redirects]]
   from = "/projects"
-  to = "/cv_omar.html"
+  to = "/"
   status = 301
 
-# SPA fallback for better routing
 [[redirects]]
   from = "/*"
-  to = "/cv_omar.html"
+  to = "/index.html"
   status = 200
 
 # Environment variables for the portfolio
