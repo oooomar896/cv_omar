@@ -39,6 +39,13 @@ const Projects = () => {
     ],
     web: [
       {
+        title: 'كنشار - Kenshar',
+        description: 'منصة متكاملة لإنشاء وإدارة منصات استشارية مخصصة للشركات',
+        link: 'https://korcher2.netlify.app/',
+        icon: Globe,
+        color: 'from-indigo-500 to-purple-500'
+      },
+      {
         title: 'الرؤية العقارية',
         description: 'منصة للاستشارات العقارية',
         link: 'https://real-estateconsultations.netlify.app',
