@@ -28,6 +28,7 @@ const Projects = () => {
         link: 'https://play.google.com/store/apps/details?id=com.molhimah.swap',
         icon: Play,
         color: 'from-blue-500 to-cyan-500',
+        image: '/images/projects/swap-app.jpg',
       },
       {
         title: 'مزادات لايف - Auction Live',
@@ -35,6 +36,7 @@ const Projects = () => {
         link: 'https://play.google.com/store/apps/details?id=com.mulhmah_auctionlive',
         icon: Play,
         color: 'from-green-500 to-blue-500',
+        image: '/images/projects/auction-live.jpg',
       },
       {
         title: 'التطبيق الخيري - Charity App',
@@ -42,6 +44,7 @@ const Projects = () => {
         link: 'https://www.play.google.com/store/apps/details?id=com.charity_show',
         icon: Play,
         color: 'from-purple-500 to-pink-500',
+        image: '/images/projects/charity-app.jpg',
       },
     ],
     web: [
@@ -51,6 +54,7 @@ const Projects = () => {
         link: 'https://yourhelp.netlify.app/booking',
         icon: Globe,
         color: 'from-teal-500 to-emerald-500',
+        image: '/images/projects/yourhelp.jpg',
       },
       {
         title: 'كنشار - Kenshar',
@@ -58,6 +62,7 @@ const Projects = () => {
         link: 'https://korcher2.netlify.app/',
         icon: Globe,
         color: 'from-indigo-500 to-purple-500',
+        image: '/images/projects/kenshar.jpg',
       },
       {
         title: 'الرؤية العقارية',
@@ -65,6 +70,7 @@ const Projects = () => {
         link: 'https://real-estateconsultations.netlify.app',
         icon: Globe,
         color: 'from-orange-500 to-red-500',
+        image: '/images/projects/real-estate.jpg',
       },
       {
         title: 'مزادلي - Mzadly.com',
@@ -72,6 +78,7 @@ const Projects = () => {
         link: 'https://mzadly.com',
         icon: Globe,
         color: 'from-green-500 to-blue-500',
+        image: '/images/projects/mzadly.jpg',
       },
       {
         title: 'ملهمة العقارية - Molhimah.sa',
@@ -79,6 +86,7 @@ const Projects = () => {
         link: 'https://molhimah.sa',
         icon: Globe,
         color: 'from-blue-500 to-purple-500',
+        image: '/images/projects/molhimah.jpg',
       },
     ],
     odoo: [
@@ -88,6 +96,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/module-Real-state',
         icon: Github,
         color: 'from-green-500 to-blue-500',
+        image: '/images/projects/real-estate-module.jpg',
       },
       {
         title: 'نظام حجز القاعات',
@@ -95,6 +104,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/module-room-bookung',
         icon: Github,
         color: 'from-blue-500 to-cyan-500',
+        image: '/images/projects/room-booking.jpg',
       },
       {
         title: 'نظام الموارد البشرية',
@@ -102,6 +112,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/mangemen_HR',
         icon: Github,
         color: 'from-purple-500 to-pink-500',
+        image: '/images/projects/hr-system.jpg',
       },
       {
         title: 'نظام المزادات',
@@ -109,6 +120,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/Website_Auction_odoo',
         icon: Github,
         color: 'from-orange-500 to-yellow-500',
+        image: '/images/projects/auction-system.jpg',
       },
     ],
     'open-source': [
@@ -118,6 +130,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/coffee_app',
         icon: Github,
         color: 'from-brown-500 to-orange-500',
+        image: '/images/projects/coffee-app.jpg',
       },
       {
         title: 'متجر الكهرباء',
@@ -125,6 +138,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/electrical_store_app',
         icon: Github,
         color: 'from-yellow-500 to-orange-500',
+        image: '/images/projects/electrical-store.jpg',
       },
       {
         title: 'الآلة الحاسبة',
@@ -132,6 +146,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/Calculter',
         icon: Github,
         color: 'from-gray-500 to-blue-500',
+        image: '/images/projects/calculator.jpg',
       },
       {
         title: 'تطبيق اللاعبين',
@@ -139,6 +154,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/players',
         icon: Github,
         color: 'from-green-500 to-blue-500',
+        image: '/images/projects/players-app.jpg',
       },
       {
         title: 'تطبيق الملاحظات',
@@ -146,6 +162,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/note2',
         icon: Github,
         color: 'from-purple-500 to-pink-500',
+        image: '/images/projects/notes-app.jpg',
       },
     ],
   };
@@ -212,10 +229,39 @@ const Projects = () => {
               viewport={{ once: true }}
               className='card group hover:scale-105 transition-all duration-300'
             >
-              <div
-                className={`w-full h-32 bg-gradient-to-br ${project.color} rounded-t-xl mb-4 flex items-center justify-center`}
-              >
-                <project.icon className='h-12 w-12 text-white' />
+              <div className='w-full h-48 rounded-t-xl mb-4 overflow-hidden relative'>
+                {project.image ? (
+                  <>
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
+                      onError={e => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                    <div
+                      className={`w-full h-full bg-gradient-to-br ${project.color} flex items-center justify-center absolute inset-0`}
+                      style={{ display: 'none' }}
+                    >
+                      <project.icon className='h-12 w-12 text-white' />
+                    </div>
+                  </>
+                ) : (
+                  <div className='w-full h-full flex items-center justify-center'>
+                    <img
+                      src='/images/projects/placeholder.svg'
+                      alt='صورة افتراضية'
+                      className='w-full h-full object-cover opacity-50'
+                    />
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${project.color} flex items-center justify-center`}
+                    >
+                      <project.icon className='h-12 w-12 text-white' />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className='space-y-4'>
