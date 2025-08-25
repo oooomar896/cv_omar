@@ -6,14 +6,14 @@
 
 ### تطبيقات الموبايل:
 
-- `swap-app.jpg` - تطبيق المقايضة
-- `auction-live.jpg` - مزادات لايف
-- `charity-app.jpg` - التطبيق الخيري
+- `swap-app.svg` - تطبيق المقايضة
+- `auction-live.svg` - مزادات لايف
+- `charity-app.svg` - التطبيق الخيري
 
 ### المواقع الإلكترونية:
 
-- `yourhelp.jpg` - YourHelp - مساعدك
-- `real-estate-offers.jpg` - العروض العقارية - Real Estate Offers
+- `yourhelp.svg` - YourHelp - مساعدك
+- `real-estate-offers.svg` - العروض العقارية - Real Estate Offers
 - `kenshar.jpg` - كنشار - Kenshar
 - `real-estate.jpg` - الرؤية العقارية
 - `mzadly.jpg` - مزادلي - Mzadly.com

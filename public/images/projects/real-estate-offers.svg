@@ -1,0 +1,25 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Map Background -->
+  <rect x="80" y="80" width="240" height="120" rx="4" fill="#1e40af"/>
+  
+  <!-- Buildings on Map -->
+  <rect x="100" y="100" width="20" height="40" fill="#f59e0b"/>
+  <rect x="130" y="90" width="25" height="50" fill="#10b981"/>
+  <rect x="165" y="110" width="20" height="30" fill="#ef4444"/>
+  <rect x="195" y="95" width="30" height="45" fill="#8b5cf6"/>
+  <rect x="235" y="105" width="20" height="35" fill="#f97316"/>
+  
+  <!-- Location Pin -->
+  <circle cx="200" cy="160" r="8" fill="#ef4444"/>
+  <path d="M200 168 L200 180 L196 180 L204 180 Z" fill="#ef4444"/>
+  
+  <!-- Property Details -->
+  <rect x="80" y="210" width="240" height="30" rx="4" fill="#6b7280"/>
+  <text x="200" y="230" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">500+ عقار متاح | خريطة تفاعلية</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">العروض العقارية</text>
+</svg>

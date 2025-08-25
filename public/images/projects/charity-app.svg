@@ -1,0 +1,26 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Heart Icon -->
+  <path d="M200 100 C200 100, 180 80, 160 100 C140 120, 200 160, 200 160 C200 160, 240 120, 200 100" fill="#ef4444"/>
+  
+  <!-- Donation Box -->
+  <rect x="120" y="140" width="160" height="80" rx="8" fill="#10b981"/>
+  <rect x="130" y="150" width="140" height="60" rx="4" fill="#047857"/>
+  <rect x="140" y="160" width="120" height="40" rx="2" fill="#065f46"/>
+  
+  <!-- Coins -->
+  <circle cx="160" cy="180" r="8" fill="#f59e0b"/>
+  <circle cx="180" cy="175" r="8" fill="#f59e0b"/>
+  <circle cx="200" cy="180" r="8" fill="#f59e0b"/>
+  <circle cx="220" cy="175" r="8" fill="#f59e0b"/>
+  <circle cx="240" cy="180" r="8" fill="#f59e0b"/>
+  
+  <!-- Progress Bar -->
+  <rect x="140" y="200" width="120" height="8" rx="4" fill="#374151"/>
+  <rect x="140" y="200" width="80" height="8" rx="4" fill="#3b82f6"/>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">التطبيق الخيري</text>
+</svg>

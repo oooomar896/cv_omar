@@ -1,0 +1,32 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Service Icons -->
+  <circle cx="120" cy="100" r="25" fill="#10b981"/>
+  <text x="120" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">🔧</text>
+  
+  <circle cx="200" cy="100" r="25" fill="#3b82f6"/>
+  <text x="200" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">🏠</text>
+  
+  <circle cx="280" cy="100" r="25" fill="#f59e0b"/>
+  <text x="280" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">🚗</text>
+  
+  <!-- Calendar -->
+  <rect x="140" y="150" width="120" height="60" rx="4" fill="#6b7280"/>
+  <rect x="140" y="150" width="120" height="20" fill="#374151"/>
+  <text x="200" y="165" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">حجز الخدمة</text>
+  
+  <!-- Time Slots -->
+  <rect x="150" y="180" width="30" height="20" rx="2" fill="#10b981"/>
+  <text x="165" y="193" text-anchor="middle" fill="white" font-family="Arial" font-size="8">9:00</text>
+  
+  <rect x="190" y="180" width="30" height="20" rx="2" fill="#3b82f6"/>
+  <text x="205" y="193" text-anchor="middle" fill="white" font-family="Arial" font-size="8">10:00</text>
+  
+  <rect x="230" y="180" width="30" height="20" rx="2" fill="#f59e0b"/>
+  <text x="245" y="193" text-anchor="middle" fill="white" font-family="Arial" font-size="8">11:00</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">YourHelp - مساعدك</text>
+</svg>

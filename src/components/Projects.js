@@ -28,7 +28,7 @@ const Projects = () => {
         link: 'https://play.google.com/store/apps/details?id=com.molhimah.swap',
         icon: Play,
         color: 'from-blue-500 to-cyan-500',
-        image: '/images/projects/swap-app.jpg',
+        image: '/images/projects/swap-app.svg',
       },
       {
         title: 'مزادات لايف - Auction Live',
@@ -36,7 +36,7 @@ const Projects = () => {
         link: 'https://play.google.com/store/apps/details?id=com.mulhmah_auctionlive',
         icon: Play,
         color: 'from-green-500 to-blue-500',
-        image: '/images/projects/auction-live.jpg',
+        image: '/images/projects/auction-live.svg',
       },
       {
         title: 'التطبيق الخيري - Charity App',
@@ -44,7 +44,7 @@ const Projects = () => {
         link: 'https://www.play.google.com/store/apps/details?id=com.charity_show',
         icon: Play,
         color: 'from-purple-500 to-pink-500',
-        image: '/images/projects/charity-app.jpg',
+        image: '/images/projects/charity-app.svg',
       },
     ],
     web: [
@@ -54,7 +54,7 @@ const Projects = () => {
         link: 'https://yourhelp.netlify.app/booking',
         icon: Globe,
         color: 'from-teal-500 to-emerald-500',
-        image: '/images/projects/yourhelp.jpg',
+        image: '/images/projects/yourhelp.svg',
       },
       {
         title: 'العروض العقارية - Real Estate Offers',
@@ -63,7 +63,7 @@ const Projects = () => {
         link: 'https://real-estate-offers.netlify.app/',
         icon: Globe,
         color: 'from-emerald-500 to-teal-500',
-        image: '/images/projects/real-estate-offers.jpg',
+        image: '/images/projects/real-estate-offers.svg',
       },
       {
         title: 'كنشار - Kenshar',
