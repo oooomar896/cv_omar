@@ -13,6 +13,7 @@
 ### المواقع الإلكترونية:
 
 - `yourhelp.jpg` - YourHelp - مساعدك
+- `real-estate-offers.jpg` - العروض العقارية - Real Estate Offers
 - `kenshar.jpg` - كنشار - Kenshar
 - `real-estate.jpg` - الرؤية العقارية
 - `mzadly.jpg` - مزادلي - Mzadly.com

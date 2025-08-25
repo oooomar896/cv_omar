@@ -57,6 +57,15 @@ const Projects = () => {
         image: '/images/projects/yourhelp.jpg',
       },
       {
+        title: 'العروض العقارية - Real Estate Offers',
+        description:
+          'منصة العروض العقارية الرائدة في المملكة العربية السعودية مع خريطة تفاعلية',
+        link: 'https://real-estate-offers.netlify.app/',
+        icon: Globe,
+        color: 'from-emerald-500 to-teal-500',
+        image: '/images/projects/real-estate-offers.jpg',
+      },
+      {
         title: 'كنشار - Kenshar',
         description: 'منصة متكاملة لإنشاء وإدارة منصات استشارية مخصصة للشركات',
         link: 'https://korcher2.netlify.app/',
