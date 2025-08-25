@@ -1,0 +1,31 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Company Building -->
+  <rect x="120" y="80" width="160" height="100" rx="4" fill="#8b5cf6"/>
+  <rect x="130" y="90" width="140" height="20" fill="#6d28d9"/>
+  <text x="200" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">شركة استشارية</text>
+  
+  <!-- Windows -->
+  <rect x="140" y="120" width="25" height="25" fill="#c4b5fd"/>
+  <rect x="175" y="120" width="25" height="25" fill="#c4b5fd"/>
+  <rect x="210" y="120" width="25" height="25" fill="#c4b5fd"/>
+  <rect x="245" y="120" width="25" height="25" fill="#c4b5fd"/>
+  
+  <!-- Consultation Icons -->
+  <circle cx="140" cy="170" r="15" fill="#10b981"/>
+  <text x="140" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">💼</text>
+  
+  <circle cx="180" cy="170" r="15" fill="#3b82f6"/>
+  <text x="180" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">📊</text>
+  
+  <circle cx="220" cy="170" r="15" fill="#f59e0b"/>
+  <text x="220" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">🎯</text>
+  
+  <circle cx="260" cy="170" r="15" fill="#ef4444"/>
+  <text x="260" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">📈</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">كنشار - Kenshar</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Modern Building -->
+  <rect x="120" y="80" width="160" height="100" rx="4" fill="#3b82f6"/>
+  <rect x="130" y="90" width="140" height="20" fill="#1e40af"/>
+  <text x="200" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">ملهمة العقارية</text>
+  
+  <!-- Glass Windows -->
+  <rect x="140" y="120" width="30" height="30" fill="#bfdbfe"/>
+  <rect x="180" y="120" width="30" height="30" fill="#bfdbfe"/>
+  <rect x="220" y="120" width="30" height="30" fill="#bfdbfe"/>
+  <rect x="260" y="120" width="30" height="30" fill="#bfdbfe"/>
+  
+  <!-- Property Types -->
+  <circle cx="140" cy="180" r="15" fill="#10b981"/>
+  <text x="140" y="185" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🏢</text>
+  
+  <circle cx="180" cy="180" r="15" fill="#f59e0b"/>
+  <text x="180" y="185" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🏠</text>
+  
+  <circle cx="220" cy="180" r="15" fill="#ef4444"/>
+  <text x="220" y="185" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🏗️</text>
+  
+  <circle cx="260" cy="180" r="15" fill="#8b5cf6"/>
+  <text x="260" y="185" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📊</text>
+  
+  <!-- Search Bar -->
+  <rect x="120" y="210" width="160" height="30" rx="15" fill="#6b7280"/>
+  <text x="200" y="230" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">البحث عن عقار...</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">ملهمة العقارية - Molhimah.sa</text>
+</svg>

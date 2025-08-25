@@ -71,7 +71,7 @@ const Projects = () => {
         link: 'https://korcher2.netlify.app/',
         icon: Globe,
         color: 'from-indigo-500 to-purple-500',
-        image: '/images/projects/kenshar.jpg',
+        image: '/images/projects/kenshar.svg',
       },
       {
         title: 'الرؤية العقارية',
@@ -79,7 +79,7 @@ const Projects = () => {
         link: 'https://real-estateconsultations.netlify.app',
         icon: Globe,
         color: 'from-orange-500 to-red-500',
-        image: '/images/projects/real-estate.jpg',
+        image: '/images/projects/real-estate.svg',
       },
       {
         title: 'مزادلي - Mzadly.com',
@@ -87,7 +87,7 @@ const Projects = () => {
         link: 'https://mzadly.com',
         icon: Globe,
         color: 'from-green-500 to-blue-500',
-        image: '/images/projects/mzadly.jpg',
+        image: '/images/projects/mzadly.svg',
       },
       {
         title: 'ملهمة العقارية - Molhimah.sa',
@@ -95,7 +95,7 @@ const Projects = () => {
         link: 'https://molhimah.sa',
         icon: Globe,
         color: 'from-blue-500 to-purple-500',
-        image: '/images/projects/molhimah.jpg',
+        image: '/images/projects/molhimah.svg',
       },
     ],
     odoo: [
@@ -105,7 +105,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/module-Real-state',
         icon: Github,
         color: 'from-green-500 to-blue-500',
-        image: '/images/projects/real-estate-module.jpg',
+        image: '/images/projects/real-estate-module.svg',
       },
       {
         title: 'نظام حجز القاعات',
@@ -113,7 +113,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/module-room-bookung',
         icon: Github,
         color: 'from-blue-500 to-cyan-500',
-        image: '/images/projects/room-booking.jpg',
+        image: '/images/projects/room-booking.svg',
       },
       {
         title: 'نظام الموارد البشرية',
@@ -121,7 +121,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/mangemen_HR',
         icon: Github,
         color: 'from-purple-500 to-pink-500',
-        image: '/images/projects/hr-system.jpg',
+        image: '/images/projects/hr-system.svg',
       },
       {
         title: 'نظام المزادات',
@@ -129,7 +129,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/Website_Auction_odoo',
         icon: Github,
         color: 'from-orange-500 to-yellow-500',
-        image: '/images/projects/auction-system.jpg',
+        image: '/images/projects/auction-system.svg',
       },
     ],
     'open-source': [
@@ -139,7 +139,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/coffee_app',
         icon: Github,
         color: 'from-brown-500 to-orange-500',
-        image: '/images/projects/coffee-app.jpg',
+        image: '/images/projects/coffee-app.svg',
       },
       {
         title: 'متجر الكهرباء',
@@ -147,7 +147,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/electrical_store_app',
         icon: Github,
         color: 'from-yellow-500 to-orange-500',
-        image: '/images/projects/electrical-store.jpg',
+        image: '/images/projects/electrical-store.svg',
       },
       {
         title: 'الآلة الحاسبة',
@@ -155,7 +155,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/Calculter',
         icon: Github,
         color: 'from-gray-500 to-blue-500',
-        image: '/images/projects/calculator.jpg',
+        image: '/images/projects/calculator.svg',
       },
       {
         title: 'تطبيق اللاعبين',
@@ -163,7 +163,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/players',
         icon: Github,
         color: 'from-green-500 to-blue-500',
-        image: '/images/projects/players-app.jpg',
+        image: '/images/projects/players-app.svg',
       },
       {
         title: 'تطبيق الملاحظات',
@@ -171,7 +171,7 @@ const Projects = () => {
         link: 'https://github.com/oooomar896/note2',
         icon: Github,
         color: 'from-purple-500 to-pink-500',
-        image: '/images/projects/notes-app.jpg',
+        image: '/images/projects/notes-app.svg',
       },
     ],
   };

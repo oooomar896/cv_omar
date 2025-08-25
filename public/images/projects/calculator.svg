@@ -1,0 +1,47 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Calculator -->
+  <rect x="120" y="80" width="160" height="120" rx="8" fill="#6b7280"/>
+  
+  <!-- Display -->
+  <rect x="130" y="90" width="140" height="25" rx="2" fill="#1f2937"/>
+  <text x="200" y="107" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">123.45</text>
+  
+  <!-- Number Buttons -->
+  <rect x="135" y="125" width="25" height="20" rx="2" fill="#10b981"/>
+  <text x="147" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">7</text>
+  
+  <rect x="165" y="125" width="25" height="20" rx="2" fill="#10b981"/>
+  <text x="177" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">8</text>
+  
+  <rect x="195" y="125" width="25" height="20" rx="2" fill="#10b981"/>
+  <text x="207" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">9</text>
+  
+  <rect x="135" y="150" width="25" height="20" rx="2" fill="#10b981"/>
+  <text x="147" y="163" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">4</text>
+  
+  <rect x="165" y="150" width="25" height="20" rx="2" fill="#10b981"/>
+  <text x="177" y="163" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">5</text>
+  
+  <rect x="195" y="150" width="25" height="20" rx="2" fill="#10b981"/>
+  <text x="207" y="163" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">6</text>
+  
+  <!-- Operation Buttons -->
+  <rect x="225" y="125" width="25" height="20" rx="2" fill="#f59e0b"/>
+  <text x="237" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">+</text>
+  
+  <rect x="225" y="150" width="25" height="20" rx="2" fill="#f59e0b"/>
+  <text x="237" y="163" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">-</text>
+  
+  <rect x="225" y="175" width="25" height="20" rx="2" fill="#f59e0b"/>
+  <text x="237" y="188" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">×</text>
+  
+  <!-- Equal Button -->
+  <rect x="225" y="200" width="25" height="20" rx="2" fill="#3b82f6"/>
+  <text x="237" y="213" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">=</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">الآلة الحاسبة</text>
+</svg>

@@ -14,25 +14,25 @@
 
 - `yourhelp.svg` - YourHelp - مساعدك
 - `real-estate-offers.svg` - العروض العقارية - Real Estate Offers
-- `kenshar.jpg` - كنشار - Kenshar
-- `real-estate.jpg` - الرؤية العقارية
-- `mzadly.jpg` - مزادلي - Mzadly.com
-- `molhimah.jpg` - ملهمة العقارية - Molhimah.sa
+- `kenshar.svg` - كنشار - Kenshar
+- `real-estate.svg` - الرؤية العقارية
+- `mzadly.svg` - مزادلي - Mzadly.com
+- `molhimah.svg` - ملهمة العقارية - Molhimah.sa
 
 ### موديولات Odoo:
 
-- `real-estate-module.jpg` - نظام إدارة الأملاك
-- `room-booking.jpg` - نظام حجز القاعات
-- `hr-system.jpg` - نظام الموارد البشرية
-- `auction-system.jpg` - نظام المزادات
+- `real-estate-module.svg` - نظام إدارة الأملاك
+- `room-booking.svg` - نظام حجز القاعات
+- `hr-system.svg` - نظام الموارد البشرية
+- `auction-system.svg` - نظام المزادات
 
 ### المشاريع المفتوحة:
 
-- `coffee-app.jpg` - تطبيق القهوة
-- `electrical-store.jpg` - متجر الكهرباء
-- `calculator.jpg` - الآلة الحاسبة
-- `players-app.jpg` - تطبيق اللاعبين
-- `notes-app.jpg` - تطبيق الملاحظات
+- `coffee-app.svg` - تطبيق القهوة
+- `electrical-store.svg` - متجر الكهرباء
+- `calculator.svg` - الآلة الحاسبة
+- `players-app.svg` - تطبيق اللاعبين
+- `notes-app.svg` - تطبيق الملاحظات
 
 ## مواصفات الصور:
 

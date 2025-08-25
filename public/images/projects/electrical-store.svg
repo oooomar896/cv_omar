@@ -1,0 +1,33 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Electrical Store -->
+  <rect x="100" y="80" width="200" height="120" rx="4" fill="#f59e0b"/>
+  <rect x="110" y="90" width="180" height="20" fill="#d97706"/>
+  <text x="200" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">متجر الكهرباء</text>
+  
+  <!-- Electrical Products -->
+  <rect x="120" y="120" width="40" height="30" rx="4" fill="#10b981"/>
+  <text x="140" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">🔌</text>
+  <text x="140" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$15</text>
+  
+  <rect x="170" y="120" width="40" height="30" rx="4" fill="#3b82f6"/>
+  <text x="190" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">💡</text>
+  <text x="190" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$8</text>
+  
+  <rect x="220" y="120" width="40" height="30" rx="4" fill="#ef4444"/>
+  <text x="240" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">🔋</text>
+  <text x="240" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$25</text>
+  
+  <rect x="270" y="120" width="40" height="30" rx="4" fill="#8b5cf6"/>
+  <text x="290" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">⚡</text>
+  <text x="290" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$12</text>
+  
+  <!-- Shopping Cart -->
+  <rect x="180" y="170" width="40" height="30" rx="4" fill="#6b7280"/>
+  <text x="200" y="190" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">🛒</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">متجر الكهرباء</text>
+</svg>

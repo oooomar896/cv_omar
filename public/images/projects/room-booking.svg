@@ -1,0 +1,41 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+
+  <!-- Calendar -->
+  <rect x="120" y="80" width="160" height="120" rx="4" fill="#3b82f6"/>
+  <rect x="120" y="80" width="160" height="25" fill="#1e40af"/>
+  <text x="200" y="97" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">أغسطس 2024</text>
+
+  <!-- Calendar Grid -->
+  <rect x="125" y="110" width="22" height="22" fill="#10b981"/>
+  <text x="136" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">1</text>
+
+  <rect x="152" y="110" width="22" height="22" fill="#10b981"/>
+  <text x="163" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">2</text>
+
+  <rect x="179" y="110" width="22" height="22" fill="#f59e0b"/>
+  <text x="190" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">3</text>
+
+  <rect x="206" y="110" width="22" height="22" fill="#ef4444"/>
+  <text x="217" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">4</text>
+
+  <rect x="233" y="110" width="22" height="22" fill="#10b981"/>
+  <text x="244" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">5</text>
+
+  <rect x="260" y="110" width="22" height="22" fill="#10b981"/>
+  <text x="271" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">6</text>
+
+  <!-- Room Icons -->
+  <circle cx="140" cy="170" r="15" fill="#8b5cf6"/>
+  <text x="140" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🏢</text>
+
+  <circle cx="200" cy="170" r="15" fill="#06b6d4"/>
+  <text x="200" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">💻</text>
+
+  <circle cx="260" cy="170" r="15" fill="#f97316"/>
+  <text x="260" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🎯</text>
+
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">نظام حجز القاعات</text>
+</svg>

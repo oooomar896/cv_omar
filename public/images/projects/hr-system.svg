@@ -1,0 +1,33 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- HR Dashboard -->
+  <rect x="80" y="80" width="240" height="120" rx="4" fill="#8b5cf6"/>
+  
+  <!-- Employee Management -->
+  <rect x="100" y="100" width="60" height="40" rx="4" fill="#10b981"/>
+  <text x="130" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الموظفين</text>
+  <text x="130" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">25</text>
+  
+  <rect x="170" y="100" width="60" height="40" rx="4" fill="#3b82f6"/>
+  <text x="200" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الحضور</text>
+  <text x="200" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">95%</text>
+  
+  <rect x="240" y="100" width="60" height="40" rx="4" fill="#f59e0b"/>
+  <text x="270" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الإجازات</text>
+  <text x="270" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">8</text>
+  
+  <!-- HR Icons -->
+  <circle cx="140" cy="170" r="15" fill="#ef4444"/>
+  <text x="140" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">👥</text>
+  
+  <circle cx="200" cy="170" r="15" fill="#06b6d4"/>
+  <text x="200" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📊</text>
+  
+  <circle cx="260" cy="170" r="15" fill="#10b981"/>
+  <text x="260" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📅</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">نظام الموارد البشرية</text>
+</svg>

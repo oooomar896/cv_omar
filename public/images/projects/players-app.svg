@@ -1,0 +1,40 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Team Management -->
+  <rect x="100" y="80" width="200" height="120" rx="4" fill="#10b981"/>
+  
+  <!-- Players -->
+  <circle cx="130" cy="110" r="15" fill="#3b82f6"/>
+  <text x="130" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">👤</text>
+  <text x="130" y="130" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">أحمد</text>
+  
+  <circle cx="170" cy="110" r="15" fill="#f59e0b"/>
+  <text x="170" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">👤</text>
+  <text x="170" y="130" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">محمد</text>
+  
+  <circle cx="210" cy="110" r="15" fill="#ef4444"/>
+  <text x="210" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">👤</text>
+  <text x="210" y="130" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">علي</text>
+  
+  <circle cx="250" cy="110" r="15" fill="#8b5cf6"/>
+  <text x="250" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">👤</text>
+  <text x="250" y="130" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">خالد</text>
+  
+  <!-- Team Stats -->
+  <rect x="120" y="150" width="60" height="30" rx="4" fill="#1e40af"/>
+  <text x="150" y="165" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">النقاط</text>
+  <text x="150" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">85</text>
+  
+  <rect x="190" y="150" width="60" height="30" rx="4" fill="#d97706"/>
+  <text x="220" y="165" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">المركز</text>
+  <text x="220" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">2</text>
+  
+  <rect x="260" y="150" width="60" height="30" rx="4" fill="#047857"/>
+  <text x="290" y="165" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">المباريات</text>
+  <text x="290" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">12</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">تطبيق اللاعبين</text>
+</svg>

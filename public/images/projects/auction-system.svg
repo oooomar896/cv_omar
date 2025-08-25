@@ -1,0 +1,31 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#1f2937"/>
+  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  
+  <!-- Odoo Integration -->
+  <rect x="120" y="70" width="160" height="40" rx="4" fill="#714b67"/>
+  <text x="200" y="95" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">ODOO + مزادلي</text>
+  
+  <!-- Auction Items -->
+  <rect x="100" y="130" width="70" height="50" rx="4" fill="#10b981"/>
+  <text x="135" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">عقار</text>
+  <text x="135" y="160" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$50K</text>
+  
+  <rect x="180" y="130" width="70" height="50" rx="4" fill="#f59e0b"/>
+  <text x="215" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">سيارة</text>
+  <text x="215" y="160" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$25K</text>
+  
+  <rect x="260" y="130" width="70" height="50" rx="4" fill="#ef4444"/>
+  <text x="295" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">أثاث</text>
+  <text x="295" y="160" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">$5K</text>
+  
+  <!-- Sync Arrows -->
+  <path d="M200 190 L200 210 M190 200 L200 210 L210 200" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Database -->
+  <rect x="180" y="200" width="40" height="30" rx="4" fill="#6b7280"/>
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">DB</text>
+  
+  <!-- Title -->
+  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">نظام المزادات</text>
+</svg>
