@@ -33,6 +33,7 @@ const Skills = () => {
       { name: 'PHP', level: 80, color: 'from-purple-500 to-blue-500' },
       { name: 'Node.js', level: 75, color: 'from-green-500 to-green-600' },
       { name: 'Firebase', level: 85, color: 'from-orange-500 to-yellow-500' },
+      { name: 'Supabase', level: 80, color: 'from-green-500 to-emerald-500' },
     ],
     erp: [
       { name: 'Odoo', level: 90, color: 'from-green-500 to-blue-500' },
