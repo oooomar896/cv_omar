@@ -1,38 +1,75 @@
 <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="300" fill="#1f2937"/>
-  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
-  
-  <!-- Notes App -->
-  <rect x="100" y="80" width="200" height="120" rx="4" fill="#8b5cf6"/>
-  
-  <!-- Note 1 -->
-  <rect x="110" y="90" width="80" height="40" rx="2" fill="#fef3c7"/>
-  <text x="150" y="105" text-anchor="middle" fill="#92400e" font-family="Arial" font-size="8" font-weight="bold">ملاحظة مهمة</text>
-  <text x="150" y="115" text-anchor="middle" fill="#92400e" font-family="Arial" font-size="6">اجتماع غداً...</text>
-  <text x="150" y="125" text-anchor="middle" fill="#92400e" font-family="Arial" font-size="6">9:00 صباحاً</text>
-  
-  <!-- Note 2 -->
-  <rect x="200" y="90" width="80" height="40" rx="2" fill="#dbeafe"/>
-  <text x="240" y="105" text-anchor="middle" fill="#1e40af" font-family="Arial" font-size="8" font-weight="bold">قائمة المهام</text>
-  <text x="240" y="115" text-anchor="middle" fill="#1e40af" font-family="Arial" font-size="6">- شراء الخضار</text>
-  <text x="240" y="125" text-anchor="middle" fill="#1e40af" font-family="Arial" font-size="6">- دفع الفواتير</text>
-  
-  <!-- Note 3 -->
-  <rect x="110" y="140" width="80" height="40" rx="2" fill="#fce7f3"/>
-  <text x="150" y="155" text-anchor="middle" fill="#be185d" font-family="Arial" font-size="8" font-weight="bold">أفكار مشروع</text>
-  <text x="150" y="165" text-anchor="middle" fill="#be185d" font-family="Arial" font-size="6">تطبيق جديد</text>
-  <text x="150" y="175" text-anchor="middle" fill="#be185d" font-family="Arial" font-size="6">للملاحظات</text>
-  
-  <!-- Note 4 -->
-  <rect x="200" y="140" width="80" height="40" rx="2" fill="#dcfce7"/>
-  <text x="240" y="155" text-anchor="middle" fill="#166534" font-family="Arial" font-size="8" font-weight="bold">كلمات مرور</text>
-  <text x="240" y="165" text-anchor="middle" fill="#166534" font-family="Arial" font-size="6">GitHub: ***</text>
-  <text x="240" y="175" text-anchor="middle" fill="#166534" font-family="Arial" font-size="6">Email: ***</text>
-  
-  <!-- Sync Icon -->
-  <circle cx="320" cy="70" r="15" fill="#06b6d4"/>
-  <text x="320" y="75" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🔄</text>
-  
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+
+  <!-- Main App Container -->
+  <rect x="50" y="40" width="300" height="220" rx="25" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+
+  <!-- Header -->
+  <rect x="70" y="60" width="260" height="40" rx="20" fill="rgba(255,255,255,0.2)"/>
+  <text x="200" y="85" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">تطبيق الملاحظات</text>
+
+  <!-- Note Categories -->
+  <rect x="80" y="120" width="70" height="60" rx="12" fill="rgba(16, 185, 129, 0.8)"/>
+  <text x="115" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">العمل</text>
+  <text x="115" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• اجتماعات</text>
+  <text x="115" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• مهام</text>
+  <text x="115" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• أفكار</text>
+
+  <rect x="160" y="120" width="70" height="60" rx="12" fill="rgba(59, 130, 246, 0.8)"/>
+  <text x="195" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">الشخصية</text>
+  <text x="195" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• ذكريات</text>
+  <text x="195" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• أهداف</text>
+  <text x="195" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• قوائم</text>
+
+  <rect x="240" y="120" width="70" height="60" rx="12" fill="rgba(245, 158, 11, 0.8)"/>
+  <text x="275" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">الدراسة</text>
+  <text x="275" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• ملاحظات</text>
+  <text x="275" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• مراجعات</text>
+  <text x="275" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• مشاريع</text>
+
+  <!-- Quick Actions -->
+  <rect x="80" y="200" width="100" height="35" rx="17" fill="rgba(16, 185, 129, 0.9)"/>
+  <text x="130" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">ملاحظة جديدة</text>
+
+  <rect x="190" y="200" width="100" height="35" rx="17" fill="rgba(59, 130, 246, 0.9)"/>
+  <text x="240" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">البحث</text>
+
+  <rect x="300" y="200" width="100" height="35" rx="17" fill="rgba(245, 158, 11, 0.9)"/>
+  <text x="350" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">المشاركة</text>
+
+  <!-- Note Icon -->
+  <circle cx="320" cy="140" r="18" fill="rgba(239, 68, 68, 0.9)"/>
+  <text x="320" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">📝</text>
+
+  <!-- Decorative Elements -->
+  <circle cx="320" cy="70" r="12" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="75" text-anchor="middle" fill="white" font-family="Arial" font-size="12">✨</text>
+
+  <circle cx="340" cy="90" r="10" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="340" y="95" text-anchor="middle" fill="white" font-family="Arial" font-size="10">💡</text>
+
+  <circle cx="320" cy="110" r="8" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8">🌟</text>
+
   <!-- Title -->
-  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">تطبيق الملاحظات</text>
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">تطبيق الملاحظات - Notes App</text>
 </svg>

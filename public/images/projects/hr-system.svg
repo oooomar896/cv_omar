@@ -1,33 +1,70 @@
 <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="300" fill="#1f2937"/>
-  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
   
-  <!-- HR Dashboard -->
-  <rect x="80" y="80" width="240" height="120" rx="4" fill="#8b5cf6"/>
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+  
+  <!-- Main System Container -->
+  <rect x="40" y="30" width="320" height="240" rx="25" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Header -->
+  <rect x="60" y="50" width="280" height="50" rx="25" fill="rgba(255,255,255,0.2)"/>
+  <text x="200" y="80" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">نظام الموارد البشرية</text>
   
   <!-- Employee Management -->
-  <rect x="100" y="100" width="60" height="40" rx="4" fill="#10b981"/>
-  <text x="130" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الموظفين</text>
-  <text x="130" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">25</text>
+  <rect x="70" y="120" width="80" height="60" rx="12" fill="rgba(16, 185, 129, 0.8)"/>
+  <text x="110" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">إدارة الموظفين</text>
+  <text x="110" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• إضافة موظف جديد</text>
+  <text x="110" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• تعديل البيانات</text>
+  <text x="110" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• حذف موظف</text>
   
-  <rect x="170" y="100" width="60" height="40" rx="4" fill="#3b82f6"/>
-  <text x="200" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الحضور</text>
-  <text x="200" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">95%</text>
+  <!-- Payroll System -->
+  <rect x="160" y="120" width="80" height="60" rx="12" fill="rgba(59, 130, 246, 0.8)"/>
+  <text x="200" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">نظام الرواتب</text>
+  <text x="200" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• حساب الرواتب</text>
+  <text x="200" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• الخصومات</text>
+  <text x="200" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• التقارير</text>
   
-  <rect x="240" y="100" width="60" height="40" rx="4" fill="#f59e0b"/>
-  <text x="270" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الإجازات</text>
-  <text x="270" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">8</text>
+  <!-- Attendance -->
+  <rect x="250" y="120" width="80" height="60" rx="12" fill="rgba(245, 158, 11, 0.8)"/>
+  <text x="290" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">نظام الحضور</text>
+  <text x="290" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• تسجيل الدخول</text>
+  <text x="290" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• تسجيل الخروج</text>
+  <text x="290" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">• الإجازات</text>
+  
+  <!-- Reports Dashboard -->
+  <rect x="70" y="200" width="120" height="35" rx="17" fill="rgba(16, 185, 129, 0.9)"/>
+  <text x="130" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">التقارير</text>
+  
+  <rect x="200" y="200" width="120" height="35" rx="17" fill="rgba(59, 130, 246, 0.9)"/>
+  <text x="260" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">لوحة التحكم</text>
   
   <!-- HR Icons -->
-  <circle cx="140" cy="170" r="15" fill="#ef4444"/>
-  <text x="140" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">👥</text>
+  <circle cx="320" cy="140" r="18" fill="rgba(239, 68, 68, 0.9)"/>
+  <text x="320" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">👥</text>
   
-  <circle cx="200" cy="170" r="15" fill="#06b6d4"/>
-  <text x="200" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📊</text>
+  <!-- Decorative Elements -->
+  <circle cx="320" cy="70" r="12" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="75" text-anchor="middle" fill="white" font-family="Arial" font-size="12">💼</text>
   
-  <circle cx="260" cy="170" r="15" fill="#10b981"/>
-  <text x="260" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📅</text>
+  <circle cx="340" cy="90" r="10" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="340" y="95" text-anchor="middle" fill="white" font-family="Arial" font-size="10">📊</text>
+  
+  <circle cx="320" cy="110" r="8" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8">⚡</text>
   
   <!-- Title -->
-  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">نظام الموارد البشرية</text>
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">نظام الموارد البشرية - HR System</text>
 </svg>
