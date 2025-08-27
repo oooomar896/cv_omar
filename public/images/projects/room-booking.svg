@@ -1,41 +1,70 @@
 <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="300" fill="#1f2937"/>
-  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
-
-  <!-- Calendar -->
-  <rect x="120" y="80" width="160" height="120" rx="4" fill="#3b82f6"/>
-  <rect x="120" y="80" width="160" height="25" fill="#1e40af"/>
-  <text x="200" y="97" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">أغسطس 2024</text>
-
-  <!-- Calendar Grid -->
-  <rect x="125" y="110" width="22" height="22" fill="#10b981"/>
-  <text x="136" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">1</text>
-
-  <rect x="152" y="110" width="22" height="22" fill="#10b981"/>
-  <text x="163" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">2</text>
-
-  <rect x="179" y="110" width="22" height="22" fill="#f59e0b"/>
-  <text x="190" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">3</text>
-
-  <rect x="206" y="110" width="22" height="22" fill="#ef4444"/>
-  <text x="217" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">4</text>
-
-  <rect x="233" y="110" width="22" height="22" fill="#10b981"/>
-  <text x="244" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">5</text>
-
-  <rect x="260" y="110" width="22" height="22" fill="#10b981"/>
-  <text x="271" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">6</text>
-
-  <!-- Room Icons -->
-  <circle cx="140" cy="170" r="15" fill="#8b5cf6"/>
-  <text x="140" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🏢</text>
-
-  <circle cx="200" cy="170" r="15" fill="#06b6d4"/>
-  <text x="200" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">💻</text>
-
-  <circle cx="260" cy="170" r="15" fill="#f97316"/>
-  <text x="260" y="175" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🎯</text>
-
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c2d12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c2410c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+  
+  <!-- Main System Container -->
+  <rect x="40" y="30" width="320" height="240" rx="25" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Header -->
+  <rect x="60" y="50" width="280" height="50" rx="25" fill="rgba(255,255,255,0.2)"/>
+  <text x="200" y="80" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">نظام حجز القاعات</text>
+  
+  <!-- Conference Room -->
+  <rect x="70" y="120" width="100" height="70" rx="15" fill="rgba(59, 130, 246, 0.8)"/>
+  <text x="120" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">قاعة مؤتمرات</text>
+  <text x="120" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">السعة: 50 شخص</text>
+  <text x="120" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">السعر: 500 ريال/ساعة</text>
+  <text x="120" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">متاحة: 9:00 - 18:00</text>
+  
+  <!-- Meeting Room -->
+  <rect x="180" y="120" width="100" height="70" rx="15" fill="rgba(16, 185, 129, 0.8)"/>
+  <text x="230" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">قاعة اجتماعات</text>
+  <text x="230" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">السعة: 20 شخص</text>
+  <text x="230" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">السعر: 300 ريال/ساعة</text>
+  <text x="230" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">متاحة: 8:00 - 20:00</text>
+  
+  <!-- Training Room -->
+  <rect x="290" y="120" width="100" height="70" rx="15" fill="rgba(245, 158, 11, 0.8)"/>
+  <text x="340" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">قاعة تدريب</text>
+  <text x="340" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">السعة: 30 شخص</text>
+  <text x="340" y="162" text-anchor="middle" fill="white" font-family="Arial" font-size="8">السعر: 400 ريال/ساعة</text>
+  <text x="340" y="174" text-anchor="middle" fill="white" font-family="Arial" font-size="8">متاحة: 9:00 - 17:00</text>
+  
+  <!-- Booking Interface -->
+  <rect x="70" y="210" width="120" height="35" rx="17" fill="rgba(16, 185, 129, 0.9)"/>
+  <text x="130" y="230" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">احجز الآن</text>
+  
+  <rect x="200" y="210" width="120" height="35" rx="17" fill="rgba(59, 130, 246, 0.9)"/>
+  <text x="260" y="230" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">عرض الجدول</text>
+  
+  <!-- Calendar Icon -->
+  <circle cx="320" cy="140" r="18" fill="rgba(239, 68, 68, 0.9)"/>
+  <text x="320" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">📅</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="320" cy="70" r="12" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="75" text-anchor="middle" fill="white" font-family="Arial" font-size="12">🏢</text>
+  
+  <circle cx="340" cy="90" r="10" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="340" y="95" text-anchor="middle" fill="white" font-family="Arial" font-size="10">⏰</text>
+  
+  <circle cx="320" cy="110" r="8" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8">✅</text>
+  
   <!-- Title -->
-  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">نظام حجز القاعات</text>
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">نظام حجز القاعات - Room Booking System</text>
 </svg>

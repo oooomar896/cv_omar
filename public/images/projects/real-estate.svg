@@ -1,38 +1,76 @@
 <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="300" fill="#1f2937"/>
-  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d9488;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
   
-  <!-- House -->
-  <path d="M200 80 L160 120 L240 120 Z" fill="#f97316"/>
-  <rect x="160" y="120" width="80" height="60" fill="#ea580c"/>
-  <rect x="175" y="130" width="15" height="20" fill="#1f2937"/>
-  <rect x="210" y="130" width="15" height="20" fill="#1f2937"/>
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
   
-  <!-- Consultation Office -->
-  <rect x="100" y="160" width="60" height="40" rx="4" fill="#3b82f6"/>
-  <rect x="110" y="170" width="40" height="20" fill="#1e40af"/>
-  <text x="130" y="183" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">مكتب</text>
+  <!-- Main Platform Container -->
+  <rect x="40" y="30" width="320" height="240" rx="25" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2" filter="url(#shadow)"/>
   
-  <!-- Charts -->
-  <rect x="240" y="160" width="60" height="40" rx="4" fill="#10b981"/>
-  <rect x="250" y="170" width="8" height="20" fill="#047857"/>
-  <rect x="260" y="175" width="8" height="15" fill="#047857"/>
-  <rect x="270" y="180" width="8" height="10" fill="#047857"/>
-  <rect x="280" y="185" width="8" height="5" fill="#047857"/>
+  <!-- Header -->
+  <rect x="60" y="50" width="280" height="50" rx="25" fill="rgba(255,255,255,0.2)"/>
+  <text x="200" y="80" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">الرؤية العقارية</text>
   
-  <!-- Consultation Icons -->
-  <circle cx="140" cy="220" r="12" fill="#f59e0b"/>
-  <text x="140" y="225" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">🏠</text>
+  <!-- Property Types -->
+  <rect x="70" y="120" width="70" height="50" rx="12" fill="rgba(16, 185, 129, 0.8)"/>
+  <text x="105" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">فيلا</text>
+  <text x="105" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">من 500,000 ريال</text>
   
-  <circle cx="180" cy="220" r="12" fill="#8b5cf6"/>
-  <text x="180" y="225" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📋</text>
+  <rect x="150" y="120" width="70" height="50" rx="12" fill="rgba(59, 130, 246, 0.8)"/>
+  <text x="185" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">شقة</text>
+  <text x="185" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">من 200,000 ريال</text>
   
-  <circle cx="220" cy="220" r="12" fill="#ef4444"/>
-  <text x="220" y="225" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">💡</text>
+  <rect x="230" y="120" width="70" height="50" rx="12" fill="rgba(245, 158, 11, 0.8)"/>
+  <text x="265" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">مكتب</text>
+  <text x="265" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">من 300,000 ريال</text>
   
-  <circle cx="260" cy="220" r="12" fill="#06b6d4"/>
-  <text x="260" y="225" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">📞</text>
+  <rect x="310" y="120" width="70" height="50" rx="12" fill="rgba(239, 68, 68, 0.8)"/>
+  <text x="345" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="9" font-weight="bold">أرض</text>
+  <text x="345" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="8">من 150,000 ريال</text>
+  
+  <!-- Search Interface -->
+  <rect x="70" y="190" width="200" height="35" rx="17" fill="rgba(255,255,255,0.2)"/>
+  <text x="170" y="210" text-anchor="middle" fill="white" font-family="Arial" font-size="10">البحث عن عقار...</text>
+  
+  <!-- Filter Options -->
+  <rect x="70" y="235" width="60" height="25" rx="12" fill="rgba(16, 185, 129, 0.8)"/>
+  <text x="100" y="250" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">السعر</text>
+  
+  <rect x="140" y="235" width="60" height="25" rx="12" fill="rgba(59, 130, 246, 0.8)"/>
+  <text x="170" y="250" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">الموقع</text>
+  
+  <rect x="210" y="235" width="60" height="25" rx="12" fill="rgba(245, 158, 11, 0.8)"/>
+  <text x="240" y="250" text-anchor="middle" fill="white" font-family="Arial" font-size="8" font-weight="bold">النوع</text>
+  
+  <!-- Property Icons -->
+  <circle cx="320" cy="140" r="15" fill="rgba(16, 185, 129, 0.9)"/>
+  <text x="320" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">🏠</text>
+  
+  <circle cx="340" cy="140" r="15" fill="rgba(59, 130, 246, 0.9)"/>
+  <text x="340" y="145" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">🏢</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="320" cy="70" r="12" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="75" text-anchor="middle" fill="white" font-family="Arial" font-size="12">🔍</text>
+  
+  <circle cx="340" cy="90" r="10" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="340" y="95" text-anchor="middle" fill="white" font-family="Arial" font-size="10">📍</text>
+  
+  <circle cx="320" cy="110" r="8" fill="rgba(255, 255, 255, 0.2)"/>
+  <text x="320" y="115" text-anchor="middle" fill="white" font-family="Arial" font-size="8">💎</text>
   
   <!-- Title -->
-  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">الرؤية العقارية</text>
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">الرؤية العقارية - Real Estate Vision</text>
 </svg>
