@@ -1,23 +1,61 @@
 <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="400" height="300" fill="#1f2937"/>
-  <rect x="50" y="50" width="300" height="200" rx="8" fill="#374151"/>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
   
-  <!-- Phone 1 -->
-  <rect x="80" y="80" width="80" height="120" rx="8" fill="#3b82f6"/>
-  <rect x="90" y="90" width="60" height="40" rx="4" fill="#1e40af"/>
-  <rect x="90" y="140" width="60" height="20" rx="4" fill="#1e40af"/>
-  <rect x="90" y="170" width="60" height="20" rx="4" fill="#1e40af"/>
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
   
-  <!-- Phone 2 -->
-  <rect x="240" y="80" width="80" height="120" rx="8" fill="#10b981"/>
-  <rect x="250" y="90" width="60" height="40" rx="4" fill="#047857"/>
-  <rect x="250" y="140" width="60" height="20" rx="4" fill="#047857"/>
-  <rect x="250" y="170" width="60" height="20" rx="4" fill="#047857"/>
+  <!-- Main App Container -->
+  <rect x="50" y="40" width="300" height="220" rx="20" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  
+  <!-- Header Bar -->
+  <rect x="70" y="60" width="260" height="40" rx="20" fill="rgba(255,255,255,0.15)"/>
+  <text x="200" y="85" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">تطبيق المقايضة</text>
+  
+  <!-- Swap Interface -->
+  <rect x="80" y="120" width="120" height="80" rx="15" fill="rgba(59, 130, 246, 0.8)"/>
+  <text x="140" y="140" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">منتج 1</text>
+  <text x="140" y="155" text-anchor="middle" fill="white" font-family="Arial" font-size="10">قيمة: 100 ريال</text>
+  <text x="140" y="170" text-anchor="middle" fill="white" font-family="Arial" font-size="10">حالة: متاح</text>
+  
+  <rect x="200" y="120" width="120" height="80" rx="15" fill="rgba(16, 185, 129, 0.8)"/>
+  <text x="260" y="140" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">منتج 2</text>
+  <text x="260" y="155" text-anchor="middle" fill="white" font-family="Arial" font-size="10">قيمة: 100 ريال</text>
+  <text x="260" y="170" text-anchor="middle" fill="white" font-family="Arial" font-size="10">حالة: متاح</text>
   
   <!-- Swap Arrows -->
-  <path d="M190 130 L210 130 L210 120 M190 130 L210 130 L210 140" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M190 170 L210 170 L210 160 M190 170 L210 170 L210 180" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <g filter="url(#glow)">
+    <path d="M170 160 L190 160 M190 160 L185 155 M190 160 L185 165" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M230 160 L210 160 M210 160 L215 155 M210 160 L215 165" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Action Buttons -->
+  <rect x="100" y="220" width="80" height="30" rx="15" fill="rgba(59, 130, 246, 0.9)"/>
+  <text x="140" y="240" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">مقايضة</text>
+  
+  <rect x="220" y="220" width="80" height="30" rx="15" fill="rgba(16, 185, 129, 0.9)"/>
+  <text x="260" y="240" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">إلغاء</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="320" cy="70" r="8" fill="rgba(251, 191, 36, 0.6)"/>
+  <circle cx="340" cy="90" r="6" fill="rgba(59, 130, 246, 0.6)"/>
+  <circle cx="320" cy="110" r="4" fill="rgba(16, 185, 129, 0.6)"/>
   
   <!-- Title -->
-  <text x="200" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">تطبيق المقايضة</text>
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">تطبيق المقايضة - Swap App</text>
 </svg>
