@@ -198,14 +198,20 @@ const Contact = () => {
           >
             <div className='flex items-center justify-between mb-8'>
               <h3 className='text-2xl font-bold text-white'>أرسل رسالة</h3>
-              <a
-                href='/cv.pdf'
-                download='السيرة_الذاتية_عمر_حميد_العديني.pdf'
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/cv.pdf';
+                  link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
                 className='btn-primary flex items-center space-x-2 space-x-reverse text-sm'
               >
                 <Download className='h-4 w-4' />
                 <span>تحميل السيرة الذاتية</span>
-              </a>
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className='space-y-6'>

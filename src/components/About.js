@@ -162,14 +162,20 @@ const About = () => {
               التركيز على بناء حلول تقنية متقدمة تساعد المؤسسات على النمو
               والتطور في العصر الرقمي.
             </p>
-            <a
-              href='/cv.pdf'
-              download='السيرة_الذاتية_عمر_حميد_العديني.pdf'
+            <button
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = '/cv.pdf';
+                link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
               className='btn-primary inline-flex items-center space-x-2 space-x-reverse'
             >
               <Download className='h-5 w-5' />
               <span>تحميل السيرة الذاتية</span>
-            </a>
+            </button>
           </div>
         </motion.div>
       </div>

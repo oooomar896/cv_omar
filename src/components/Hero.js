@@ -81,14 +81,20 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 1 }}
               className='flex flex-wrap gap-4'
             >
-              <a
-                href='/cv.pdf'
-                download='السيرة_الذاتية_عمر_حميد_العديني.pdf'
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/cv.pdf';
+                  link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
                 className='btn-primary flex items-center space-x-2 space-x-reverse'
               >
                 <Download className='h-5 w-5' />
                 <span>تحميل السيرة الذاتية</span>
-              </a>
+              </button>
 
               <button
                 onClick={scrollToAbout}
