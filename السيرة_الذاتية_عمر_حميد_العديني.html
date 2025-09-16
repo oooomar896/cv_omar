@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>السيرة الذاتية - عمر حميد العديني</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', 'Tahoma', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: #fff;
+        direction: rtl;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: white;
+      }
+
+      .header {
+        text-align: center;
+        border-bottom: 3px solid #2c5aa0;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        color: #2c5aa0;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .header .title {
+        font-size: 1.3em;
+        color: #666;
+        font-weight: 600;
+      }
+
+      .section {
+        margin-bottom: 30px;
+        page-break-inside: avoid;
+      }
+
+      .section-title {
+        font-size: 1.4em;
+        color: #2c5aa0;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+      }
+
+      .info-label {
+        font-weight: bold;
+        color: #2c5aa0;
+        min-width: 120px;
+        margin-left: 10px;
+      }
+
+      .info-value {
+        color: #333;
+      }
+
+      .links {
+        margin-top: 15px;
+      }
+
+      .links a {
+        color: #2c5aa0;
+        text-decoration: none;
+        margin-left: 15px;
+        font-weight: 500;
+      }
+
+      .links a:hover {
+        text-decoration: underline;
+      }
+
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .skill-category {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-right: 4px solid #2c5aa0;
+      }
+
+      .skill-category h4 {
+        color: #2c5aa0;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+
+      .skill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        padding: 5px 0;
+      }
+
+      .skill-name {
+        font-weight: 500;
+      }
+
+      .skill-level {
+        color: #666;
+        font-size: 0.9em;
+      }
+
+      .project-item {
+        background: #f8f9fa;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border-right: 4px solid #2c5aa0;
+      }
+
+      .project-title {
+        font-size: 1.2em;
+        color: #2c5aa0;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .project-link {
+        color: #2c5aa0;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .project-description {
+        color: #666;
+        margin-top: 5px;
+      }
+
+      .education-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-right: 4px solid #2c5aa0;
+      }
+
+      .education-title {
+        font-size: 1.2em;
+        color: #2c5aa0;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .education-details {
+        color: #666;
+      }
+
+      .contact-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-right: 4px solid #2c5aa0;
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .contact-label {
+        font-weight: bold;
+        color: #2c5aa0;
+        min-width: 100px;
+        margin-left: 10px;
+      }
+
+      .status-badges {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+
+      .status-badge {
+        background: #e8f4fd;
+        color: #2c5aa0;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 500;
+        border: 1px solid #2c5aa0;
+      }
+
+      .achievements {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-right: 4px solid #2c5aa0;
+      }
+
+      .achievement-item {
+        margin-bottom: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .achievement-item:last-child {
+        border-bottom: none;
+      }
+
+      .achievement-text {
+        color: #333;
+        font-weight: 500;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        color: #666;
+        font-style: italic;
+      }
+
+      @media print {
+        body {
+          font-size: 12px;
+        }
+
+        .container {
+          max-width: none;
+          padding: 15px;
+        }
+
+        .section {
+          page-break-inside: avoid;
+        }
+
+        .header h1 {
+          font-size: 2em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>👨‍💻 عمر حميد العديني</h1>
+        <div class="title">خبير حلول التطبيقات والأنظمة المحاسبية</div>
+      </div>
+
+      <!-- Personal Information -->
+      <div class="section">
+        <h2 class="section-title">📋 المعلومات الشخصية</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">الاسم الكامل:</span>
+            <span class="info-value">عمر حميد العديني</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">المهنة:</span>
+            <span class="info-value">مطور تطبيقات وأنظمة ERP</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">الموقع:</span>
+            <span class="info-value">الرياض - المملكة العربية السعودية</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">البريد الإلكتروني:</span>
+            <span class="info-value">oooomar123450@gmail.com</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">رقم الهاتف:</span>
+            <span class="info-value">+966-55-853-9717</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">WhatsApp:</span>
+            <span class="info-value">+966-55-853-9717</span>
+          </div>
+        </div>
+
+        <div class="links">
+          <strong>🔗 روابط التواصل المهني:</strong><br />
+          <a href="https://linkedin.com/in/omar-hamid-288385235" target="_blank"
+            >LinkedIn: omar-hamid-288385235</a
+          ><br />
+          <a href="https://github.com/oooomar896" target="_blank"
+            >GitHub: oooomar896</a
+          >
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="section">
+        <h2 class="section-title">🚀 نبذة شخصية</h2>
+        <p style="margin-bottom: 15px; text-align: justify">
+          مطور تطبيقات شغوف بخبرة واسعة في <strong>Flutter</strong> و
+          <strong>React Native</strong> و <strong>TypeScript</strong> و
+          <strong>Odoo</strong>، أمتلك القدرة على بناء أنظمة قوية ومرنة
+          للمؤسسات، مع التركيز على الأداء، سهولة الاستخدام، وقابلية التوسع.
+        </p>
+        <p style="margin-bottom: 15px; text-align: justify">
+          أتمتع بخبرة عملية في تصميم حلول مخصصة، إدارة المشاريع، وتنظيم فرق
+          العمل، وأسعى دومًا لتقديم قيمة حقيقية عبر الابتكار والانضباط التقني.
+        </p>
+
+        <h4 style="color: #2c5aa0; margin-bottom: 10px">
+          ✅ نقاط القوة الرئيسية:
+        </h4>
+        <ul style="margin-right: 20px">
+          <li>
+            <strong>شغف بالحلول الإبداعية:</strong> أبحث دائماً عن طرق مبتكرة
+            لحل المشاكل التقنية
+          </li>
+          <li>
+            <strong>التزام صارم بالمواعيد:</strong> أنجز المهام في الوقت المحدد
+            تحت أي ظروف
+          </li>
+          <li>
+            <strong>تنظيم العمل:</strong> أستخدم أدوات مثل Obsidian وTrello
+            لتنظيم المشاريع
+          </li>
+          <li>
+            <strong>قابلية التوسع:</strong> أبني أنظمة قابلة للتطوير والنمو
+          </li>
+        </ul>
+      </div>
+
+      <!-- Skills -->
+      <div class="section">
+        <h2 class="section-title">🛠️ المهارات التقنية</h2>
+        <div class="skills-grid">
+          <div class="skill-category">
+            <h4>📱 تطوير التطبيقات المحمولة</h4>
+            <div class="skill-item">
+              <span class="skill-name">Flutter</span>
+              <span class="skill-level">95%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">React Native</span>
+              <span class="skill-level">90%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Android</span>
+              <span class="skill-level">85%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">iOS</span>
+              <span class="skill-level">80%</span>
+            </div>
+          </div>
+
+          <div class="skill-category">
+            <h4>🌐 الواجهات الأمامية</h4>
+            <div class="skill-item">
+              <span class="skill-name">HTML/CSS</span>
+              <span class="skill-level">95%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">JavaScript</span>
+              <span class="skill-level">90%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">TypeScript</span>
+              <span class="skill-level">85%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">React.js</span>
+              <span class="skill-level">88%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Next.js</span>
+              <span class="skill-level">82%</span>
+            </div>
+          </div>
+
+          <div class="skill-category">
+            <h4>⚙️ البرمجة الخلفية</h4>
+            <div class="skill-item">
+              <span class="skill-name">Python</span>
+              <span class="skill-level">85%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">PHP</span>
+              <span class="skill-level">80%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Node.js</span>
+              <span class="skill-level">75%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Firebase</span>
+              <span class="skill-level">85%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Supabase</span>
+              <span class="skill-level">80%</span>
+            </div>
+          </div>
+
+          <div class="skill-category">
+            <h4>🏢 أنظمة ERP</h4>
+            <div class="skill-item">
+              <span class="skill-name">Odoo</span>
+              <span class="skill-level">90%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">PostgreSQL</span>
+              <span class="skill-level">85%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">MySQL</span>
+              <span class="skill-level">80%</span>
+            </div>
+          </div>
+
+          <div class="skill-category">
+            <h4>🎨 التصميم</h4>
+            <div class="skill-item">
+              <span class="skill-name">UI/UX Design</span>
+              <span class="skill-level">75%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Figma</span>
+              <span class="skill-level">70%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Adobe XD</span>
+              <span class="skill-level">65%</span>
+            </div>
+          </div>
+
+          <div class="skill-category">
+            <h4>🔧 أدوات إضافية</h4>
+            <p style="color: #666; font-size: 0.9em">
+              Git & GitHub, Docker, REST APIs, GraphQL, Agile/Scrum, JIRA,
+              Postman, VS Code, Linux/Unix, AWS, CI/CD, Testing, Performance
+              Optimization, Security, SEO, Analytics
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Education -->
+      <div class="section">
+        <h2 class="section-title">🎓 التعليم</h2>
+        <div class="education-item">
+          <div class="education-title">
+            البكالوريوس في تقنية المعلومات (مرتبة الشرف)
+          </div>
+          <div class="education-details">
+            <strong>الجامعة:</strong> جامعة المدينة العالمية (MEDIU)<br />
+            <strong>التخصص:</strong> تقنية المعلومات - تطوير البرمجيات وهندسة
+            النظم<br />
+            <strong>الموقع:</strong>
+            <a
+              href="https://www.mediu.edu.my/ar/"
+              target="_blank"
+              class="project-link"
+              >www.mediu.edu.my/ar/</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Published Apps -->
+      <div class="section">
+        <h2 class="section-title">📱 التطبيقات المنشورة على Google Play</h2>
+        <div class="project-item">
+          <div class="project-title">تطبيق المقايضة - Swap App</div>
+          <div class="project-description">
+            تطبيق مقايضة متقدم مع نظام إدارة ذكي
+          </div>
+          <a
+            href="https://play.google.com/store/apps/details?id=com.molhimah.swap"
+            target="_blank"
+            class="project-link"
+            >Google Play Store</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">مزادات لايف - Auction Live</div>
+          <div class="project-description">
+            منصة مزادات مباشرة مع دعم الفيديو
+          </div>
+          <a
+            href="https://play.google.com/store/apps/details?id=com.mulhmah_auctionlive"
+            target="_blank"
+            class="project-link"
+            >Google Play Store</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">التطبيق الخيري - Charity App</div>
+          <div class="project-description">
+            تطبيق للتبرعات والمشاريع الخيرية
+          </div>
+          <a
+            href="https://play.google.com/store/apps/details?id=com.charity_show"
+            target="_blank"
+            class="project-link"
+            >Google Play Store</a
+          >
+        </div>
+      </div>
+
+      <!-- Open Source Projects -->
+      <div class="section">
+        <h2 class="section-title">💻 المشاريع المفتوحة المصدر</h2>
+        <div class="project-item">
+          <div class="project-title">تطبيق القهوة (UI/Animation)</div>
+          <div class="project-description">
+            تطبيق قهوة مع واجهة متحركة متقدمة
+          </div>
+          <a
+            href="https://github.com/oooomar896/coffee_app"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">متجر الكهرباء</div>
+          <div class="project-description">
+            تطبيق متجر إلكتروني للمعدات الكهربائية
+          </div>
+          <a
+            href="https://github.com/oooomar896/electrical_store_app"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">الآلة الحاسبة</div>
+          <div class="project-description">آلة حاسبة متقدمة مع واجهة جميلة</div>
+          <a
+            href="https://github.com/oooomar896/Calculter"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">تطبيق اللاعبين</div>
+          <div class="project-description">تطبيق لإدارة فرق الألعاب</div>
+          <a
+            href="https://github.com/oooomar896/players"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">تطبيق الملاحظات</div>
+          <div class="project-description">تطبيق ملاحظات متقدم مع مزامنة</div>
+          <a
+            href="https://github.com/oooomar896/note2"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+      </div>
+
+      <!-- Websites -->
+      <div class="section">
+        <h2 class="section-title">🌐 المواقع الإلكترونية ولوحات التحكم</h2>
+        <div class="project-item">
+          <div class="project-title">YourHelp - مساعدك</div>
+          <div class="project-description">
+            منصة حجز الخدمات والمساعدة عبر الإنترنت
+          </div>
+          <a
+            href="https://yourhelp.netlify.app/booking"
+            target="_blank"
+            class="project-link"
+            >yourhelp.netlify.app/booking</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">العروض العقارية - Real Estate Offers</div>
+          <div class="project-description">
+            منصة العروض العقارية الرائدة في المملكة العربية السعودية مع خريطة
+            تفاعلية
+          </div>
+          <a
+            href="https://real-estate-offers.netlify.app/"
+            target="_blank"
+            class="project-link"
+            >real-estate-offers.netlify.app</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">كنشار - Kenshar</div>
+          <div class="project-description">
+            منصة متكاملة لإنشاء وإدارة منصات استشارية مخصصة للشركات
+          </div>
+          <a
+            href="https://korcher2.netlify.app/"
+            target="_blank"
+            class="project-link"
+            >korcher2.netlify.app</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">الرؤية العقارية</div>
+          <div class="project-description">منصة للاستشارات العقارية</div>
+          <a
+            href="https://real-estateconsultations.netlify.app"
+            target="_blank"
+            class="project-link"
+            >real-estateconsultations.netlify.app</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">مزادلي - Mzadly.com</div>
+          <div class="project-description">منصة مزادات إلكترونية متكاملة</div>
+          <a
+            href="https://mzadlly.netlify.app/"
+            target="_blank"
+            class="project-link"
+            >mzadlly.netlify.app</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">ملهمة العقارية - Molhimah.sa</div>
+          <div class="project-description">موقع عقاري احترافي</div>
+          <a href="https://molhimah.sa" target="_blank" class="project-link"
+            >molhimah.sa</a
+          >
+        </div>
+
+        <h4 style="color: #2c5aa0; margin-top: 20px; margin-bottom: 10px">
+          لوحات التحكم:
+        </h4>
+        <div class="project-item">
+          <div class="project-title">لوحة تحكم تطبيق المقايضة</div>
+          <a
+            href="https://github.com/oooomar896/-dashboard-swap"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">لوحة تحكم مزاد لايف</div>
+          <a
+            href="https://github.com/oooomar896/-dashboard-auction-live"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+      </div>
+
+      <!-- Odoo Modules -->
+      <div class="section">
+        <h2 class="section-title">⚙️ موديولات Odoo مخصصة</h2>
+        <div class="project-item">
+          <div class="project-title">نظام إدارة الأملاك</div>
+          <div class="project-description">
+            إدارة العقارات، العقود، المستأجرين
+          </div>
+          <a
+            href="https://github.com/oooomar896/module-Real-state"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">نظام حجز القاعات</div>
+          <div class="project-description">تقويم وجدولة الاجتماعات</div>
+          <a
+            href="https://github.com/oooomar896/module-room-bookung"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">نظام الموارد البشرية</div>
+          <div class="project-description">
+            إدارة الموظفين، الحضور، الإجازات
+          </div>
+          <a
+            href="https://github.com/oooomar896/mangemen_HR"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">نظام المزادات</div>
+          <div class="project-description">ربط موقع المزادات مع Odoo</div>
+          <a
+            href="https://github.com/oooomar896/Website_Auction_odoo"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">نظام المزادات - API</div>
+          <div class="project-description">تكامل REST API مع Odoo</div>
+          <a
+            href="https://github.com/oooomar896/api_get-_or_post_data"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">استخراج بيانات من السيرفر</div>
+          <div class="project-description">
+            استخدام SSH لاسترجاع بيانات السيرفر
+          </div>
+          <a
+            href="https://github.com/oooomar896/Module-get-data-from-Db-to-view-code-html/tree/main"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+
+        <div class="project-item">
+          <div class="project-title">استخراج بيانات Odoo Localhost</div>
+          <div class="project-description">
+            استعلام بيانات قاعدة البيانات المحلية
+          </div>
+          <a
+            href="https://github.com/oooomar896/Module-get-data-from-db-odoo"
+            target="_blank"
+            class="project-link"
+            >GitHub Repository</a
+          >
+        </div>
+      </div>
+
+      <!-- Experience -->
+      <div class="section">
+        <h2 class="section-title">🎯 الخبرة العملية</h2>
+        <h4 style="color: #2c5aa0; margin-bottom: 10px">
+          خبرات تطويرية متقدمة:
+        </h4>
+        <ul style="margin-right: 20px">
+          <li><strong>تصميم حلول مخصصة:</strong> تطوير أنظمة مخصصة للمؤسسات</li>
+          <li>
+            <strong>إدارة المشاريع:</strong> تنظيم وتنسيق فرق العمل والمهام
+          </li>
+          <li>
+            <strong>تطوير تطبيقات متعددة المنصات:</strong> خبرة في Flutter و
+            React Native
+          </li>
+          <li>
+            <strong>تطوير أنظمة ERP:</strong> خبرة متقدمة في Odoo وتطوير
+            الموديولات
+          </li>
+          <li><strong>تطوير الواجهات:</strong> خبرة في React.js و Next.js</li>
+          <li><strong>إدارة قواعد البيانات:</strong> PostgreSQL و MySQL</li>
+        </ul>
+      </div>
+
+      <!-- Achievements -->
+      <div class="section">
+        <h2 class="section-title">🏆 الإنجازات الرئيسية</h2>
+        <div class="achievements">
+          <div class="achievement-item">
+            <span class="achievement-text"
+              >تطوير وتنفيذ 3 تطبيقات تجارية منشورة على Google Play</span
+            >
+          </div>
+          <div class="achievement-item">
+            <span class="achievement-text"
+              >إنشاء 6 مواقع إلكترونية تجارية ومتخصصة</span
+            >
+          </div>
+          <div class="achievement-item">
+            <span class="achievement-text"
+              >تطوير 7 موديولات Odoo مخصصة للأنظمة الإدارية</span
+            >
+          </div>
+          <div class="achievement-item">
+            <span class="achievement-text"
+              >إدارة 5 مشاريع مفتوحة المصدر للمجتمع التقني</span
+            >
+          </div>
+          <div class="achievement-item">
+            <span class="achievement-text"
+              >بناء 2 لوحة تحكم متقدمة لإدارة التطبيقات</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="section">
+        <h2 class="section-title">💬 تواصل معي</h2>
+        <div class="contact-info">
+          <p style="margin-bottom: 15px; text-align: center; font-size: 1.1em">
+            مرحبًا بأي فرصة شراكة، عمل حر، أو تعاون في مشاريع تطوير برمجية 👋
+          </p>
+
+          <div class="contact-grid">
+            <div class="contact-item">
+              <span class="contact-label">البريد الإلكتروني:</span>
+              <span class="info-value">oooomar123450@gmail.com</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">رقم الهاتف:</span>
+              <span class="info-value">+966-55-853-9717</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">WhatsApp:</span>
+              <span class="info-value">+966-55-853-9717</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">LinkedIn:</span>
+              <span class="info-value">omar-hamid-288385235</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">GitHub:</span>
+              <span class="info-value">oooomar896</span>
+            </div>
+          </div>
+
+          <div class="status-badges">
+            <span class="status-badge">✅ متاح للعمل</span>
+            <span class="status-badge">✅ استجابة سريعة</span>
+            <span class="status-badge">✅ دعم فني</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>
+          تم إنشاء هذه السيرة الذاتية بناءً على البيانات المتوفرة في مشروع
+          Portfolio الشخصي
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

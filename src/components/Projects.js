@@ -84,7 +84,7 @@ const Projects = () => {
       {
         title: 'مزادلي - Mzadly.com',
         description: 'منصة مزادات إلكترونية متكاملة',
-        link: 'https://mzadly.com',
+        link: 'https://mzadlly.netlify.app/',
         icon: Globe,
         color: 'from-green-500 to-blue-500',
         image: '/images/projects/mzadly.svg',
