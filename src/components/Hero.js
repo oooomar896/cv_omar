@@ -84,7 +84,7 @@ const Hero = () => {
               <button
                 onClick={() => {
                   const link = document.createElement('a');
-                  link.href = '/cv.pdf';
+                  link.href = '/cv_arabic.pdf';
                   link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
                   document.body.appendChild(link);
                   link.click();
