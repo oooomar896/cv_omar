@@ -10,6 +10,7 @@ import {
   Copy,
   Check,
   MessageCircle,
+  Download,
 } from 'lucide-react';
 
 const Contact = () => {
@@ -195,7 +196,17 @@ const Contact = () => {
             viewport={{ once: true }}
             className='space-y-6'
           >
-            <h3 className='text-2xl font-bold text-white mb-8'>أرسل رسالة</h3>
+            <div className='flex items-center justify-between mb-8'>
+              <h3 className='text-2xl font-bold text-white'>أرسل رسالة</h3>
+              <a
+                href='/cv.pdf'
+                download='السيرة_الذاتية_عمر_حميد_العديني.pdf'
+                className='btn-primary flex items-center space-x-2 space-x-reverse text-sm'
+              >
+                <Download className='h-4 w-4' />
+                <span>تحميل السيرة الذاتية</span>
+              </a>
+            </div>
 
             <form onSubmit={handleSubmit} className='space-y-6'>
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>

@@ -6,6 +6,7 @@ import {
   Users,
   Clock,
   CheckCircle,
+  Download,
 } from 'lucide-react';
 
 const About = () => {
@@ -156,11 +157,19 @@ const About = () => {
         >
           <div className='bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border border-primary-500/20 rounded-2xl p-8'>
             <h3 className='text-2xl font-bold text-white mb-4'>مهمتي</h3>
-            <p className='text-lg text-gray-300 leading-relaxed max-w-4xl mx-auto'>
+            <p className='text-lg text-gray-300 leading-relaxed max-w-4xl mx-auto mb-6'>
               أسعى دومًا لتقديم قيمة حقيقية عبر الابتكار والانضباط التقني، مع
               التركيز على بناء حلول تقنية متقدمة تساعد المؤسسات على النمو
               والتطور في العصر الرقمي.
             </p>
+            <a
+              href='/cv.pdf'
+              download='السيرة_الذاتية_عمر_حميد_العديني.pdf'
+              className='btn-primary inline-flex items-center space-x-2 space-x-reverse'
+            >
+              <Download className='h-5 w-5' />
+              <span>تحميل السيرة الذاتية</span>
+            </a>
           </div>
         </motion.div>
       </div>
