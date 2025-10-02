@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Trophy, Users, Calendar, MapPin } from 'lucide-react';
+import { ExternalLink, Trophy, Users, MapPin } from 'lucide-react';
 
 const NewsSection = () => {
   return (
