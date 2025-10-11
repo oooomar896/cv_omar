@@ -79,6 +79,15 @@ const NewsSection = () => {
                   <span>عرض المشروع</span>
                   <ExternalLink className='h-5 w-5' />
                 </a>
+                <a
+                  href='/thun_property_certificate.pdf'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='btn-secondary flex items-center space-x-2 space-x-reverse'
+                >
+                  <span>شهادة الإبتكار الملهم</span>
+                  <ExternalLink className='h-5 w-5' />
+                </a>
                 <div className='flex items-center space-x-2 space-x-reverse text-accent-500'>
                   <Trophy className='h-5 w-5' />
                   <span className='font-semibold'>متأهل للنهائيات</span>
