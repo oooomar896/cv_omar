@@ -80,7 +80,7 @@ const NewsSection = () => {
                   <ExternalLink className='h-5 w-5' />
                 </a>
                 <a
-                  href='/thun_property_certificate.pdf'
+                  href='/Thun property certificate.pdf'
                   target='_blank'
                   rel='noopener noreferrer'
                   className='btn-secondary flex items-center space-x-2 space-x-reverse'
