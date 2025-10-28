@@ -77,7 +77,7 @@ const About = () => {
                 <p className='text-gray-400 mb-3'>
                   ركزت على تطوير البرمجيات وهندسة النظم
                 </p>
-                <div className='flex flex-col space-y-2'>
+                <div className='flex flex-col gap-3'>
                   <a
                     href='https://www.mediu.edu.my/ar/'
                     target='_blank'
@@ -109,10 +109,10 @@ const About = () => {
                       link.click();
                       document.body.removeChild(link);
                     }}
-                    className='text-primary-500 hover:text-primary-400 transition-colors duration-300 inline-flex items-center space-x-2 space-x-reverse'
+                    className='bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 rounded-lg px-4 py-3 text-primary-500 hover:text-primary-400 transition-all duration-300 inline-flex items-center justify-center space-x-2 space-x-reverse w-full'
                   >
-                    <Download className='h-4 w-4' />
-                    <span>تحميل شهادة البكالوريوس</span>
+                    <Download className='h-5 w-5' />
+                    <span className='font-medium'>تحميل شهادة البكالوريوس</span>
                   </button>
                 </div>
               </div>
