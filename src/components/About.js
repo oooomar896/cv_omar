@@ -77,27 +77,44 @@ const About = () => {
                 <p className='text-gray-400 mb-3'>
                   ركزت على تطوير البرمجيات وهندسة النظم
                 </p>
-                <a
-                  href='https://www.mediu.edu.my/ar/'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-primary-500 hover:text-primary-400 transition-colors duration-300 inline-flex items-center space-x-2 space-x-reverse'
-                >
-                  <span>رابط الموقع الرسمي للجامعة</span>
-                  <svg
-                    className='w-4 h-4'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
+                <div className='flex flex-col space-y-2'>
+                  <a
+                    href='https://www.mediu.edu.my/ar/'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-primary-500 hover:text-primary-400 transition-colors duration-300 inline-flex items-center space-x-2 space-x-reverse'
                   >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
-                    />
-                  </svg>
-                </a>
+                    <span>رابط الموقع الرسمي للجامعة</span>
+                    <svg
+                      className='w-4 h-4'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
+                      />
+                    </svg>
+                  </a>
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/when_start.pdf';
+                      link.download = 'Bachelor_Certificate_MEDIU.pdf';
+                      link.target = '_blank';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className='text-primary-500 hover:text-primary-400 transition-colors duration-300 inline-flex items-center space-x-2 space-x-reverse'
+                  >
+                    <Download className='h-4 w-4' />
+                    <span>تحميل شهادة البكالوريوس</span>
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
