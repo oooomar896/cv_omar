@@ -109,16 +109,7 @@ const About = () => {
                     <Download className='h-5 w-5' />
                     <span className='font-medium'>تحميل خطاب التأكيد الجامعي</span>
                   </a>
-                  <a
-                    href='/cv_english.pdf'
-                    download='Omar_Hamid_Al-Adini_CV_EN.pdf'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='bg-secondary-500/10 hover:bg-secondary-500/20 border border-secondary-500/30 rounded-lg px-4 py-3 text-secondary-400 hover:text-secondary-300 transition-all duration-300 inline-flex items-center justify-center space-x-2 space-x-reverse w-full'
-                  >
-                    <Download className='h-5 w-5' />
-                    <span className='font-medium'>Download CV (EN)</span>
-                  </a>
+ 
                 </div>
               </div>
             </div>
@@ -184,20 +175,23 @@ const About = () => {
               التركيز على بناء حلول تقنية متقدمة تساعد المؤسسات على النمو
               والتطور في العصر الرقمي.
             </p>
-            <button
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = '/cv_arabic.pdf';
-                link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
-              className='btn-primary inline-flex items-center space-x-2 space-x-reverse'
-            >
-              <Download className='h-5 w-5' />
-              <span>تحميل السيرة الذاتية</span>
-            </button>
+            <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
+            
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/cv_english.pdf';
+                  link.download = 'Omar_Hamid_Al-Adini_CV_EN.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className='bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300 inline-flex items-center space-x-2 space-x-reverse'
+              >
+                <Download className='h-5 w-5' />
+                <span>Download CV (EN)</span>
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>

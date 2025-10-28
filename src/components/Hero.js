@@ -81,19 +81,21 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 1 }}
               className='flex flex-wrap gap-4'
             >
+         
+
               <button
                 onClick={() => {
                   const link = document.createElement('a');
-                  link.href = '/cv_arabic.pdf';
-                  link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
+                  link.href = '/cv_english.pdf';
+                  link.download = 'Omar_Hamid_Al-Adini_CV_EN.pdf';
                   document.body.appendChild(link);
                   link.click();
                   document.body.removeChild(link);
                 }}
-                className='btn-primary flex items-center space-x-2 space-x-reverse'
+                className='bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300 flex items-center space-x-2 space-x-reverse'
               >
                 <Download className='h-5 w-5' />
-                <span>تحميل السيرة الذاتية</span>
+                <span>Download CV (EN)</span>
               </button>
 
               <button
