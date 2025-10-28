@@ -1,15 +1,30 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
-import NewsSection from './components/NewsSection';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
+
+// Lazy load components for better performance
+const Hero = lazy(() => import('./components/Hero'));
+const About = lazy(() => import('./components/About'));
+const Skills = lazy(() => import('./components/Skills'));
+const Projects = lazy(() => import('./components/Projects'));
+const NewsSection = lazy(() => import('./components/NewsSection'));
+const Contact = lazy(() => import('./components/Contact'));
+
+// Loading component
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-dark-950">
+    <div className="flex flex-col items-center gap-4">
+      <div className="relative">
+        <div className="w-16 h-16 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"></div>
+      </div>
+      <p className="text-gray-400">جاري التحميل...</p>
+    </div>
+  </div>
+);
 
 function App() {
   return (
@@ -29,12 +44,14 @@ function App() {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.5 }}
                     >
-                      <Hero />
-                      <About />
-                      <Skills />
-                      <Projects />
-                      <NewsSection />
-                      <Contact />
+                      <Suspense fallback={<LoadingFallback />}>
+                        <Hero />
+                        <About />
+                        <Skills />
+                        <Projects />
+                        <NewsSection />
+                        <Contact />
+                      </Suspense>
                     </motion.div>
                   }
                 />
