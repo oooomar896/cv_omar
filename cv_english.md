@@ -5,7 +5,7 @@
 📍 **Riyadh, Saudi Arabia**  
 📧 oooomar123450@gmail.com  
 📱 +966-55-853-9717  
-🔗 [LinkedIn](https://linkedin.com/in/omar-hamid-288385235) | [GitHub](https://github.com/oooomar896) | [Portfolio](https://cv-omar.netlify.app)
+🔗 [LinkedIn](https://www.linkedin.com/in/omar-hamid-288385235) | [GitHub](https://github.com/oooomar896) | [Portfolio](https://inspiring-daifuku-9b00a2.netlify.app/)
 
 ---
 
@@ -161,9 +161,9 @@ Open to freelance opportunities, full-time positions, and collaborative projects
 
 📧 **Email:** oooomar123450@gmail.com  
 📱 **Phone:** +966-55-853-9717  
-🔗 **LinkedIn:** [omar-hamid-288385235](https://linkedin.com/in/omar-hamid-288385235)  
+🔗 **LinkedIn:** [omar-hamid-288385235](https://www.linkedin.com/in/omar-hamid-288385235)  
 💻 **GitHub:** [oooomar896](https://github.com/oooomar896)  
-🌐 **Portfolio:** [cv-omar.netlify.app](https://cv-omar.netlify.app)
+🌐 **Portfolio:** [cv-omar.netlify.app](https://inspiring-daifuku-9b00a2.netlify.app/)
 
 ---
 
