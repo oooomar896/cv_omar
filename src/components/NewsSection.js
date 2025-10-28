@@ -38,7 +38,7 @@ const NewsSection = () => {
                 </div>
                 <div>
                   <h3 className='text-2xl font-bold text-white'>
-                    عقارثون 2024
+                    عقارثون 2025
                   </h3>
                   <p className='text-primary-400'>برنامج الابتكار العقاري</p>
                 </div>
