@@ -101,13 +101,13 @@ const About = () => {
                   </a>
                   <a
                     href='/when_start.pdf'
-                    download='Bachelor_Certificate_MEDIU.pdf'
+                    download='Student_Verification_Letter_MEDIU.pdf'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 rounded-lg px-4 py-3 text-primary-500 hover:text-primary-400 transition-all duration-300 inline-flex items-center justify-center space-x-2 space-x-reverse w-full'
                   >
                     <Download className='h-5 w-5' />
-                    <span className='font-medium'>تحميل شهادة البكالوريوس</span>
+                    <span className='font-medium'>تحميل خطاب التأكيد الجامعي</span>
                   </a>
                 </div>
               </div>
