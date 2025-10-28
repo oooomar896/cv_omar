@@ -109,6 +109,16 @@ const About = () => {
                     <Download className='h-5 w-5' />
                     <span className='font-medium'>تحميل خطاب التأكيد الجامعي</span>
                   </a>
+                  <a
+                    href='/cv_english.pdf'
+                    download='Omar_Hamid_Al-Adini_CV_EN.pdf'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='bg-secondary-500/10 hover:bg-secondary-500/20 border border-secondary-500/30 rounded-lg px-4 py-3 text-secondary-400 hover:text-secondary-300 transition-all duration-300 inline-flex items-center justify-center space-x-2 space-x-reverse w-full'
+                  >
+                    <Download className='h-5 w-5' />
+                    <span className='font-medium'>Download CV (EN)</span>
+                  </a>
                 </div>
               </div>
             </div>
