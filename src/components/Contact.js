@@ -201,16 +201,16 @@ const Contact = () => {
               <button
                 onClick={() => {
                   const link = document.createElement('a');
-                  link.href = '/cv_arabic.pdf';
-                  link.download = 'Omar_Hamid_Al-Adini_CV.pdf';
+                  link.href = '/cv_english.pdf';
+                  link.download = 'Omar_Hamid_Al-Adini_CV_EN.pdf';
                   document.body.appendChild(link);
                   link.click();
                   document.body.removeChild(link);
                 }}
-                className='btn-primary flex items-center space-x-2 space-x-reverse text-sm'
+                className='bg-secondary-500 hover:bg-secondary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-300 flex items-center space-x-2 space-x-reverse text-sm'
               >
                 <Download className='h-4 w-4' />
-                <span>تحميل السيرة الذاتية</span>
+                <span>Download CV (EN)</span>
               </button>
             </div>
 
