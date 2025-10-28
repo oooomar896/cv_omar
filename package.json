@@ -22,6 +22,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:watch": "react-scripts test --watch",
+    "test:coverage": "react-scripts test --coverage",
+    "lint": "eslint src/**/*.{js,jsx}",
+    "lint:fix": "eslint src/**/*.{js,jsx} --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,css}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,json,css}\"",
+    "analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
+    "predeploy": "npm run build",
+    "deploy": "netlify deploy --prod",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
