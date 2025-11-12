@@ -63,7 +63,7 @@ const Projects = () => {
         link: 'https://investor-bacura.netlify.app/',
         icon: Globe,
         color: 'from-blue-600 to-cyan-500',
-        image: '/images/projects/investor-bacura.svg',
+        image: '/images/projects/logob.png',
       },
       {
         title: 'العروض العقارية - Real Estate Offers',
