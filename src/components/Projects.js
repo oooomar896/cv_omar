@@ -64,6 +64,7 @@ const Projects = () => {
         icon: Globe,
         color: 'from-blue-600 to-cyan-500',
         image: '/images/projects/logob.png',
+        imageClass: 'object-contain bg-white/10 p-6',
       },
       {
         title: 'العروض العقارية - Real Estate Offers',
@@ -253,7 +254,9 @@ const Projects = () => {
                     <img
                       src={project.image}
                       alt={project.title}
-                      className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
+                      className={`w-full h-full ${
+                        project.imageClass || 'object-cover'
+                      } group-hover:scale-110 transition-transform duration-300`}
                       onError={e => {
                         e.target.style.display = 'none';
                         e.target.nextSibling.style.display = 'flex';

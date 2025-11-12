@@ -39,7 +39,7 @@ const NEWS_ITEMS = [
       },
     ],
     image: {
-      src: '/images/projects/investor-bacura.svg',
+      src: '/images/projects/logob.png',
       alt: 'شعار شركة باكورة التقنيات',
       overlayTitle: 'شركة باكورة التقنيات',
       overlaySubtitle: 'حلول تقنية وشراكات استراتيجية لدعم التحول الرقمي',
