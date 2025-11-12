@@ -84,12 +84,99 @@ const NEWS_ITEMS = [
       },
     ],
   },
+  {
+    id: 'aqarthon-2025',
+    sectionTitle: 'حدث إعلان إخباري',
+    intro: 'مشاركة مميزة في برنامج عقارثون وفوز ضمن الفرق المتأهلة',
+    cardIcon: Trophy,
+    cardTitle: 'عقارثون 2025',
+    cardSubtitle: 'برنامج الابتكار العقاري',
+    highlightTitle: 'فوز فريق ملهمة ضمن الخمس المتأهلين',
+    description:
+      'سعداء بالإعلان عن فوز فريق ملهمة ضمن الخمس المتأهلين الأكثر إبداعاً وريادة في التكنولوجيا العقارية في المملكة العربية السعودية. هذا الإنجاز يعكس التميز التقني والابتكار في مجال التطوير العقاري.',
+    details: [
+      {
+        icon: Users,
+        text: 'فريق ملهمة',
+      },
+      {
+        icon: MapPin,
+        text: 'المملكة العربية السعودية',
+      },
+    ],
+    cta: [
+      {
+        type: 'primary',
+        label: 'عرض المشروع',
+        href: 'https://real-estateconsultations.netlify.app',
+      },
+      {
+        type: 'secondary',
+        label: 'شهادة الإبتكار الملهم',
+        href: '/Thun property certificate.pdf',
+      },
+      {
+        type: 'badge',
+        label: 'متأهل للنهائيات',
+        icon: Trophy,
+      },
+    ],
+    image: {
+      src: '/aqarthon_app.jpg',
+      alt: 'مشروع الرؤية العقارية - عقارثون',
+      overlayTitle: 'الرؤية العقارية',
+      overlaySubtitle: 'منصة الاستشارات العقارية المتطورة',
+      className: 'object-cover',
+    },
+    featuresTitle: 'صور من الحدث',
+    features: [
+      {
+        type: 'image',
+        src: '/aqarthon.jpg',
+        alt: 'صورة من عقارثون 1',
+        caption: 'صورة من عقارثون 1',
+      },
+      {
+        type: 'image',
+        src: '/aqarthon2.jpg',
+        alt: 'صورة من عقارثون 2',
+        caption: 'صورة من عقارثون 2',
+      },
+      {
+        type: 'image',
+        src: '/aqarthon3.jpg',
+        alt: 'صورة من عقارثون 3',
+        caption: 'صورة من عقارثون 3',
+      },
+    ],
+    stats: [
+      {
+        value: '5',
+        label: 'الفرق المتأهلة',
+        color: 'accent',
+      },
+      {
+        value: '1',
+        label: 'فريق ملهمة',
+        color: 'primary',
+      },
+      {
+        value: '100%',
+        label: 'التميز التقني',
+        color: 'secondary',
+      },
+    ],
+  },
 ];
 
 const NewsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
+    if (NEWS_ITEMS.length <= 1) {
+      return;
+    }
+
     const timer = setInterval(() => {
       setActiveIndex(prevIndex => (prevIndex + 1) % NEWS_ITEMS.length);
     }, ROTATION_INTERVAL);
@@ -106,13 +193,7 @@ const NewsSection = () => {
       className='py-20 bg-gradient-to-br from-dark-900 to-dark-950'
     >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <motion.div
-          key={activeNews.id}
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className='space-y-12'
-        >
+        <div className='space-y-12 transition-all duration-500'>
           <div className='text-center'>
             <h2 className='section-title'>{activeNews.sectionTitle}</h2>
             <p className='text-xl text-gray-400 max-w-3xl mx-auto'>
@@ -315,7 +396,7 @@ const NewsSection = () => {
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
