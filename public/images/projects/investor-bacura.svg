@@ -1,0 +1,77 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.18" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" rx="24" fill="url(#bgGradient)" />
+
+  <!-- Dashboard Card -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="30" width="320" height="240" rx="28" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
+  </g>
+
+  <!-- Header -->
+  <rect x="60" y="50" width="280" height="46" rx="23" fill="rgba(37, 99, 235, 0.35)" stroke="rgba(255,255,255,0.25)" />
+  <text x="200" y="78" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">
+    الأخبار الاستثمارية - شركة باكورة
+  </text>
+
+  <!-- KPI Cards -->
+  <rect x="70" y="110" width="90" height="70" rx="16" fill="rgba(15,118,110,0.45)" />
+  <text x="115" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">صندوق باكورة</text>
+  <text x="115" y="158" text-anchor="middle" fill="white" font-family="Arial" font-size="14">+12.5%</text>
+
+  <rect x="170" y="110" width="90" height="70" rx="16" fill="rgba(59,130,246,0.45)" />
+  <text x="215" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">الأسهم</text>
+  <text x="215" y="158" text-anchor="middle" fill="white" font-family="Arial" font-size="14">+8.3%</text>
+
+  <rect x="270" y="110" width="90" height="70" rx="16" fill="rgba(14,165,233,0.45)" />
+  <text x="315" y="138" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">المشاريع</text>
+  <text x="315" y="158" text-anchor="middle" fill="white" font-family="Arial" font-size="14">18 مشروع</text>
+
+  <!-- Chart Area -->
+  <rect x="70" y="200" width="290" height="70" rx="18" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.18)" />
+  <polyline
+    points="90,248 120,236 150,244 180,212 210,220 240,206 270,214 300,198 340,206"
+    fill="none"
+    stroke="url(#accentGradient)"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="180" cy="212" r="6" fill="#34d399" stroke="white" stroke-width="2" />
+  <circle cx="240" cy="206" r="6" fill="#34d399" stroke="white" stroke-width="2" />
+  <circle cx="300" cy="198" r="6" fill="#34d399" stroke="white" stroke-width="2" />
+
+  <!-- Side News Panel -->
+  <rect x="55" y="95" width="12" height="160" rx="6" fill="url(#accentGradient)" />
+  <rect x="70" y="90" width="12" height="170" rx="6" fill="rgba(255,255,255,0.18)" />
+
+  <!-- Badges -->
+  <rect x="90" y="95" width="110" height="26" rx="13" fill="rgba(255,255,255,0.15)" />
+  <text x="145" y="112" text-anchor="middle" fill="white" font-family="Arial" font-size="11">تحديث سوق الاستثمارات</text>
+
+  <rect x="210" y="95" width="120" height="26" rx="13" fill="rgba(255,255,255,0.15)" />
+  <text x="270" y="112" text-anchor="middle" fill="white" font-family="Arial" font-size="11">تقارير الأداء الفصلي</text>
+
+  <!-- Footer -->
+  <text x="200" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">
+    منصة الأخبار الاستثمارية لباكورة
+  </text>
+</svg>
+

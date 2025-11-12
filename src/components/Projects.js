@@ -57,6 +57,15 @@ const Projects = () => {
         image: '/images/projects/yourhelp.svg',
       },
       {
+        title: 'الأخبار الاستثمارية - شركة باكورة',
+        description:
+          'منصة استثمارية تبرز أحدث الأخبار والبيانات المالية لشركة باكورة بطريقة تفاعلية وواضحة',
+        link: 'https://investor-bacura.netlify.app/',
+        icon: Globe,
+        color: 'from-blue-600 to-cyan-500',
+        image: '/images/projects/investor-bacura.svg',
+      },
+      {
         title: 'العروض العقارية - Real Estate Offers',
         description:
           'منصة العروض العقارية الرائدة في المملكة العربية السعودية مع خريطة تفاعلية',
