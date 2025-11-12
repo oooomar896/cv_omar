@@ -7,9 +7,6 @@ const ROTATION_INTERVAL = 7000;
 const NEWS_ITEMS = [
   {
     id: 'bacura-2025',
-    sectionTitle: 'أحدث الأخبار المهنية',
-    intro:
-      'سعيد بالإعلان عن انضمامي لفريق شركة باكورة التقنيات، خطوة جديدة لتعزيز خبرتي في بناء الحلول الرقمية المتكاملة',
     cardIcon: Users,
     cardTitle: 'انضمام إلى شركة باكورة التقنيات',
     cardSubtitle: 'فريق التحول الرقمي',
@@ -86,8 +83,6 @@ const NEWS_ITEMS = [
   },
   {
     id: 'aqarthon-2025',
-    sectionTitle: 'حدث إعلان إخباري',
-    intro: 'مشاركة مميزة في برنامج عقارثون وفوز ضمن الفرق المتأهلة',
     cardIcon: Trophy,
     cardTitle: 'عقارثون 2025',
     cardSubtitle: 'برنامج الابتكار العقاري',
