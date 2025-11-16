@@ -55,7 +55,7 @@ const Projects = () => {
         link: 'https://assistant-for-evaluating-scientific-r.netlify.app/',
         icon: Globe,
         color: 'from-amber-500 to-orange-500',
-        image: '/images/projects/research-assistant.png',
+        image: '/logorest.png',
         imageClass: 'object-contain bg-white/10 p-6',
       },
       {
