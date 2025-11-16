@@ -49,6 +49,16 @@ const Projects = () => {
     ],
     web: [
       {
+        title: 'منصة نشر الأبحاث العربية - Research Assistant',
+        description:
+          'منصة رقمية شاملة لتمكين الباحثين العرب من تقديم أبحاثهم ونشرها عالميًا مع متابعة ولوحة تحكم وإشعارات ذكية',
+        link: 'https://assistant-for-evaluating-scientific-r.netlify.app/',
+        icon: Globe,
+        color: 'from-amber-500 to-orange-500',
+        image: '/images/projects/research-assistant.png',
+        imageClass: 'object-contain bg-white/10 p-6',
+      },
+      {
         title: 'YourHelp - مساعدك',
         description: 'منصة حجز الخدمات والمساعدة عبر الإنترنت',
         link: 'https://yourhelp.netlify.app/booking',
