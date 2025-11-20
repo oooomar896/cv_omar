@@ -52,7 +52,7 @@ const Projects = () => {
         title: 'منصة نشر الأبحاث العربية - Research Assistant',
         description:
           'منصة رقمية شاملة لتمكين الباحثين العرب من تقديم أبحاثهم ونشرها عالميًا مع متابعة ولوحة تحكم وإشعارات ذكية',
-        link: 'https://assistant-for-evaluating-scientific-r.netlify.app/',
+        link: 'https://res-assistant.com',
         icon: Globe,
         color: 'from-amber-500 to-orange-500',
         image: '/logorest.png',
