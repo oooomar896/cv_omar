@@ -1,7 +1,7 @@
 // Service Worker for CV Portfolio PWA
-// Cache version - Updated to force cache refresh
-const CACHE_NAME = 'cv-omar-v2';
-const RUNTIME_CACHE = 'cv-omar-runtime-v2';
+// Cache version - Updated to force cache refresh (v3 - cache bust)
+const CACHE_NAME = 'cv-omar-v3';
+const RUNTIME_CACHE = 'cv-omar-runtime-v3';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
@@ -72,7 +72,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - Network First strategy for HTML, Cache First for assets
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
@@ -85,10 +85,44 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Network First strategy for HTML pages (always get fresh content)
+  if (event.request.headers.get('accept')?.includes('text/html') || 
+      event.request.url === location.origin + '/' ||
+      event.request.url.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Cache the fresh response
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Fallback to cache if network fails
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Cache First strategy for static assets (JS, CSS, images, etc.)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       // Return cached version if available
       if (cachedResponse) {
+        // Also fetch in background to update cache
+        fetch(event.request).then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+        }).catch(() => {});
         return cachedResponse;
       }
 
