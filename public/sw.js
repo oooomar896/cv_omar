@@ -1,7 +1,7 @@
 // Service Worker for CV Portfolio PWA
-// Cache version
-const CACHE_NAME = 'cv-omar-v1';
-const RUNTIME_CACHE = 'cv-omar-runtime';
+// Cache version - Updated to force cache refresh
+const CACHE_NAME = 'cv-omar-v2';
+const RUNTIME_CACHE = 'cv-omar-runtime-v2';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
@@ -32,27 +32,43 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activating...');
+  console.log('[Service Worker] Activating and cleaning old caches...');
   
   event.waitUntil(
     caches
       .keys()
       .then((cacheNames) => {
-        return Promise.all(
-          cacheNames
-            .filter((cacheName) => {
-              return (
-                cacheName !== CACHE_NAME &&
-                cacheName !== RUNTIME_CACHE
-              );
-            })
-            .map((cacheName) => {
-              console.log('[Service Worker] Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
-            })
-        );
+        // Delete all old caches that don't match current version
+        const deletePromises = cacheNames
+          .filter((cacheName) => {
+            // Delete all caches that are not the current version
+            return (
+              cacheName !== CACHE_NAME &&
+              cacheName !== RUNTIME_CACHE &&
+              (cacheName.startsWith('cv-omar-') || cacheName.startsWith('cv-omar-runtime'))
+            );
+          })
+          .map((cacheName) => {
+            console.log('[Service Worker] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          });
+        
+        // Also delete any other old caches
+        const otherCaches = cacheNames.filter((cacheName) => {
+          return !cacheName.startsWith('cv-omar-');
+        });
+        
+        otherCaches.forEach((cacheName) => {
+          console.log('[Service Worker] Deleting unrelated cache:', cacheName);
+          deletePromises.push(caches.delete(cacheName));
+        });
+        
+        return Promise.all(deletePromises);
       })
-      .then(() => self.clients.claim()) // Take control of all pages
+      .then(() => {
+        console.log('[Service Worker] Old caches cleaned successfully');
+        return self.clients.claim(); // Take control of all pages
+      })
   );
 });
 
