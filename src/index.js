@@ -10,7 +10,7 @@ if ('serviceWorker' in navigator) {
     try {
       // Unregister all service workers first
       const registrations = await navigator.serviceWorker.getRegistrations();
-      for (let registration of registrations) {
+      for (const registration of registrations) {
         console.log('Unregistering old service worker:', registration.scope);
         await registration.unregister();
       }
