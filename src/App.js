@@ -20,6 +20,7 @@ const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
 const DashboardHome = lazy(() => import('./components/admin/DashboardHome'));
 const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
 const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
+const ManageNews = lazy(() => import('./components/admin/ManageNews'));
 const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
 
 // Loading component
@@ -95,6 +96,7 @@ const AppContent = () => {
                       <Route index element={<DashboardHome />} />
                       <Route path="projects" element={<ManageProjects />} />
                       <Route path="skills" element={<ManageSkills />} />
+                      <Route path="news" element={<ManageNews />} />
                       <Route path="users" element={<ManageUsers />} />
                       <Route path="settings" element={<div className="p-8 text-center text-gray-400">قريباً: إعدادات النظام المتقدمة</div>} />
                     </Routes>

@@ -8,7 +8,8 @@ import {
     Menu,
     X,
     Briefcase,
-    Layers
+    Layers,
+    Newspaper
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ const AdminLayout = ({ children }) => {
         { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard, path: '/admin' },
         { id: 'projects', label: 'إدارة المشاريع', icon: Briefcase, path: '/admin/projects' },
         { id: 'skills', label: 'إدارة المهارات', icon: Layers, path: '/admin/skills' },
+        { id: 'news', label: 'الأخبار والنشاطات', icon: Newspaper, path: '/admin/news' },
         { id: 'users', label: 'المستخدمين', icon: Users, path: '/admin/users' },
         { id: 'settings', label: 'الإعدادات', icon: Settings, path: '/admin/settings' },
     ];

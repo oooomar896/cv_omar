@@ -1,9 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Smartphone, Globe, Database, Palette, Zap } from 'lucide-react';
+import { dataService } from '../utils/dataService';
 
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [dynamicSkills, setDynamicSkills] = useState([]);
+
+  const loadData = useCallback(() => {
+    const adminSkills = dataService.getSkills();
+    const adapted = adminSkills.map(s => ({
+      name: s.name,
+      level: s.level === 'Expert' ? 95 : s.level === 'Professional' ? 85 : 75,
+      color: 'from-primary-500 to-secondary-500',
+      category: s.category.toLowerCase().includes('front') ? 'web' :
+        s.category.toLowerCase().includes('back') ? 'backend' :
+          s.category.toLowerCase().includes('mobile') ? 'mobile' : 'ai'
+    }));
+    setDynamicSkills(adapted);
+  }, []);
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('storage_update', loadData);
+    return () => window.removeEventListener('storage_update', loadData);
+  }, [loadData]);
 
   const skillCategories = [
     { id: 'all', name: 'الكل', icon: Code2 },
@@ -15,7 +36,7 @@ const Skills = () => {
     { id: 'design', name: 'التصميم', icon: Palette },
   ];
 
-  const skills = {
+  const staticSkills = {
     mobile: [
       { name: 'Flutter', level: 95, color: 'from-blue-500 to-cyan-500' },
       { name: 'React Native', level: 90, color: 'from-blue-600 to-blue-400' },
@@ -54,10 +75,17 @@ const Skills = () => {
     ],
   };
 
+  const allSkills = [
+    ...Object.keys(staticSkills).flatMap(cat =>
+      staticSkills[cat].map(s => ({ ...s, category: cat }))
+    ),
+    ...dynamicSkills
+  ];
+
   const filteredSkills =
     activeCategory === 'all'
-      ? Object.values(skills).flat()
-      : skills[activeCategory] || [];
+      ? allSkills
+      : allSkills.filter(s => s.category === activeCategory);
 
   return (
     <section id='skills' className='py-20'>
@@ -89,8 +117,8 @@ const Skills = () => {
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               className={`flex items-center space-x-2 space-x-reverse px-6 py-3 rounded-full border transition-all duration-300 ${activeCategory === category.id
-                  ? 'border-primary-500 bg-primary-500/20 text-primary-500'
-                  : 'border-gray-600 text-gray-400 hover:border-primary-500 hover:text-primary-500'
+                ? 'border-primary-500 bg-primary-500/20 text-primary-500'
+                : 'border-gray-600 text-gray-400 hover:border-primary-500 hover:text-primary-500'
                 }`}
             >
               <category.icon className='h-5 w-5' />

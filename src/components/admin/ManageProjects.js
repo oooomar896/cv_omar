@@ -1,37 +1,61 @@
 import {
     Plus,
     Search,
-    Filter,
     Edit2,
     Trash2,
-    ExternalLink,
     Globe,
     Smartphone,
     Database,
-    Zap
+    Zap,
+    X
 } from 'lucide-react';
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { dataService } from '../../utils/dataService';
 
 const ManageProjects = () => {
+    const [projects, setProjects] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newProject, setNewProject] = useState({
+        name: '',
+        category: 'web',
+        desc: '',
+        status: 'published'
+    });
 
-    // Mock initial data
-    const projects = [
-        { id: 1, name: 'متجر عطور ذكي', category: 'web', date: '2026-01-01', status: 'published' },
-        { id: 2, name: 'تطبيق توصيل طلبات', category: 'mobile', date: '2025-12-28', status: 'published' },
-        { id: 3, name: 'بوت مساعد قانوني', category: 'ai-bots', date: '2026-01-02', status: 'draft' },
-    ];
+    useEffect(() => {
+        setProjects(dataService.getProjects());
+    }, []);
 
-    const categories = {
-        web: { icon: Globe, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-        mobile: { icon: Smartphone, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-        'ai-bots': { icon: Zap, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-        odoo: { icon: Database, color: 'text-teal-500', bg: 'bg-teal-500/10' },
+    const handleAddProject = (e) => {
+        e.preventDefault();
+        dataService.addProject(newProject);
+        setProjects(dataService.getProjects());
+        setIsModalOpen(false);
+        setNewProject({ name: '', category: 'web', desc: '', status: 'published' });
     };
 
+    const handleDelete = (id) => {
+        if (window.confirm('هل أنت متأكد من حذف هذا المشروع؟')) {
+            dataService.deleteProject(id);
+            setProjects(dataService.getProjects());
+        }
+    };
+
+    const categories = {
+        web: { icon: Globe, color: 'text-blue-500', bg: 'bg-blue-500/10', label: 'موقع ويب' },
+        mobile: { icon: Smartphone, color: 'text-purple-500', bg: 'bg-purple-500/10', label: 'تطبيق جوال' },
+        'ai-bots': { icon: Zap, color: 'text-amber-500', bg: 'bg-amber-500/10', label: 'ذكاء اصطناعي' },
+        odoo: { icon: Database, color: 'text-teal-500', bg: 'bg-teal-500/10', label: 'أودو' },
+    };
+
+    const filteredProjects = projects.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 font-cairo" dir="rtl">
             {/* Header Actions */}
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
                 <div className="relative w-full md:w-96">
@@ -45,11 +69,10 @@ const ManageProjects = () => {
                     />
                 </div>
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button className="flex-grow md:flex-grow-0 flex items-center justify-center gap-2 bg-dark-800 border border-gray-700 px-4 py-3 rounded-xl hover:bg-dark-700 transition-all text-sm">
-                        <Filter size={18} />
-                        <span>تصفية</span>
-                    </button>
-                    <button className="flex-grow md:flex-grow-0 flex items-center justify-center gap-2 bg-primary-500 text-white px-6 py-3 rounded-xl hover:bg-primary-600 transition-all font-bold text-sm shadow-lg shadow-primary-500/20">
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="flex-grow md:flex-grow-0 flex items-center justify-center gap-2 bg-primary-500 text-white px-6 py-3 rounded-xl hover:bg-primary-600 transition-all font-bold text-sm shadow-lg shadow-primary-500/20"
+                    >
                         <Plus size={18} />
                         <span>مشروع جديد</span>
                     </button>
@@ -63,13 +86,13 @@ const ManageProjects = () => {
                         <tr>
                             <th className="p-4 font-bold">المشروع</th>
                             <th className="p-4 font-bold">التصنيف</th>
-                            <th className="p-4 font-bold">تاريخ الإضافة</th>
+                            <th className="p-4 font-bold">التاريخ</th>
                             <th className="p-4 font-bold">الحالة</th>
                             <th className="p-4 font-bold">الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800 text-sm">
-                        {projects.map((project) => {
+                        {filteredProjects.map((project) => {
                             const CatInfo = categories[project.category] || categories.web;
                             const Icon = CatInfo.icon;
 
@@ -89,7 +112,7 @@ const ManageProjects = () => {
                                     </td>
                                     <td className="p-4">
                                         <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${CatInfo.bg} ${CatInfo.color}`}>
-                                            {project.category.toUpperCase()}
+                                            {CatInfo.label}
                                         </span>
                                     </td>
                                     <td className="p-4 text-gray-400 font-mono text-xs">{project.date}</td>
@@ -106,10 +129,10 @@ const ManageProjects = () => {
                                             <button className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500">
                                                 <Edit2 size={16} />
                                             </button>
-                                            <button className="p-2 hover:bg-blue-500/10 hover:text-blue-500 rounded-lg transition-all text-gray-500">
-                                                <ExternalLink size={16} />
-                                            </button>
-                                            <button className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-all text-gray-500">
+                                            <button
+                                                onClick={() => handleDelete(project.id)}
+                                                className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-all text-gray-500"
+                                            >
                                                 <Trash2 size={16} />
                                             </button>
                                         </div>
@@ -121,15 +144,76 @@ const ManageProjects = () => {
                 </table>
             </div>
 
-            {/* Pagination Placeholder */}
-            <div className="flex justify-between items-center text-sm text-gray-500">
-                <p>عرض {projects.length} مشاريع</p>
-                <div className="flex gap-2">
-                    <button className="p-2 border border-gray-800 rounded-lg hover:bg-dark-800 disabled:opacity-50 text-xs">السابق</button>
-                    <button className="p-2 border border-gray-800 rounded-lg bg-primary-500 text-white shadow-lg text-xs">1</button>
-                    <button className="p-2 border border-gray-800 rounded-lg hover:bg-dark-800 text-xs text-gray-400">التالي</button>
-                </div>
-            </div>
+            {/* Add Project Modal */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-lg p-8 relative z-10 shadow-2xl"
+                        >
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-white">إضافة مشروع جديد</h2>
+                                <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white"><X /></button>
+                            </div>
+
+                            <form onSubmit={handleAddProject} className="space-y-4">
+                                <div className="space-y-2">
+                                    <label htmlFor="proj-name" className="text-sm text-gray-400">اسم المشروع</label>
+                                    <input
+                                        id="proj-name"
+                                        required
+                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                        value={newProject.name}
+                                        onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label htmlFor="proj-cat" className="text-sm text-gray-400">التصنيف</label>
+                                    <select
+                                        id="proj-cat"
+                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                        value={newProject.category}
+                                        onChange={(e) => setNewProject({ ...newProject, category: e.target.value })}
+                                    >
+                                        <option value="web">موقع ويب</option>
+                                        <option value="mobile">تطبيق جوال</option>
+                                        <option value="ai-bots">ذكاء اصطناعي</option>
+                                        <option value="odoo">أودو</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label htmlFor="proj-desc" className="text-sm text-gray-400">وصف قصير</label>
+                                    <textarea
+                                        id="proj-desc"
+                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none h-24"
+                                        value={newProject.desc}
+                                        onChange={(e) => setNewProject({ ...newProject, desc: e.target.value })}
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all"
+                                >
+                                    حفظ المشروع
+                                </button>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

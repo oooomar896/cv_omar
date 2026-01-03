@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   ExternalLink,
@@ -9,9 +9,32 @@ import {
   Smartphone,
   Zap,
 } from 'lucide-react';
+import { dataService } from '../utils/dataService';
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [dynamicProjects, setDynamicProjects] = useState([]);
+
+  const loadData = useCallback(() => {
+    const adminDocs = dataService.getProjects();
+    // تكييف صيغة بيانات الآدمن لتناسب واجهة المشاريع
+    const adapted = adminDocs.map(p => ({
+      title: p.name,
+      description: p.desc,
+      link: '#',
+      icon: p.category === 'web' ? Globe : p.category === 'mobile' ? Smartphone : Zap,
+      color: p.category === 'web' ? 'from-blue-500 to-cyan-500' : 'from-purple-500 to-indigo-500',
+      category: p.category,
+      isNew: true
+    }));
+    setDynamicProjects(adapted);
+  }, []);
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener('storage_update', loadData);
+    return () => window.removeEventListener('storage_update', loadData);
+  }, [loadData]);
 
   const categories = [
     { id: 'all', name: 'الكل', icon: Globe },
@@ -22,7 +45,7 @@ const Projects = () => {
     { id: 'open-source', name: 'مشاريع مفتوحة', icon: Github },
   ];
 
-  const projects = {
+  const staticProjects = {
     mobile: [
       {
         title: 'تطبيق المقايضة - Swap App',
@@ -216,10 +239,17 @@ const Projects = () => {
     ],
   };
 
+  const allProjects = [
+    ...Object.keys(staticProjects).flatMap(cat =>
+      staticProjects[cat].map(p => ({ ...p, category: cat }))
+    ),
+    ...dynamicProjects
+  ];
+
   const filteredProjects =
     activeCategory === 'all'
-      ? Object.values(projects).flat()
-      : projects[activeCategory] || [];
+      ? allProjects
+      : allProjects.filter(p => p.category === activeCategory);
 
   return (
     <section id='projects' className='py-20 bg-dark-900/50'>
@@ -249,11 +279,10 @@ const Projects = () => {
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`flex items-center space-x-2 space-x-reverse px-6 py-3 rounded-full border transition-all duration-300 ${
-                activeCategory === category.id
+              className={`flex items-center space-x-2 space-x-reverse px-6 py-3 rounded-full border transition-all duration-300 ${activeCategory === category.id
                   ? 'border-primary-500 bg-primary-500/20 text-primary-500'
                   : 'border-gray-600 text-gray-400 hover:border-primary-500 hover:text-primary-500'
-              }`}
+                }`}
             >
               <category.icon className='h-5 w-5' />
               <span>{category.name}</span>
@@ -284,9 +313,8 @@ const Projects = () => {
                     <img
                       src={project.image}
                       alt={project.title}
-                      className={`w-full h-full ${
-                        project.imageClass || 'object-cover'
-                      } group-hover:scale-110 transition-transform duration-300`}
+                      className={`w-full h-full ${project.imageClass || 'object-cover'
+                        } group-hover:scale-110 transition-transform duration-300`}
                       onError={e => {
                         e.target.style.display = 'none';
                         e.target.nextSibling.style.display = 'flex';

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Trophy, Users, MapPin } from 'lucide-react';
+import { ExternalLink, Trophy, Users, MapPin, MessageCircle, Calendar } from 'lucide-react';
+import { dataService } from '../utils/dataService';
 
 const ROTATION_INTERVAL = 7000;
 
@@ -8,177 +9,213 @@ const SECTION_TITLE = 'أحدث الأخبار المهنية';
 const SECTION_INTRO =
   'أتابع في هذا القسم أبرز المستجدات المهنية والإنجازات التقنية التي أعمل عليها مع الفرق المختلفة.';
 
-const NEWS_ITEMS = [
-  {
-    id: 'bacura-2025',
-    cardIcon: Users,
-    cardTitle: 'انضمام إلى شركة باكورة التقنيات',
-    cardSubtitle: 'فريق التحول الرقمي',
-    highlightTitle: 'مرحلة جديدة في تطوير الحلول التقنية',
-    description:
-      'بدأت رحلتي المهنية الجديدة مع شركة باكورة التقنيات (BACURA Tec)، حيث أعمل على تطوير منتجات وخدمات رقمية مبتكرة تدعم المؤسسات في التحول التقني وتعزز حضورها الرقمي. أتطلع لتوظيف خبرتي في بناء تطبيقات متكاملة وتجارب مستخدم عالية الجودة لخدمة عملاء الشركة وشركائها.',
-    details: [
-      {
-        icon: Users,
-        text: 'فريق باكورة التقنيات',
-      },
-      {
-        icon: MapPin,
-        text: 'المملكة العربية السعودية',
-      },
-    ],
-    cta: [
-      {
-        type: 'primary',
-        label: 'زيارة موقع الشركة',
-        href: 'https://bacuratec.sa/',
-      },
-      {
-        type: 'badge',
-        label: 'خطوة استراتيجية جديدة',
-        icon: Trophy,
-      },
-    ],
-    image: {
-      src: '/images/projects/logob.png',
-      alt: 'شعار شركة باكورة التقنيات',
-      overlayTitle: 'شركة باكورة التقنيات',
-      overlaySubtitle: 'حلول تقنية وشراكات استراتيجية لدعم التحول الرقمي',
-      className: 'object-contain bg-white/5 p-8',
-    },
-    featuresTitle: 'رؤيتنا مع باكورة التقنيات',
-    features: [
-      {
-        type: 'text',
-        title: 'منتجات رقمية متكاملة',
-        description:
-          'التعاون على بناء حلول برمجية متصلة تعزز أداء الأعمال وتدعم رحلة التحول الرقمي للعملاء.',
-      },
-      {
-        type: 'text',
-        title: 'شراكات استراتيجية',
-        description:
-          'العمل جنباً إلى جنب مع فرق متعددة التخصصات لتقديم قيمة مضافة وشراكات طويلة الأمد.',
-      },
-      {
-        type: 'text',
-        title: 'تركيز على جودة التجربة',
-        description:
-          'تقديم تجارب استخدام مميزة تعتمد على أحدث الممارسات في التصميم والتطوير.',
-      },
-    ],
-    stats: [
-      {
-        value: '2025',
-        label: 'عام الانضمام',
-        color: 'accent',
-      },
-      {
-        value: '10+',
-        label: 'مشاريع سنعمل على تطويرها',
-        color: 'primary',
-      },
-      {
-        value: '100%',
-        label: 'التزام بالابتكار التقني المستمر',
-        color: 'secondary',
-      },
-    ],
-  },
-  {
-    id: 'aqarthon-2025',
-    cardIcon: Trophy,
-    cardTitle: 'عقارثون 2025',
-    cardSubtitle: 'برنامج الابتكار العقاري',
-    highlightTitle: 'فوز فريق ملهمة ضمن الخمس المتأهلين',
-    description:
-      'سعداء بالإعلان عن فوز فريق ملهمة ضمن الخمس المتأهلين الأكثر إبداعاً وريادة في التكنولوجيا العقارية في المملكة العربية السعودية. هذا الإنجاز يعكس التميز التقني والابتكار في مجال التطوير العقاري.',
-    details: [
-      {
-        icon: Users,
-        text: 'فريق ملهمة',
-      },
-      {
-        icon: MapPin,
-        text: 'المملكة العربية السعودية',
-      },
-    ],
-    cta: [
-      {
-        type: 'primary',
-        label: 'عرض المشروع',
-        href: 'https://real-estateconsultations.netlify.app',
-      },
-      {
-        type: 'secondary',
-        label: 'شهادة الإبتكار الملهم',
-        href: '/Thun property certificate.pdf',
-      },
-      {
-        type: 'badge',
-        label: 'متأهل للنهائيات',
-        icon: Trophy,
-      },
-    ],
-    image: {
-      src: '/aqarthon_app.jpg',
-      alt: 'مشروع الرؤية العقارية - عقارثون',
-      overlayTitle: 'الرؤية العقارية',
-      overlaySubtitle: 'منصة الاستشارات العقارية المتطورة',
-      className: 'object-cover',
-    },
-    featuresTitle: 'صور من الحدث',
-    features: [
-      {
-        type: 'image',
-        src: '/aqarthon.jpg',
-        alt: 'صورة من عقارثون 1',
-        caption: 'صورة من عقارثون 1',
-      },
-      {
-        type: 'image',
-        src: '/aqarthon2.jpg',
-        alt: 'صورة من عقارثون 2',
-        caption: 'صورة من عقارثون 2',
-      },
-      {
-        type: 'image',
-        src: '/aqarthon3.jpg',
-        alt: 'صورة من عقارثون 3',
-        caption: 'صورة من عقارثون 3',
-      },
-    ],
-    stats: [
-      {
-        value: '5',
-        label: 'الفرق المتأهلة',
-        color: 'accent',
-      },
-      {
-        value: '1',
-        label: 'فريق ملهمة',
-        color: 'primary',
-      },
-      {
-        value: '100%',
-        label: 'التميز التقني',
-        color: 'secondary',
-      },
-    ],
-  },
-];
-
 const NewsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [dynamicNews, setDynamicNews] = useState([]);
+
+  const loadData = useCallback(() => {
+    const adminNews = dataService.getNews();
+    const adapted = adminNews.map(item => ({
+      id: item.id.toString(),
+      cardIcon: MessageCircle,
+      cardTitle: item.title,
+      cardSubtitle: 'تحديث من لوحة التحكم',
+      highlightTitle: item.title,
+      description: item.content,
+      details: [{ icon: Calendar, text: item.date }],
+      cta: [{ type: 'badge', label: 'تحديث جديد', icon: Trophy }],
+      image: {
+        src: '/images/news-placeholder.jpg',
+        alt: item.title,
+        overlayTitle: 'تحديث مهني',
+        overlaySubtitle: item.date,
+        className: 'object-cover bg-primary-500/10'
+      },
+      featuresTitle: 'تفاصيل التحديث',
+      features: [{ type: 'text', title: 'محتوى الخبر', description: item.content }],
+      stats: [{ value: 'NEW', label: 'تحديث لحظي', color: 'primary' }]
+    }));
+    setDynamicNews(adapted);
+  }, []);
 
   useEffect(() => {
+    loadData();
+    window.addEventListener('storage_update', loadData);
+    return () => window.removeEventListener('storage_update', loadData);
+  }, [loadData]);
+
+  const STATIC_NEWS_ITEMS = [
+    {
+      id: 'bacura-2025',
+      cardIcon: Users,
+      cardTitle: 'انضمام إلى شركة باكورة التقنيات',
+      cardSubtitle: 'فريق التحول الرقمي',
+      highlightTitle: 'مرحلة جديدة في تطوير الحلول التقنية',
+      description:
+        'بدأت رحلتي المهنية الجديدة مع شركة باكورة التقنيات (BACURA Tec)، حيث أعمل على تطوير منتجات وخدمات رقمية مبتكرة تدعم المؤسسات في التحول التقني وتعزز حضورها الرقمي. أتطلع لتوظيف خبرتي في بناء تطبيقات متكاملة وتجارب مستخدم عالية الجودة لخدمة عملاء الشركة وشركائها.',
+      details: [
+        {
+          icon: Users,
+          text: 'فريق باكورة التقنيات',
+        },
+        {
+          icon: MapPin,
+          text: 'المملكة العربية السعودية',
+        },
+      ],
+      cta: [
+        {
+          type: 'primary',
+          label: 'زيارة موقع الشركة',
+          href: 'https://bacuratec.sa/',
+        },
+        {
+          type: 'badge',
+          label: 'خطوة استراتيجية جديدة',
+          icon: Trophy,
+        },
+      ],
+      image: {
+        src: '/images/projects/logob.png',
+        alt: 'شعار شركة باكورة التقنيات',
+        overlayTitle: 'شركة باكورة التقنيات',
+        overlaySubtitle: 'حلول تقنية وشراكات استراتيجية لدعم التحول الرقمي',
+        className: 'object-contain bg-white/5 p-8',
+      },
+      featuresTitle: 'رؤيتنا مع باكورة التقنيات',
+      features: [
+        {
+          type: 'text',
+          title: 'منتجات رقمية متكاملة',
+          description:
+            'التعاون على بناء حلول برمجية متصلة تعزز أداء الأعمال وتدعم رحلة التحول الرقمي للعملاء.',
+        },
+        {
+          type: 'text',
+          title: 'شراكات استراتيجية',
+          description:
+            'العمل جنباً إلى جنب مع فرق متعددة التخصصات لتقديم قيمة مضافة وشراكات طويلة الأمد.',
+        },
+        {
+          type: 'text',
+          title: 'تركيز على جودة التجربة',
+          description:
+            'تقديم تجارب استخدام مميزة تعتمد على أحدث الممارسات في التصميم والتطوير.',
+        },
+      ],
+      stats: [
+        {
+          value: '2025',
+          label: 'عام الانضمام',
+          color: 'accent',
+        },
+        {
+          value: '10+',
+          label: 'مشاريع سنعمل على تطويرها',
+          color: 'primary',
+        },
+        {
+          value: '100%',
+          label: 'التزام بالابتكار التقني المستمر',
+          color: 'secondary',
+        },
+      ],
+    },
+    {
+      id: 'aqarthon-2025',
+      cardIcon: Trophy,
+      cardTitle: 'عقارثون 2025',
+      cardSubtitle: 'برنامج الابتكار العقاري',
+      highlightTitle: 'فوز فريق ملهمة ضمن الخمس المتأهلين',
+      description:
+        'سعداء بالإعلان عن فوز فريق ملهمة ضمن الخمس المتأهلين الأكثر إبداعاً وريادة في التكنولوجيا العقارية في المملكة العربية السعودية. هذا الإنجاز يعكس التميز التقني والابتكار في مجال التطوير العقاري.',
+      details: [
+        {
+          icon: Users,
+          text: 'فريق ملهمة',
+        },
+        {
+          icon: MapPin,
+          text: 'المملكة العربية السعودية',
+        },
+      ],
+      cta: [
+        {
+          type: 'primary',
+          label: 'عرض المشروع',
+          href: 'https://real-estateconsultations.netlify.app',
+        },
+        {
+          type: 'secondary',
+          label: 'شهادة الإبتكار الملهم',
+          href: '/Thun property certificate.pdf',
+        },
+        {
+          type: 'badge',
+          label: 'متأهل للنهائيات',
+          icon: Trophy,
+        },
+      ],
+      image: {
+        src: '/aqarthon_app.jpg',
+        alt: 'مشروع الرؤية العقارية - عقارثون',
+        overlayTitle: 'الرؤية العقارية',
+        overlaySubtitle: 'منصة الاستشارات العقارية المتطورة',
+        className: 'object-cover',
+      },
+      featuresTitle: 'صور من الحدث',
+      features: [
+        {
+          type: 'image',
+          src: '/aqarthon.jpg',
+          alt: 'صورة من عقارثون 1',
+          caption: 'صورة من عقارثون 1',
+        },
+        {
+          type: 'image',
+          src: '/aqarthon2.jpg',
+          alt: 'صورة من عقارثون 2',
+          caption: 'صورة من عقارثون 2',
+        },
+        {
+          type: 'image',
+          src: '/aqarthon3.jpg',
+          alt: 'صورة من عقارثون 3',
+          caption: 'صورة من عقارثون 3',
+        },
+      ],
+      stats: [
+        {
+          value: '5',
+          label: 'الفرق المتأهلة',
+          color: 'accent',
+        },
+        {
+          value: '1',
+          label: 'فريق ملهمة',
+          color: 'primary',
+        },
+        {
+          value: '100%',
+          label: 'التميز التقني',
+          color: 'secondary',
+        },
+      ],
+    },
+  ];
+
+  const NEWS_ITEMS = [...STATIC_NEWS_ITEMS, ...dynamicNews];
+
+  useEffect(() => {
+    if (NEWS_ITEMS.length === 0) return;
     const timer = setInterval(() => {
       setActiveIndex(prevIndex => (prevIndex + 1) % NEWS_ITEMS.length);
     }, ROTATION_INTERVAL);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [NEWS_ITEMS.length]);
 
+  if (NEWS_ITEMS.length === 0) return null;
   const activeNews = NEWS_ITEMS[activeIndex];
   const CardIcon = activeNews.cardIcon;
 
@@ -203,11 +240,10 @@ const NewsSection = () => {
                   <button
                     key={newsItem.id}
                     onClick={() => setActiveIndex(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? 'bg-primary-500 w-12'
-                        : 'bg-gray-700 hover:bg-primary-400 w-8'
-                    }`}
+                    className={`h-2 rounded-full transition-all duration-300 ${isActive
+                      ? 'bg-primary-500 w-12'
+                      : 'bg-gray-700 hover:bg-primary-400 w-8'
+                      }`}
                     aria-label={`عرض الخبر رقم ${index + 1}`}
                   />
                 );
@@ -323,9 +359,8 @@ const NewsSection = () => {
                       <img
                         src={activeNews.image.src}
                         alt={activeNews.image.alt}
-                        className={`w-full h-80 ${
-                          activeNews.image.className || 'object-cover'
-                        }`}
+                        className={`w-full h-80 ${activeNews.image.className || 'object-cover'
+                          }`}
                       />
                       <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent' />
                       <div className='absolute bottom-4 left-4 right-4'>
@@ -390,13 +425,12 @@ const NewsSection = () => {
                   {activeNews.stats.map(stat => (
                     <div key={stat.label}>
                       <div
-                        className={`text-4xl font-bold mb-2 ${
-                          stat.color === 'accent'
-                            ? 'text-accent-500'
-                            : stat.color === 'primary'
+                        className={`text-4xl font-bold mb-2 ${stat.color === 'accent'
+                          ? 'text-accent-500'
+                          : stat.color === 'primary'
                             ? 'text-primary-500'
                             : 'text-secondary-500'
-                        }`}
+                          }`}
                       >
                         {stat.value}
                       </div>
