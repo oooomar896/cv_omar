@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 
 // Lazy load components for better performance
 const Hero = lazy(() => import('./components/Hero'));
@@ -15,6 +16,7 @@ const NewsSection = lazy(() => import('./components/NewsSection'));
 const Contact = lazy(() => import('./components/Contact'));
 const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
 const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
 const DashboardHome = lazy(() => import('./components/admin/DashboardHome'));
 const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
 const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
@@ -27,7 +29,7 @@ const LoadingFallback = () => (
       <div className="relative">
         <div className="w-16 h-16 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"></div>
       </div>
-      <p className="text-gray-400">جاري التحميل...</p>
+      <p className="text-gray-400 font-cairo">جاري التحميل...</p>
     </div>
   </div>
 );
@@ -72,20 +74,32 @@ const AppContent = () => {
             }
           />
 
-          {/* Admin Routes */}
+          {/* Admin Login */}
+          <Route
+            path='/admin/login'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <AdminLogin />
+              </Suspense>
+            }
+          />
+
+          {/* Protected Admin Routes */}
           <Route
             path='/admin/*'
             element={
               <Suspense fallback={<LoadingFallback />}>
-                <AdminLayout>
-                  <Routes>
-                    <Route index element={<DashboardHome />} />
-                    <Route path="projects" element={<ManageProjects />} />
-                    <Route path="skills" element={<ManageSkills />} />
-                    <Route path="users" element={<ManageUsers />} />
-                    <Route path="settings" element={<div className="p-8 text-center text-gray-400">قريباً: إعدادات النظام المتقدمة</div>} />
-                  </Routes>
-                </AdminLayout>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <Routes>
+                      <Route index element={<DashboardHome />} />
+                      <Route path="projects" element={<ManageProjects />} />
+                      <Route path="skills" element={<ManageSkills />} />
+                      <Route path="users" element={<ManageUsers />} />
+                      <Route path="settings" element={<div className="p-8 text-center text-gray-400">قريباً: إعدادات النظام المتقدمة</div>} />
+                    </Routes>
+                  </AdminLayout>
+                </ProtectedRoute>
               </Suspense>
             }
           />

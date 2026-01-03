@@ -10,11 +10,18 @@ import {
     Briefcase,
     Layers
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const AdminLayout = ({ children }) => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
+        navigate('/admin/login');
+    };
 
     const menuItems = [
         { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard, path: '/admin' },
@@ -71,8 +78,8 @@ const AdminLayout = ({ children }) => {
                                 key={item.id}
                                 to={item.path}
                                 className={`flex items-center gap-4 p-4 rounded-xl transition-all group ${FinalActive
-                                        ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
-                                        : 'text-gray-400 hover:bg-dark-800 hover:text-white'
+                                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                                    : 'text-gray-400 hover:bg-dark-800 hover:text-white'
                                     }`}
                             >
                                 <Icon className={`h-6 w-6 ${FinalActive ? '' : 'group-hover:scale-110 transition-transform'}`} />
@@ -84,7 +91,10 @@ const AdminLayout = ({ children }) => {
 
                 {/* Footer */}
                 <div className="p-4 border-t border-gray-800">
-                    <button className="w-full flex items-center gap-4 p-4 text-red-400 hover:bg-red-400/10 rounded-xl transition-all">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-4 p-4 text-red-400 hover:bg-red-400/10 rounded-xl transition-all"
+                    >
                         <LogOut className="h-6 w-6" />
                         {isSidebarOpen && <span className="font-medium">تسجيل الخروج</span>}
                     </button>
