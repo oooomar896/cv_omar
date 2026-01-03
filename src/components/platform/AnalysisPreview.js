@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import {
     BarChart3,
@@ -9,13 +8,15 @@ import {
     Sparkles
 } from 'lucide-react';
 
+import { PROJECT_TYPES } from '../../constants/platformConstants';
+
 const AnalysisPreview = ({ ideaData, onConfirm }) => {
     // Mock analysis logic
     const analysis = {
         marketPotential: 'عالي',
         competition: 'متوسط',
         estimatedTime: '4-7 أيام للتطوير الأولي',
-        suggestedStack: ideaData.type === 'web' ? 'Next.js + Supabase' : 'React Native + Firebase',
+        suggestedStack: ideaData.type === PROJECT_TYPES.WEB ? 'Next.js + Supabase' : 'React Native + Firebase',
         businessValue: 'تحسين الكفاءة التشغيلية بنسبة 30%',
     };
 

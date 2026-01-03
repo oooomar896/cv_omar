@@ -36,7 +36,7 @@ const Hero = () => {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className='text-2xl lg:text-3xl text-gray-300 font-medium'
               >
-                مطور تطبيقات محترف
+                مطور تطبيقات ومهندس ذكاء اصطناعي
               </motion.h2>
 
               <motion.p
@@ -46,10 +46,10 @@ const Hero = () => {
                 className='text-lg text-gray-400 leading-relaxed max-w-2xl'
               >
                 مطور تطبيقات شغوف بخبرة واسعة في{' '}
-                <span className='text-primary-400'>Flutter</span> و{' '}
-                <span className='text-secondary-400'>React Native</span> و{' '}
+                <span className='text-primary-400'>AI Agents</span> و{' '}
+                <span className='text-secondary-400'>Flutter</span> و{' '}
                 <span className='text-accent-400'>Odoo</span>، أمتلك القدرة على
-                بناء أنظمة قوية ومرنة للمؤسسات.
+                بناء أنظمة ذكية ومرنة للمؤسسات.
               </motion.p>
             </div>
 
@@ -81,7 +81,7 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 1 }}
               className='flex flex-wrap gap-4'
             >
-         
+
 
               <button
                 onClick={() => {

@@ -45,8 +45,8 @@ const About = () => {
         >
           <h2 className='section-title'>عني</h2>
           <p className='text-xl text-gray-400 max-w-3xl mx-auto'>
-            مطور تطبيقات شغوف بخبرة واسعة في بناء أنظمة قوية ومرنة للمؤسسات، مع
-            التركيز على الأداء، سهولة الاستخدام، وقابلية التوسع.
+            مطور تطبيقات ومهندس ذكاء اصطناعي شغوف بخبرة واسعة في بناء أنظمة ذكية ومرنة للمؤسسات، مع
+            التركيز على الأداء، حلول AI المتقدمة، وقابلية التوسع.
           </p>
         </motion.div>
 
@@ -109,7 +109,7 @@ const About = () => {
                     <Download className='h-5 w-5' />
                     <span className='font-medium'>تحميل خطاب التأكيد الجامعي</span>
                   </a>
- 
+
                 </div>
               </div>
             </div>
@@ -176,7 +176,7 @@ const About = () => {
               والتطور في العصر الرقمي.
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
-            
+
               <button
                 onClick={() => {
                   const link = document.createElement('a');

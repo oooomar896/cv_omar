@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     FileCode,
-    ChevronRight,
-    ChevronDown,
     Terminal,
     FileText,
     Package,
@@ -13,7 +11,6 @@ import {
 
 const FileViewer = ({ files, onDownload }) => {
     const [selectedFile, setSelectedFile] = useState(Object.keys(files)[0]);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
         <div className="max-w-6xl mx-auto py-12 px-4 space-y-8">
