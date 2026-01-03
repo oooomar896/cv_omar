@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعادة البيانات - عمر التقني</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .info {
+            background: #f0f4ff;
+            border-right: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .info ul {
+            margin-right: 20px;
+            color: #555;
+        }
+        .info li {
+            margin: 8px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+            font-size: 18px;
+        }
+        .warning {
+            background: #fef3c7;
+            border-right: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 استعادة البيانات الافتراضية</h1>
+        
+        <div class="info">
+            <h3>📊 ما الذي سيتم استعادته؟</h3>
+            <ul>
+                <li><strong>23 مشروعاً</strong> (موبايل، ويب، AI، Odoo، Open Source)</li>
+                <li><strong>8 مهارات تقنية</strong> بمستويات احترافية</li>
+                <li><strong>6 أخبار مهنية</strong> مع روابط وشهادات</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ تنبيه:</strong> سيتم حذف جميع التعديلات التي أجريتها من لوحة التحكم واستبدالها بالبيانات الافتراضية.
+        </div>
+
+        <button class="btn" onclick="resetData()">
+            استعادة البيانات الآن
+        </button>
+
+        <div class="success" id="successMsg">
+            ✅ تم استعادة البيانات بنجاح! سيتم إعادة تحميل الصفحة...
+        </div>
+    </div>
+
+    <script>
+        function resetData() {
+            if (confirm('هل أنت متأكد من استعادة البيانات الافتراضية؟\n\nسيتم حذف جميع التعديلات التي أجريتها.')) {
+                // مسح كل localStorage
+                localStorage.clear();
+                
+                // عرض رسالة النجاح
+                document.getElementById('successMsg').style.display = 'block';
+                
+                // إعادة التحميل بعد ثانيتين
+                setTimeout(() => {
+                    window.location.href = 'http://localhost:3000';
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

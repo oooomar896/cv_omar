@@ -7,6 +7,7 @@ import {
     Smartphone,
     Database,
     Zap,
+    Github,
     X
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -17,10 +18,13 @@ const ManageProjects = () => {
     const [projects, setProjects] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newProject, setNewProject] = useState({
+    const [editMode, setEditMode] = useState(false);
+    const [currentProject, setCurrentProject] = useState({
         name: '',
         category: 'web',
         desc: '',
+        link: '',
+        image: '',
         status: 'published'
     });
 
@@ -28,12 +32,27 @@ const ManageProjects = () => {
         setProjects(dataService.getProjects());
     }, []);
 
-    const handleAddProject = (e) => {
+    const handleSaveProject = (e) => {
         e.preventDefault();
-        dataService.addProject(newProject);
+        if (editMode) {
+            dataService.updateProject(currentProject.id, currentProject);
+        } else {
+            dataService.addProject(currentProject);
+        }
         setProjects(dataService.getProjects());
         setIsModalOpen(false);
-        setNewProject({ name: '', category: 'web', desc: '', status: 'published' });
+        resetForm();
+    };
+
+    const handleEditClick = (project) => {
+        setCurrentProject(project);
+        setEditMode(true);
+        setIsModalOpen(true);
+    };
+
+    const resetForm = () => {
+        setCurrentProject({ name: '', category: 'web', desc: '', link: '', image: '', status: 'published' });
+        setEditMode(false);
     };
 
     const handleDelete = (id) => {
@@ -48,6 +67,7 @@ const ManageProjects = () => {
         mobile: { icon: Smartphone, color: 'text-purple-500', bg: 'bg-purple-500/10', label: 'تطبيق جوال' },
         'ai-bots': { icon: Zap, color: 'text-amber-500', bg: 'bg-amber-500/10', label: 'ذكاء اصطناعي' },
         odoo: { icon: Database, color: 'text-teal-500', bg: 'bg-teal-500/10', label: 'أودو' },
+        'open-source': { icon: Github, color: 'text-gray-400', bg: 'bg-gray-500/10', label: 'مفتوح المصدر' },
     };
 
     const filteredProjects = projects.filter(p =>
@@ -70,7 +90,7 @@ const ManageProjects = () => {
                 </div>
                 <div className="flex items-center gap-3 w-full md:w-auto">
                     <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => { resetForm(); setIsModalOpen(true); }}
                         className="flex-grow md:flex-grow-0 flex items-center justify-center gap-2 bg-primary-500 text-white px-6 py-3 rounded-xl hover:bg-primary-600 transition-all font-bold text-sm shadow-lg shadow-primary-500/20"
                     >
                         <Plus size={18} />
@@ -80,8 +100,8 @@ const ManageProjects = () => {
             </div>
 
             {/* Projects Grid/Table */}
-            <div className="bg-dark-900/50 border border-gray-800 rounded-3xl overflow-hidden">
-                <table className="w-full text-right">
+            <div className="bg-dark-900/50 border border-gray-800 rounded-3xl overflow-hidden overflow-x-auto">
+                <table className="w-full text-right min-w-[600px]">
                     <thead className="bg-dark-800/50 text-gray-400 text-xs uppercase tracking-wider">
                         <tr>
                             <th className="p-4 font-bold">المشروع</th>
@@ -126,7 +146,10 @@ const ManageProjects = () => {
                                     </td>
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
-                                            <button className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500">
+                                            <button
+                                                onClick={() => handleEditClick(project)}
+                                                className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500"
+                                            >
                                                 <Edit2 size={16} />
                                             </button>
                                             <button
@@ -159,47 +182,74 @@ const ManageProjects = () => {
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-lg p-8 relative z-10 shadow-2xl"
+                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-2xl p-8 relative z-10 shadow-2xl h-[90vh] overflow-y-auto"
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold text-white">إضافة مشروع جديد</h2>
+                                <h2 className="text-2xl font-bold text-white">
+                                    {editMode ? 'تعديل المشروع' : 'إضافة مشروع جديد'}
+                                </h2>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white"><X /></button>
                             </div>
 
-                            <form onSubmit={handleAddProject} className="space-y-4">
+                            <form onSubmit={handleSaveProject} className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label htmlFor="proj-name" className="text-sm text-gray-400">اسم المشروع</label>
+                                        <input
+                                            id="proj-name"
+                                            required
+                                            className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                            value={currentProject.name}
+                                            onChange={(e) => setCurrentProject({ ...currentProject, name: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="proj-cat" className="text-sm text-gray-400">التصنيف</label>
+                                        <select
+                                            id="proj-cat"
+                                            className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                            value={currentProject.category}
+                                            onChange={(e) => setCurrentProject({ ...currentProject, category: e.target.value })}
+                                        >
+                                            <option value="web">موقع ويب</option>
+                                            <option value="mobile">تطبيق جوال</option>
+                                            <option value="ai-bots">ذكاء اصطناعي</option>
+                                            <option value="odoo">أودو</option>
+                                            <option value="open-source">مفتوح المصدر</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div className="space-y-2">
-                                    <label htmlFor="proj-name" className="text-sm text-gray-400">اسم المشروع</label>
+                                    <label htmlFor="proj-image" className="text-sm text-gray-400">رابط صورة المعاينة</label>
                                     <input
-                                        id="proj-name"
-                                        required
+                                        id="proj-image"
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={newProject.name}
-                                        onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                                        value={currentProject.image || ''}
+                                        onChange={(e) => setCurrentProject({ ...currentProject, image: e.target.value })}
+                                        placeholder="/images/projects/example.svg"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="proj-cat" className="text-sm text-gray-400">التصنيف</label>
-                                    <select
-                                        id="proj-cat"
+                                    <label htmlFor="proj-link" className="text-sm text-gray-400">رابط المشروع</label>
+                                    <input
+                                        id="proj-link"
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={newProject.category}
-                                        onChange={(e) => setNewProject({ ...newProject, category: e.target.value })}
-                                    >
-                                        <option value="web">موقع ويب</option>
-                                        <option value="mobile">تطبيق جوال</option>
-                                        <option value="ai-bots">ذكاء اصطناعي</option>
-                                        <option value="odoo">أودو</option>
-                                    </select>
+                                        value={currentProject.link || ''}
+                                        onChange={(e) => setCurrentProject({ ...currentProject, link: e.target.value })}
+                                        placeholder="https://example.com"
+                                    />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="proj-desc" className="text-sm text-gray-400">وصف قصير</label>
+                                    <label htmlFor="proj-desc" className="text-sm text-gray-400">وصف المشروع</label>
                                     <textarea
                                         id="proj-desc"
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none h-24"
-                                        value={newProject.desc}
-                                        onChange={(e) => setNewProject({ ...newProject, desc: e.target.value })}
+                                        value={currentProject.desc}
+                                        onChange={(e) => setCurrentProject({ ...currentProject, desc: e.target.value })}
                                     />
                                 </div>
 
@@ -207,7 +257,7 @@ const ManageProjects = () => {
                                     type="submit"
                                     className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all"
                                 >
-                                    حفظ المشروع
+                                    {editMode ? 'تحديث التغييرات' : 'حفظ المشروع'}
                                 </button>
                             </form>
                         </motion.div>

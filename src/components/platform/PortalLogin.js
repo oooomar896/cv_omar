@@ -1,0 +1,83 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { Mail, ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
+
+const PortalLogin = () => {
+    const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        // محاكاة تسجيل الدخول أو إرسال كود التحقق
+        setTimeout(() => {
+            localStorage.setItem('portal_user', email);
+            navigate('/portal/dashboard');
+            setIsLoading(false);
+        }, 1500);
+    };
+
+    return (
+        <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4 font-cairo" dir="rtl">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full max-w-md"
+            >
+                <div className="bg-dark-900 border border-gray-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 blur-3xl -mr-16 -mt-16 rounded-full" />
+
+                    <div className="text-center space-y-4 mb-8">
+                        <div className="inline-flex p-4 bg-primary-500/10 rounded-2xl mb-2">
+                            <ShieldCheck className="h-8 w-8 text-primary-500" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-white">بوابة العميل الذكية</h2>
+                        <p className="text-gray-500 text-sm">أدخل بريدك الإلكتروني لاستعراض مشاريعك المولدة.</p>
+                    </div>
+
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div className="space-y-2">
+                            <label htmlFor="portal-email" className="text-sm text-gray-400 mr-1">البريد الإلكتروني</label>
+                            <div className="relative">
+                                <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
+                                <input
+                                    id="portal-email"
+                                    type="email"
+                                    required
+                                    className="w-full bg-dark-800 border border-gray-700 rounded-xl px-12 py-4 text-white focus:border-primary-500 outline-none transition-all font-sans"
+                                    placeholder="your-email@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 shadow-xl transition-all"
+                        >
+                            {isLoading ? (
+                                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <>
+                                    <span>دخول للمنصة</span>
+                                    <ArrowLeft className="h-5 w-5" />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="mt-8 pt-6 border-t border-gray-800 flex items-center justify-center gap-2 text-xs text-gray-500">
+                        <Sparkles size={14} className="text-primary-500" />
+                        <span>منصة عمر العديني للحلول الرقمية</span>
+                    </div>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
+export default PortalLogin;

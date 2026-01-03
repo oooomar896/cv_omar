@@ -26,7 +26,9 @@ const AnalysisPreview = ({ ideaData, onConfirm }) => {
                 <div className="inline-flex p-3 bg-primary-500/10 rounded-2xl border border-primary-500/20 mb-4">
                     <Sparkles className="h-8 w-8 text-primary-500 animate-pulse" />
                 </div>
-                <h2 className="text-3xl font-bold text-white font-cairo">تحليل الفكرة الاستراتيجي (AI Insight)</h2>
+                <h2 className="text-3xl font-bold text-white font-cairo">
+                    مرحباً {ideaData.userName || 'بك'}، إليك التحليل الاستراتيجي
+                </h2>
                 <p className="text-gray-400 max-w-2xl mx-auto">لقد قام محركنا بتحليل مسودة مشروعك، إليك نظرة أولية قبل البدء بالتنفيذ الكامل.</p>
             </div>
 

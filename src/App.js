@@ -22,6 +22,10 @@ const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
 const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
 const ManageNews = lazy(() => import('./components/admin/ManageNews'));
 const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
+const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
+const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
+const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
+const UserPortal = lazy(() => import('./components/platform/UserPortal'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -75,6 +79,24 @@ const AppContent = () => {
             }
           />
 
+          <Route
+            path='/portal/login'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <PortalLogin />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/portal/dashboard'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <UserPortal />
+              </Suspense>
+            }
+          />
+
           {/* Admin Login */}
           <Route
             path='/admin/login'
@@ -98,7 +120,8 @@ const AppContent = () => {
                       <Route path="skills" element={<ManageSkills />} />
                       <Route path="news" element={<ManageNews />} />
                       <Route path="users" element={<ManageUsers />} />
-                      <Route path="settings" element={<div className="p-8 text-center text-gray-400">قريباً: إعدادات النظام المتقدمة</div>} />
+                      <Route path="analytics" element={<AnalyticsDashboard />} />
+                      <Route path="settings" element={<ManageSettings />} />
                     </Routes>
                   </AdminLayout>
                 </ProtectedRoute>

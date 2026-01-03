@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Trophy, Users, MapPin, MessageCircle, Calendar } from 'lucide-react';
+import { ExternalLink, Trophy, MessageCircle, Calendar } from 'lucide-react';
 import { dataService } from '../utils/dataService';
 
 const ROTATION_INTERVAL = 7000;
@@ -19,21 +19,37 @@ const NewsSection = () => {
       id: item.id.toString(),
       cardIcon: MessageCircle,
       cardTitle: item.title,
-      cardSubtitle: 'تحديث من لوحة التحكم',
+      cardSubtitle: 'إنجاز مهني',
       highlightTitle: item.title,
       description: item.content,
-      details: [{ icon: Calendar, text: item.date }],
-      cta: [{ type: 'badge', label: 'تحديث جديد', icon: Trophy }],
+      details: [
+        { icon: Calendar, text: new Date(item.date).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' }) }
+      ],
+      cta: [
+        ...(item.link ? [{
+          type: 'primary',
+          label: 'عرض التفاصيل',
+          href: item.link
+        }] : []),
+        ...(item.certificate ? [{
+          type: 'secondary',
+          label: 'عرض الشهادة',
+          href: item.certificate
+        }] : []),
+        { type: 'badge', label: 'تحديث جديد', icon: Trophy }
+      ],
       image: {
-        src: '/images/news-placeholder.jpg',
+        src: item.image || '/images/news-placeholder.jpg',
         alt: item.title,
-        overlayTitle: 'تحديث مهني',
-        overlaySubtitle: item.date,
-        className: 'object-cover bg-primary-500/10'
+        overlayTitle: item.title,
+        overlaySubtitle: new Date(item.date).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long' }),
+        className: item.image?.includes('logob.png') || item.image?.includes('logorest.png')
+          ? 'object-contain bg-white/5 p-8'
+          : 'object-cover'
       },
-      featuresTitle: 'تفاصيل التحديث',
-      features: [{ type: 'text', title: 'محتوى الخبر', description: item.content }],
-      stats: [{ value: 'NEW', label: 'تحديث لحظي', color: 'primary' }]
+      featuresTitle: 'تفاصيل الخبر',
+      features: [{ type: 'text', title: 'المحتوى', description: item.content }],
+      stats: [{ value: 'جديد', label: 'تحديث لحظي', color: 'primary' }]
     }));
     setDynamicNews(adapted);
   }, []);
@@ -44,167 +60,7 @@ const NewsSection = () => {
     return () => window.removeEventListener('storage_update', loadData);
   }, [loadData]);
 
-  const STATIC_NEWS_ITEMS = [
-    {
-      id: 'bacura-2025',
-      cardIcon: Users,
-      cardTitle: 'انضمام إلى شركة باكورة التقنيات',
-      cardSubtitle: 'فريق التحول الرقمي',
-      highlightTitle: 'مرحلة جديدة في تطوير الحلول التقنية',
-      description:
-        'بدأت رحلتي المهنية الجديدة مع شركة باكورة التقنيات (BACURA Tec)، حيث أعمل على تطوير منتجات وخدمات رقمية مبتكرة تدعم المؤسسات في التحول التقني وتعزز حضورها الرقمي. أتطلع لتوظيف خبرتي في بناء تطبيقات متكاملة وتجارب مستخدم عالية الجودة لخدمة عملاء الشركة وشركائها.',
-      details: [
-        {
-          icon: Users,
-          text: 'فريق باكورة التقنيات',
-        },
-        {
-          icon: MapPin,
-          text: 'المملكة العربية السعودية',
-        },
-      ],
-      cta: [
-        {
-          type: 'primary',
-          label: 'زيارة موقع الشركة',
-          href: 'https://bacuratec.sa/',
-        },
-        {
-          type: 'badge',
-          label: 'خطوة استراتيجية جديدة',
-          icon: Trophy,
-        },
-      ],
-      image: {
-        src: '/images/projects/logob.png',
-        alt: 'شعار شركة باكورة التقنيات',
-        overlayTitle: 'شركة باكورة التقنيات',
-        overlaySubtitle: 'حلول تقنية وشراكات استراتيجية لدعم التحول الرقمي',
-        className: 'object-contain bg-white/5 p-8',
-      },
-      featuresTitle: 'رؤيتنا مع باكورة التقنيات',
-      features: [
-        {
-          type: 'text',
-          title: 'منتجات رقمية متكاملة',
-          description:
-            'التعاون على بناء حلول برمجية متصلة تعزز أداء الأعمال وتدعم رحلة التحول الرقمي للعملاء.',
-        },
-        {
-          type: 'text',
-          title: 'شراكات استراتيجية',
-          description:
-            'العمل جنباً إلى جنب مع فرق متعددة التخصصات لتقديم قيمة مضافة وشراكات طويلة الأمد.',
-        },
-        {
-          type: 'text',
-          title: 'تركيز على جودة التجربة',
-          description:
-            'تقديم تجارب استخدام مميزة تعتمد على أحدث الممارسات في التصميم والتطوير.',
-        },
-      ],
-      stats: [
-        {
-          value: '2025',
-          label: 'عام الانضمام',
-          color: 'accent',
-        },
-        {
-          value: '10+',
-          label: 'مشاريع سنعمل على تطويرها',
-          color: 'primary',
-        },
-        {
-          value: '100%',
-          label: 'التزام بالابتكار التقني المستمر',
-          color: 'secondary',
-        },
-      ],
-    },
-    {
-      id: 'aqarthon-2025',
-      cardIcon: Trophy,
-      cardTitle: 'عقارثون 2025',
-      cardSubtitle: 'برنامج الابتكار العقاري',
-      highlightTitle: 'فوز فريق ملهمة ضمن الخمس المتأهلين',
-      description:
-        'سعداء بالإعلان عن فوز فريق ملهمة ضمن الخمس المتأهلين الأكثر إبداعاً وريادة في التكنولوجيا العقارية في المملكة العربية السعودية. هذا الإنجاز يعكس التميز التقني والابتكار في مجال التطوير العقاري.',
-      details: [
-        {
-          icon: Users,
-          text: 'فريق ملهمة',
-        },
-        {
-          icon: MapPin,
-          text: 'المملكة العربية السعودية',
-        },
-      ],
-      cta: [
-        {
-          type: 'primary',
-          label: 'عرض المشروع',
-          href: 'https://real-estateconsultations.netlify.app',
-        },
-        {
-          type: 'secondary',
-          label: 'شهادة الإبتكار الملهم',
-          href: '/Thun property certificate.pdf',
-        },
-        {
-          type: 'badge',
-          label: 'متأهل للنهائيات',
-          icon: Trophy,
-        },
-      ],
-      image: {
-        src: '/aqarthon_app.jpg',
-        alt: 'مشروع الرؤية العقارية - عقارثون',
-        overlayTitle: 'الرؤية العقارية',
-        overlaySubtitle: 'منصة الاستشارات العقارية المتطورة',
-        className: 'object-cover',
-      },
-      featuresTitle: 'صور من الحدث',
-      features: [
-        {
-          type: 'image',
-          src: '/aqarthon.jpg',
-          alt: 'صورة من عقارثون 1',
-          caption: 'صورة من عقارثون 1',
-        },
-        {
-          type: 'image',
-          src: '/aqarthon2.jpg',
-          alt: 'صورة من عقارثون 2',
-          caption: 'صورة من عقارثون 2',
-        },
-        {
-          type: 'image',
-          src: '/aqarthon3.jpg',
-          alt: 'صورة من عقارثون 3',
-          caption: 'صورة من عقارثون 3',
-        },
-      ],
-      stats: [
-        {
-          value: '5',
-          label: 'الفرق المتأهلة',
-          color: 'accent',
-        },
-        {
-          value: '1',
-          label: 'فريق ملهمة',
-          color: 'primary',
-        },
-        {
-          value: '100%',
-          label: 'التميز التقني',
-          color: 'secondary',
-        },
-      ],
-    },
-  ];
-
-  const NEWS_ITEMS = [...STATIC_NEWS_ITEMS, ...dynamicNews];
+  const NEWS_ITEMS = dynamicNews;
 
   useEffect(() => {
     if (NEWS_ITEMS.length === 0) return;
@@ -232,22 +88,47 @@ const NewsSection = () => {
               <p className='text-xl text-gray-400 max-w-3xl mx-auto'>
                 {SECTION_INTRO}
               </p>
+              <div className='mt-4 flex items-center justify-center gap-2 text-sm text-gray-500'>
+                <span>الخبر {activeIndex + 1} من {NEWS_ITEMS.length}</span>
+              </div>
             </div>
-            <div className='flex justify-center space-x-3 space-x-reverse'>
-              {NEWS_ITEMS.map((newsItem, index) => {
-                const isActive = index === activeIndex;
-                return (
-                  <button
-                    key={newsItem.id}
-                    onClick={() => setActiveIndex(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${isActive
-                      ? 'bg-primary-500 w-12'
-                      : 'bg-gray-700 hover:bg-primary-400 w-8'
-                      }`}
-                    aria-label={`عرض الخبر رقم ${index + 1}`}
-                  />
-                );
-              })}
+            <div className='flex justify-center items-center gap-4'>
+              <button
+                onClick={() => setActiveIndex((activeIndex - 1 + NEWS_ITEMS.length) % NEWS_ITEMS.length)}
+                className='p-2 rounded-full bg-dark-800 hover:bg-primary-500/20 border border-gray-700 hover:border-primary-500 transition-all'
+                aria-label='الخبر السابق'
+              >
+                <svg className='w-5 h-5 text-gray-400 hover:text-primary-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
+                </svg>
+              </button>
+
+              <div className='flex space-x-3 space-x-reverse'>
+                {NEWS_ITEMS.map((newsItem, index) => {
+                  const isActive = index === activeIndex;
+                  return (
+                    <button
+                      key={newsItem.id}
+                      onClick={() => setActiveIndex(index)}
+                      className={`h-2 rounded-full transition-all duration-300 ${isActive
+                        ? 'bg-primary-500 w-12'
+                        : 'bg-gray-700 hover:bg-primary-400 w-8'
+                        }`}
+                      aria-label={`عرض الخبر رقم ${index + 1}`}
+                    />
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setActiveIndex((activeIndex + 1) % NEWS_ITEMS.length)}
+                className='p-2 rounded-full bg-dark-800 hover:bg-primary-500/20 border border-gray-700 hover:border-primary-500 transition-all'
+                aria-label='الخبر التالي'
+              >
+                <svg className='w-5 h-5 text-gray-400 hover:text-primary-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -265,18 +146,30 @@ const NewsSection = () => {
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 items-center'>
                   {/* Content */}
                   <div className='space-y-6'>
-                    <div className='flex items-center space-x-3 space-x-reverse'>
-                      <div className='p-3 bg-primary-500/20 rounded-full'>
-                        <CardIcon className='h-8 w-8 text-primary-500' />
+                    <div className='flex items-start justify-between'>
+                      <div className='flex items-center space-x-3 space-x-reverse'>
+                        <div className='p-3 bg-primary-500/20 rounded-full'>
+                          <CardIcon className='h-8 w-8 text-primary-500' />
+                        </div>
+                        <div>
+                          <h3 className='text-2xl font-bold text-white'>
+                            {activeNews.cardTitle}
+                          </h3>
+                          <p className='text-primary-400'>
+                            {activeNews.cardSubtitle}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className='text-2xl font-bold text-white'>
-                          {activeNews.cardTitle}
-                        </h3>
-                        <p className='text-primary-400'>
-                          {activeNews.cardSubtitle}
-                        </p>
-                      </div>
+                      {/* شارة جديد للأخبار الحديثة */}
+                      {(() => {
+                        const newsDate = new Date(NEWS_ITEMS.find(n => n.id === activeNews.id)?.details[0]?.text || Date.now());
+                        const daysDiff = Math.floor((Date.now() - newsDate.getTime()) / (1000 * 60 * 60 * 24));
+                        return daysDiff < 30 && (
+                          <span className='px-3 py-1 bg-accent-500/20 text-accent-500 text-xs font-bold rounded-full border border-accent-500/30'>
+                            جديد
+                          </span>
+                        );
+                      })()}
                     </div>
 
                     <div className='space-y-4'>

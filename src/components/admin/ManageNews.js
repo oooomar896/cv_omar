@@ -1,4 +1,4 @@
-import { Newspaper, Plus, Trash2, Calendar, MessageSquare, X } from 'lucide-react';
+import { Newspaper, Plus, Trash2, Calendar, MessageSquare, X, Edit2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -6,21 +6,38 @@ import { dataService } from '../../utils/dataService';
 const ManageNews = () => {
     const [news, setNews] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newItem, setNewItem] = useState({
+    const [editMode, setEditMode] = useState(false);
+    const [currentItem, setCurrentItem] = useState({
         title: '',
         content: '',
+        image: ''
     });
 
     useEffect(() => {
         setNews(dataService.getNews());
     }, []);
 
-    const handleAddNews = (e) => {
+    const handleSaveNews = (e) => {
         e.preventDefault();
-        dataService.addNews(newItem);
+        if (editMode) {
+            dataService.updateNews(currentItem.id, currentItem);
+        } else {
+            dataService.addNews(currentItem);
+        }
         setNews(dataService.getNews());
         setIsModalOpen(false);
-        setNewItem({ title: '', content: '' });
+        resetForm();
+    };
+
+    const handleEditClick = (item) => {
+        setCurrentItem(item);
+        setEditMode(true);
+        setIsModalOpen(true);
+    };
+
+    const resetForm = () => {
+        setCurrentItem({ title: '', content: '', image: '' });
+        setEditMode(false);
     };
 
     const handleDelete = (id) => {
@@ -38,7 +55,7 @@ const ManageNews = () => {
                     إدارة الأخبار والنشاطات
                 </h2>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => { resetForm(); setIsModalOpen(true); }}
                     className="bg-primary-500 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-primary-600 transition-all font-cairo"
                 >
                     <Plus size={18} />
@@ -52,17 +69,30 @@ const ManageNews = () => {
                         key={item.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-dark-900 border border-gray-800 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-gray-700 transition-all"
+                        className="bg-dark-900 border border-gray-800 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-gray-700 transition-all group"
                     >
-                        <div className="space-y-2 flex-grow">
-                            <div className="flex items-center gap-3 text-xs text-gray-500 font-mono">
-                                <span className="flex items-center gap-1"><Calendar size={12} /> {item.date}</span>
-                                <span className="flex items-center gap-1"><MessageSquare size={12} /> تحديث شخصي</span>
+                        <div className="flex items-start gap-4 flex-grow">
+                            {item.image && (
+                                <div className="w-20 h-20 rounded-xl overflow-hidden hidden md:block border border-gray-800">
+                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                </div>
+                            )}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-3 text-xs text-gray-500 font-mono">
+                                    <span className="flex items-center gap-1"><Calendar size={12} /> {item.date}</span>
+                                    <span className="flex items-center gap-1"><MessageSquare size={12} /> تحديث مهني</span>
+                                </div>
+                                <h3 className="text-lg font-bold text-white transition-colors group-hover:text-primary-400">{item.title}</h3>
+                                <p className="text-gray-400 text-sm line-clamp-2 max-w-2xl">{item.content}</p>
                             </div>
-                            <h3 className="text-lg font-bold text-white">{item.title}</h3>
-                            <p className="text-gray-400 text-sm line-clamp-2 max-w-2xl">{item.content}</p>
                         </div>
-                        <div className="flex gap-2 shrink-0">
+                        <div className="flex gap-2 shrink-0 self-end md:self-center">
+                            <button
+                                onClick={() => handleEditClick(item)}
+                                className="p-3 bg-primary-500/10 text-primary-500 hover:bg-primary-500 hover:text-white rounded-xl transition-all"
+                            >
+                                <Edit2 size={18} />
+                            </button>
                             <button
                                 onClick={() => handleDelete(item.id)}
                                 className="p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all"
@@ -74,7 +104,7 @@ const ManageNews = () => {
                 ))}
             </div>
 
-            {/* Add News Modal */}
+            {/* Modal */}
             <AnimatePresence>
                 {isModalOpen && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -89,23 +119,35 @@ const ManageNews = () => {
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-lg p-8 relative z-10 shadow-2xl"
+                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-xl p-8 relative z-10 shadow-2xl h-[90vh] overflow-y-auto"
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold text-white">إضافة خبر أو نشاط</h2>
+                                <h2 className="text-2xl font-bold text-white">
+                                    {editMode ? 'تعديل الخبر' : 'إضافة خبر أو نشاط'}
+                                </h2>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white"><X /></button>
                             </div>
 
-                            <form onSubmit={handleAddNews} className="space-y-4">
+                            <form onSubmit={handleSaveNews} className="space-y-4">
                                 <div className="space-y-2">
                                     <label htmlFor="news-title" className="text-sm text-gray-400">عنوان الخبر</label>
                                     <input
                                         id="news-title"
                                         required
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={newItem.title}
-                                        onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
-                                        placeholder="مثلاً: الحصول على شهادة جديدة في الذكاء الاصطناعي"
+                                        value={currentItem.title}
+                                        onChange={(e) => setCurrentItem({ ...currentItem, title: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label htmlFor="news-image" className="text-sm text-gray-400">رابط الصورة (اختياري)</label>
+                                    <input
+                                        id="news-image"
+                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                        value={currentItem.image || ''}
+                                        onChange={(e) => setCurrentItem({ ...currentItem, image: e.target.value })}
+                                        placeholder="/images/news/example.jpg"
                                     />
                                 </div>
 
@@ -115,9 +157,8 @@ const ManageNews = () => {
                                         id="news-content"
                                         required
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none h-40"
-                                        value={newItem.content}
-                                        onChange={(e) => setNewItem({ ...newItem, content: e.target.value })}
-                                        placeholder="اكتب تفاصيل الخبر هنا..."
+                                        value={currentItem.content}
+                                        onChange={(e) => setCurrentItem({ ...currentItem, content: e.target.value })}
                                     />
                                 </div>
 
@@ -125,7 +166,7 @@ const ManageNews = () => {
                                     type="submit"
                                     className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all"
                                 >
-                                    نشر الخبر
+                                    {editMode ? 'تحديث الخبر' : 'نشر الخبر الآن'}
                                 </button>
                             </form>
                         </motion.div>

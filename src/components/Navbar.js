@@ -25,10 +25,11 @@ const Navbar = () => {
     { name: 'الأخبار', href: '#news' },
     { name: 'تواصل معي', href: '#contact' },
     { name: 'بناء مشروع AI', href: '/builder', isHighlight: true },
+    { name: 'بوابة العميل', href: '/portal/login', isSecondary: true },
   ];
 
-  const scrollToSection = (href, isHighlight) => {
-    if (isHighlight) {
+  const scrollToSection = (href) => {
+    if (!href.startsWith('#')) {
       window.location.href = href;
       return;
     }
@@ -44,8 +45,8 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-          ? 'bg-dark-900/95 backdrop-blur-md border-b border-gray-800'
-          : 'bg-transparent'
+        ? 'bg-dark-900/95 backdrop-blur-md border-b border-gray-800'
+        : 'bg-transparent'
         }`}
     >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -65,8 +66,12 @@ const Navbar = () => {
               {navItems.map(item => (
                 <button
                   key={item.name}
-                  onClick={() => scrollToSection(item.href, item.isHighlight)}
-                  className={`nav-link px-3 py-2 text-sm font-medium ${item.isHighlight ? 'text-primary-500 border border-primary-500/30 rounded-lg bg-primary-500/5 px-4' : ''
+                  onClick={() => scrollToSection(item.href)}
+                  className={`nav-link px-3 py-2 text-sm font-medium transition-all ${item.isHighlight
+                      ? 'text-primary-500 border border-primary-500/30 rounded-lg bg-primary-500/5 px-4 hover:bg-primary-500 hover:text-white'
+                      : item.isSecondary
+                        ? 'text-gray-400 border border-gray-700 rounded-lg px-4 hover:border-primary-500 hover:text-white'
+                        : ''
                     }`}
                 >
                   {item.name}

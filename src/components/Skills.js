@@ -10,12 +10,15 @@ const Skills = () => {
   const loadData = useCallback(() => {
     const adminSkills = dataService.getSkills();
     const adapted = adminSkills.map(s => ({
-      name: s.name,
-      level: s.level === 'Expert' ? 95 : s.level === 'Professional' ? 85 : 75,
-      color: 'from-primary-500 to-secondary-500',
-      category: s.category.toLowerCase().includes('front') ? 'web' :
-        s.category.toLowerCase().includes('back') ? 'backend' :
-          s.category.toLowerCase().includes('mobile') ? 'mobile' : 'ai'
+      ...s,
+      level: parseInt(s.level) || 75,
+      color: s.category === 'mobile' ? 'from-blue-500 to-indigo-500' :
+        s.category === 'web' ? 'from-orange-500 to-red-500' :
+          s.category === 'backend' ? 'from-green-500 to-emerald-500' :
+            s.category === 'ai' ? 'from-purple-500 to-pink-500' :
+              s.category === 'erp' ? 'from-amber-400 to-orange-600' :
+                s.category === 'design' ? 'from-cyan-400 to-blue-500' :
+                  'from-primary-500 to-secondary-500'
     }));
     setDynamicSkills(adapted);
   }, []);
@@ -36,56 +39,10 @@ const Skills = () => {
     { id: 'design', name: 'التصميم', icon: Palette },
   ];
 
-  const staticSkills = {
-    mobile: [
-      { name: 'Flutter', level: 95, color: 'from-blue-500 to-cyan-500' },
-      { name: 'React Native', level: 90, color: 'from-blue-600 to-blue-400' },
-      { name: 'Android', level: 85, color: 'from-green-500 to-green-400' },
-      { name: 'iOS', level: 80, color: 'from-gray-500 to-gray-400' },
-    ],
-    web: [
-      { name: 'HTML/CSS', level: 95, color: 'from-orange-500 to-red-500' },
-      { name: 'JavaScript', level: 90, color: 'from-yellow-500 to-yellow-400' },
-      { name: 'TypeScript', level: 85, color: 'from-blue-500 to-blue-600' },
-      { name: 'React.js', level: 88, color: 'from-cyan-500 to-blue-500' },
-      { name: 'Next.js', level: 82, color: 'from-gray-500 to-black' },
-    ],
-    backend: [
-      { name: 'Python', level: 85, color: 'from-blue-500 to-yellow-500' },
-      { name: 'PHP', level: 80, color: 'from-purple-500 to-blue-500' },
-      { name: 'Node.js', level: 75, color: 'from-green-500 to-green-600' },
-      { name: 'Firebase', level: 85, color: 'from-orange-500 to-yellow-500' },
-      { name: 'Supabase', level: 80, color: 'from-green-500 to-emerald-500' },
-    ],
-    ai: [
-      { name: 'OpenAI SDK', level: 90, color: 'from-emerald-500 to-teal-500' },
-      { name: 'LangChain', level: 85, color: 'from-blue-600 to-cyan-500' },
-      { name: 'AI Agents', level: 88, color: 'from-purple-500 to-indigo-500' },
-      { name: 'Vector DBs', level: 80, color: 'from-blue-500 to-blue-400' },
-    ],
-    erp: [
-      { name: 'Odoo', level: 90, color: 'from-green-500 to-blue-500' },
-      { name: 'PostgreSQL', level: 85, color: 'from-blue-500 to-blue-600' },
-      { name: 'MySQL', level: 80, color: 'from-orange-500 to-orange-600' },
-    ],
-    design: [
-      { name: 'UI/UX Design', level: 75, color: 'from-purple-500 to-pink-500' },
-      { name: 'Figma', level: 70, color: 'from-purple-500 to-purple-600' },
-      { name: 'Adobe XD', level: 65, color: 'from-pink-500 to-pink-600' },
-    ],
-  };
-
-  const allSkills = [
-    ...Object.keys(staticSkills).flatMap(cat =>
-      staticSkills[cat].map(s => ({ ...s, category: cat }))
-    ),
-    ...dynamicSkills
-  ];
-
   const filteredSkills =
     activeCategory === 'all'
-      ? allSkills
-      : allSkills.filter(s => s.category === activeCategory);
+      ? dynamicSkills
+      : dynamicSkills.filter(s => s.category === activeCategory);
 
   return (
     <section id='skills' className='py-20'>

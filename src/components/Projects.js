@@ -17,15 +17,19 @@ const Projects = () => {
 
   const loadData = useCallback(() => {
     const adminDocs = dataService.getProjects();
-    // تكييف صيغة بيانات الآدمن لتناسب واجهة المشاريع
     const adapted = adminDocs.map(p => ({
+      ...p,
       title: p.name,
       description: p.desc,
-      link: '#',
-      icon: p.category === 'web' ? Globe : p.category === 'mobile' ? Smartphone : Zap,
-      color: p.category === 'web' ? 'from-blue-500 to-cyan-500' : 'from-purple-500 to-indigo-500',
-      category: p.category,
-      isNew: true
+      icon: p.category === 'web' ? Globe :
+        p.category === 'mobile' ? Smartphone :
+          p.category === 'open-source' ? Github :
+            p.category === 'odoo' ? Database : Zap,
+      color: p.category === 'web' ? 'from-blue-500 to-cyan-500' :
+        p.category === 'mobile' ? 'from-purple-500 to-indigo-500' :
+          p.category === 'odoo' ? 'from-emerald-500 to-teal-500' :
+            p.category === 'open-source' ? 'from-gray-500 to-slate-700' :
+              'from-amber-500 to-orange-500',
     }));
     setDynamicProjects(adapted);
   }, []);
@@ -45,211 +49,10 @@ const Projects = () => {
     { id: 'open-source', name: 'مشاريع مفتوحة', icon: Github },
   ];
 
-  const staticProjects = {
-    mobile: [
-      {
-        title: 'تطبيق المقايضة - Swap App',
-        description: 'تطبيق مقايضة متقدم مع نظام إدارة ذكي',
-        link: 'https://play.google.com/store/apps/details?id=com.molhimah.swap',
-        icon: Play,
-        color: 'from-blue-500 to-cyan-500',
-        image: '/images/projects/swap-app.svg',
-      },
-      {
-        title: 'مزادات لايف - Auction Live',
-        description: 'منصة مزادات مباشرة مع دعم الفيديو',
-        link: 'https://play.google.com/store/apps/details?id=com.mulhmah_auctionlive',
-        icon: Play,
-        color: 'from-green-500 to-blue-500',
-        image: '/images/projects/auction-live.svg',
-      },
-      {
-        title: 'التطبيق الخيري - Charity App',
-        description: 'تطبيق للتبرعات والمشاريع الخيرية',
-        link: 'https://www.play.google.com/store/apps/details?id=com.charity_show',
-        icon: Play,
-        color: 'from-purple-500 to-pink-500',
-        image: '/images/projects/charity-app.svg',
-      },
-    ],
-    web: [
-      {
-        title: 'منصة نشر الأبحاث العربية - Research Assistant',
-        description:
-          'منصة رقمية شاملة لتمكين الباحثين العرب من تقديم أبحاثهم ونشرها عالميًا مع متابعة ولوحة تحكم وإشعارات ذكية',
-        link: 'https://res-assistant.com',
-        icon: Globe,
-        color: 'from-amber-500 to-orange-500',
-        image: '/logorest.png',
-        imageClass: 'object-contain bg-white/10 p-6',
-      },
-      {
-        title: 'YourHelp - مساعدك',
-        description: 'منصة حجز الخدمات والمساعدة عبر الإنترنت',
-        link: 'https://yourhelp.netlify.app/booking',
-        icon: Globe,
-        color: 'from-teal-500 to-emerald-500',
-        image: '/images/projects/yourhelp.svg',
-      },
-      {
-        title: 'الأخبار الاستثمارية - شركة باكورة',
-        description:
-          'منصة استثمارية تبرز أحدث الأخبار والبيانات المالية لشركة باكورة بطريقة تفاعلية وواضحة',
-        link: 'https://investor-bacura.netlify.app/',
-        icon: Globe,
-        color: 'from-blue-600 to-cyan-500',
-        image: '/images/projects/logob.png',
-        imageClass: 'object-contain bg-white/10 p-6',
-      },
-      {
-        title: 'العروض العقارية - Real Estate Offers',
-        description:
-          'منصة العروض العقارية الرائدة في المملكة العربية السعودية مع خريطة تفاعلية',
-        link: 'https://real-estate-offers.netlify.app/',
-        icon: Globe,
-        color: 'from-emerald-500 to-teal-500',
-        image: '/images/projects/real-estate-offers.svg',
-      },
-      {
-        title: 'كنشار - Kenshar',
-        description: 'منصة متكاملة لإنشاء وإدارة منصات استشارية مخصصة للشركات',
-        link: 'https://korcher2.netlify.app/',
-        icon: Globe,
-        color: 'from-indigo-500 to-purple-500',
-        image: '/images/projects/kenshar.svg',
-      },
-      {
-        title: 'الرؤية العقارية',
-        description: 'منصة للاستشارات العقارية',
-        link: 'https://real-estateconsultations.netlify.app',
-        icon: Globe,
-        color: 'from-orange-500 to-red-500',
-        image: '/images/projects/real-estate.svg',
-      },
-      {
-        title: 'مزادلي - Mzadly.com',
-        description: 'منصة مزادات إلكترونية متكاملة',
-        link: 'https://mzadlly.netlify.app/',
-        icon: Globe,
-        color: 'from-green-500 to-blue-500',
-        image: '/images/projects/mzadly.svg',
-      },
-      {
-        title: 'ملهمة العقارية - Molhimah.sa',
-        description: 'موقع عقاري احترافي',
-        link: 'https://molhimah.sa',
-        icon: Globe,
-        color: 'from-blue-500 to-purple-500',
-        image: '/images/projects/molhimah.svg',
-      },
-    ],
-    'ai-bots': [
-      {
-        title: 'بوت المساعد الذكي - AI Assistant',
-        description: 'بوت Telegram متطور يعتمد على GPT-4o لتقديم استشارات تقنية وأتمتة المهام',
-        link: 'https://github.com/oooomar896',
-        icon: Zap,
-        color: 'from-purple-600 to-indigo-600',
-        image: '/images/projects/ai-bot.svg',
-      },
-      {
-        title: 'نظام تحليل البيانات الآلي',
-        description: 'AI Agent مخصص لتحويل البيانات الخام إلى تقارير تفاعلية باستخدام LangChain',
-        link: 'https://github.com/oooomar896',
-        icon: Zap,
-        color: 'from-cyan-500 to-blue-500',
-        image: '/images/projects/ai-agent.svg',
-      },
-    ],
-    odoo: [
-      {
-        title: 'نظام إدارة الأملاك',
-        description: 'إدارة العقارات والعقود والمستأجرين',
-        link: 'https://github.com/oooomar896/module-Real-state',
-        icon: Github,
-        color: 'from-green-500 to-blue-500',
-        image: '/images/projects/real-estate-module.svg',
-      },
-      {
-        title: 'نظام حجز القاعات',
-        description: 'تقويم وجدولة الاجتماعات',
-        link: 'https://github.com/oooomar896/module-room-bookung',
-        icon: Github,
-        color: 'from-blue-500 to-cyan-500',
-        image: '/images/projects/room-booking.svg',
-      },
-      {
-        title: 'نظام الموارد البشرية',
-        description: 'إدارة الموظفين والحضور والإجازات',
-        link: 'https://github.com/oooomar896/mangemen_HR',
-        icon: Github,
-        color: 'from-purple-500 to-pink-500',
-        image: '/images/projects/hr-system.svg',
-      },
-      {
-        title: 'نظام المزادات',
-        description: 'ربط موقع المزادات مع Odoo',
-        link: 'https://github.com/oooomar896/Website_Auction_odoo',
-        icon: Github,
-        color: 'from-orange-500 to-yellow-500',
-        image: '/images/projects/auction-system.svg',
-      },
-    ],
-    'open-source': [
-      {
-        title: 'تطبيق القهوة (UI/Animation)',
-        description: 'تطبيق قهوة مع واجهة متحركة متقدمة',
-        link: 'https://github.com/oooomar896/coffee_app',
-        icon: Github,
-        color: 'from-brown-500 to-orange-500',
-        image: '/images/projects/coffee-app.svg',
-      },
-      {
-        title: 'متجر الكهرباء',
-        description: 'تطبيق متجر إلكتروني للمعدات الكهربائية',
-        link: 'https://github.com/oooomar896/electrical_store_app',
-        icon: Github,
-        color: 'from-yellow-500 to-orange-500',
-        image: '/images/projects/electrical-store.svg',
-      },
-      {
-        title: 'الآلة الحاسبة',
-        description: 'آلة حاسبة متقدمة مع واجهة جميلة',
-        link: 'https://github.com/oooomar896/Calculter',
-        icon: Github,
-        color: 'from-gray-500 to-blue-500',
-        image: '/images/projects/calculator.svg',
-      },
-      {
-        title: 'تطبيق اللاعبين',
-        description: 'تطبيق لإدارة فرق الألعاب',
-        link: 'https://github.com/oooomar896/players',
-        icon: Github,
-        color: 'from-green-500 to-blue-500',
-        image: '/images/projects/players-app.svg',
-      },
-      {
-        title: 'تطبيق الملاحظات',
-        description: 'تطبيق ملاحظات متقدم مع مزامنة',
-        link: 'https://github.com/oooomar896/note2',
-        icon: Github,
-        color: 'from-purple-500 to-pink-500',
-        image: '/images/projects/notes-app.svg',
-      },
-    ],
-  };
-
-  const allProjects = [
-    ...Object.keys(staticProjects).flatMap(cat =>
-      staticProjects[cat].map(p => ({ ...p, category: cat }))
-    ),
-    ...dynamicProjects
-  ];
-
   const filteredProjects =
     activeCategory === 'all'
-      ? allProjects
-      : allProjects.filter(p => p.category === activeCategory);
+      ? dynamicProjects
+      : dynamicProjects.filter(p => p.category === activeCategory);
 
   return (
     <section id='projects' className='py-20 bg-dark-900/50'>
@@ -280,8 +83,8 @@ const Projects = () => {
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               className={`flex items-center space-x-2 space-x-reverse px-6 py-3 rounded-full border transition-all duration-300 ${activeCategory === category.id
-                  ? 'border-primary-500 bg-primary-500/20 text-primary-500'
-                  : 'border-gray-600 text-gray-400 hover:border-primary-500 hover:text-primary-500'
+                ? 'border-primary-500 bg-primary-500/20 text-primary-500'
+                : 'border-gray-600 text-gray-400 hover:border-primary-500 hover:text-primary-500'
                 }`}
             >
               <category.icon className='h-5 w-5' />

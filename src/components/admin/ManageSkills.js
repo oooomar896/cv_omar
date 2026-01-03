@@ -6,22 +6,38 @@ import { dataService } from '../../utils/dataService';
 const ManageSkills = () => {
     const [skills, setSkills] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newSkill, setNewSkill] = useState({
+    const [editMode, setEditMode] = useState(false);
+    const [currentSkill, setCurrentSkill] = useState({
         name: '',
-        category: 'Frontend',
-        level: 'Expert'
+        category: 'web',
+        level: 80
     });
 
     useEffect(() => {
         setSkills(dataService.getSkills());
     }, []);
 
-    const handleAddSkill = (e) => {
+    const handleSaveSkill = (e) => {
         e.preventDefault();
-        dataService.addSkill(newSkill);
+        if (editMode) {
+            dataService.updateSkill(currentSkill.id, currentSkill);
+        } else {
+            dataService.addSkill(currentSkill);
+        }
         setSkills(dataService.getSkills());
         setIsModalOpen(false);
-        setNewSkill({ name: '', category: 'Frontend', level: 'Expert' });
+        resetForm();
+    };
+
+    const handleEditClick = (skill) => {
+        setCurrentSkill(skill);
+        setEditMode(true);
+        setIsModalOpen(true);
+    };
+
+    const resetForm = () => {
+        setCurrentSkill({ name: '', category: 'web', level: 80 });
+        setEditMode(false);
     };
 
     const handleDelete = (id) => {
@@ -39,7 +55,7 @@ const ManageSkills = () => {
                     المصفوفة التقنية
                 </h2>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => { resetForm(); setIsModalOpen(true); }}
                     className="bg-primary-500 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-primary-600 transition-all font-cairo"
                 >
                     <Plus size={18} />
@@ -55,7 +71,12 @@ const ManageSkills = () => {
                                 {skill.category}
                             </span>
                             <div className="flex gap-2">
-                                <button className="p-1.5 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white transition-all"><Edit2 size={14} /></button>
+                                <button
+                                    onClick={() => handleEditClick(skill)}
+                                    className="p-1.5 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white transition-all"
+                                >
+                                    <Edit2 size={14} />
+                                </button>
                                 <button
                                     onClick={() => handleDelete(skill.id)}
                                     className="p-1.5 hover:bg-red-500/10 rounded-lg text-gray-500 hover:text-red-500 transition-all"
@@ -66,14 +87,17 @@ const ManageSkills = () => {
                         </div>
                         <h3 className="text-lg font-bold text-white mb-1">{skill.name}</h3>
                         <div className="w-full bg-dark-800 h-1.5 rounded-full overflow-hidden mt-4">
-                            <div className="bg-primary-500 h-full w-[90%] rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                            <div
+                                className="bg-primary-500 h-full rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                                style={{ width: `${skill.level}%` }}
+                            />
                         </div>
-                        <p className="text-right text-[10px] text-gray-500 mt-2 font-mono">{skill.level}</p>
+                        <p className="text-right text-[10px] text-gray-500 mt-2 font-mono">{skill.level}%</p>
                     </div>
                 ))}
             </div>
 
-            {/* Add Skill Modal */}
+            {/* Modal */}
             <AnimatePresence>
                 {isModalOpen && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -91,54 +115,61 @@ const ManageSkills = () => {
                             className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-md p-8 relative z-10 shadow-2xl"
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold text-white">إضافة مهارة جديدة</h2>
+                                <h2 className="text-2xl font-bold text-white">
+                                    {editMode ? 'تعديل المهارة' : 'إضافة مهارة جديدة'}
+                                </h2>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white"><X /></button>
                             </div>
 
-                            <form onSubmit={handleAddSkill} className="space-y-4">
+                            <form onSubmit={handleSaveSkill} className="space-y-4">
                                 <div className="space-y-2">
                                     <label htmlFor="skill-name" className="text-sm text-gray-400">اسم المهارة</label>
                                     <input
                                         id="skill-name"
                                         required
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={newSkill.name}
-                                        onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
+                                        value={currentSkill.name}
+                                        onChange={(e) => setCurrentSkill({ ...currentSkill, name: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label htmlFor="skill-cat" className="text-sm text-gray-400">التصنيف</label>
-                                    <input
+                                    <select
                                         id="skill-cat"
-                                        required
                                         className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={newSkill.category}
-                                        onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-                                        placeholder="مثلاً: Frontend, AI, Database"
-                                    />
+                                        value={currentSkill.category}
+                                        onChange={(e) => setCurrentSkill({ ...currentSkill, category: e.target.value })}
+                                    >
+                                        <option value="web">الواجهات الأمامية</option>
+                                        <option value="mobile">تطبيقات الموبايل</option>
+                                        <option value="backend">البرمجة الخلفية</option>
+                                        <option value="ai">الذكاء الاصطناعي</option>
+                                        <option value="erp">أنظمة ERP</option>
+                                        <option value="design">التصميم</option>
+                                    </select>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="skill-level" className="text-sm text-gray-400">المستوى</label>
-                                    <select
+                                    <div className="flex justify-between">
+                                        <label htmlFor="skill-level" className="text-sm text-gray-400">المستوى: {currentSkill.level}%</label>
+                                    </div>
+                                    <input
                                         id="skill-level"
-                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={newSkill.level}
-                                        onChange={(e) => setNewSkill({ ...newSkill, level: e.target.value })}
-                                    >
-                                        <option value="Expert">Expert</option>
-                                        <option value="Professional">Professional</option>
-                                        <option value="Advanced">Advanced</option>
-                                        <option value="Intermediate">Intermediate</option>
-                                    </select>
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        className="w-full h-2 bg-dark-800 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                                        value={currentSkill.level}
+                                        onChange={(e) => setCurrentSkill({ ...currentSkill, level: parseInt(e.target.value) })}
+                                    />
                                 </div>
 
                                 <button
                                     type="submit"
                                     className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all mt-4"
                                 >
-                                    حفظ المهارة
+                                    {editMode ? 'تحديث المهارة' : 'حفظ المهارة'}
                                 </button>
                             </form>
                         </motion.div>

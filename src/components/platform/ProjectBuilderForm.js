@@ -15,6 +15,7 @@ import ProcessingStatus from './ProcessingStatus';
 import FileViewer from './FileViewer';
 import { coderAgent } from '../../utils/coderAgentLogic';
 import { qaAgent } from '../../utils/qaAgentLogic';
+import { dataService } from '../../utils/dataService';
 
 const ProjectBuilderForm = () => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -35,8 +36,27 @@ const ProjectBuilderForm = () => {
     };
 
     const handleNext = () => {
-        if (currentStep === FORM_STEPS.length - 1) {
+        if (currentStep === 3) {
+            // التحقق من صحة البيانات قبل الانتقال للتحليل
+            if (!formData.userName || !formData.email) {
+                alert('يرجى إكمال بياناتك (الاسم والبريد الإلكتروني) للمتابعة');
+                return;
+            }
             setShowAnalysis(true);
+        } else if (currentStep === 1) {
+            // التحقق من إجابة الأسئلة المخصصة
+            const questions = DYNAMIC_QUESTIONS[formData.type] || [];
+            if (Object.keys(formData.specificAnswers).length < questions.length) {
+                alert('يرجى الإجابة على جميع الأسئلة للمتابعة');
+                return;
+            }
+            setCurrentStep(currentStep + 1);
+        } else if (currentStep === 2) {
+            if (!formData.description || formData.description.length < 10) {
+                alert('يرجى كتابة وصف أطول لفكرتك لضمان جودة التحليل');
+                return;
+            }
+            setCurrentStep(currentStep + 1);
         } else {
             setCurrentStep(currentStep + 1);
         }
@@ -75,6 +95,15 @@ const ProjectBuilderForm = () => {
                 onComplete={async () => {
                     const result = await coderAgent.generateProject(formData);
                     const report = await qaAgent.reviewProject();
+
+                    // حفظ المشروع في سجل المستخدم
+                    dataService.saveGeneratedProject(`proj_${Date.now()}`, {
+                        userEmail: formData.email,
+                        userName: formData.userName,
+                        projectType: formData.type,
+                        ...result
+                    });
+
                     setGeneratedProject(result);
                     setQaReport(report);
                     setIsProcessing(false);
@@ -84,7 +113,21 @@ const ProjectBuilderForm = () => {
     }
 
     if (showAnalysis) {
-        return <AnalysisPreview ideaData={formData} onConfirm={() => setIsProcessing(true)} />;
+        return (
+            <AnalysisPreview
+                ideaData={formData}
+                onConfirm={() => {
+                    // حفظ المستخدم في قاعدة البيانات (Lead Generation)
+                    dataService.addUser({
+                        name: formData.userName || 'مستخدم مجهول',
+                        email: formData.email,
+                        phone: formData.phone || 'غير مفور',
+                        projectType: formData.type
+                    });
+                    setIsProcessing(true);
+                }}
+            />
+        );
     }
 
     const renderStep = () => {
@@ -179,21 +222,54 @@ const ProjectBuilderForm = () => {
                     </div>
                 );
 
-            case 3: // Step: Final Review & Email
+            case 3: // Step: Final Review & User Info
                 return (
-                    <div className="space-y-8 text-center">
+                    <div className="space-y-8 text-center max-w-lg mx-auto">
                         <div className="inline-flex p-4 bg-green-500/20 rounded-full mb-4">
                             <CheckCircle2 className="h-12 w-12 text-green-500" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">تم تجهيز مخطط المشروع!</h3>
-                        <p className="text-gray-400">أدخل بريدك الإلكتروني لنرسل لك التقرير المبدئي ورابط الدفع لبدء التوليد.</p>
-                        <input
-                            type="email"
-                            className="w-full max-w-md mx-auto block px-6 py-4 bg-dark-800 border border-gray-700 rounded-xl text-white text-center focus:border-primary-500 outline-none"
-                            placeholder="your-email@example.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
+                        <h3 className="text-2xl font-bold text-white">خطوة واحدة باقية!</h3>
+                        <p className="text-gray-400">يرجى تزويدنا ببياناتك لنتمكن من حفظ المشروع في حسابك والتواصل معك بشأن التطبيق.</p>
+
+                        <div className="space-y-4 text-right">
+                            <div className="space-y-2">
+                                <label htmlFor="user-name" className="text-sm text-gray-400 mr-2">الاسم الكامل</label>
+                                <input
+                                    id="user-name"
+                                    required
+                                    type="text"
+                                    className="w-full px-6 py-4 bg-dark-800 border border-gray-700 rounded-xl text-white focus:border-primary-500 outline-none"
+                                    placeholder="أدخل اسمك الكريم"
+                                    value={formData.userName || ''}
+                                    onChange={(e) => setFormData({ ...formData, userName: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="user-email" className="text-sm text-gray-400 mr-2">البريد الإلكتروني</label>
+                                <input
+                                    id="user-email"
+                                    required
+                                    type="email"
+                                    className="w-full px-6 py-4 bg-dark-800 border border-gray-700 rounded-xl text-white focus:border-primary-500 outline-none font-sans"
+                                    placeholder="your-email@example.com"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="user-phone" className="text-sm text-gray-400 mr-2">رقم الهاتف</label>
+                                <input
+                                    id="user-phone"
+                                    type="tel"
+                                    className="w-full px-6 py-4 bg-dark-800 border border-gray-700 rounded-xl text-white focus:border-primary-500 outline-none font-sans"
+                                    placeholder="+966 5X XXX XXXX"
+                                    value={formData.phone || ''}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                />
+                            </div>
+                        </div>
                     </div>
                 );
 
