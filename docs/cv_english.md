@@ -11,7 +11,7 @@
 
 ## 🚀 Professional Summary
 
-Experienced **Flutter**, **React Native**, and **Odoo** developer with extensive expertise in building robust, scalable enterprise solutions. Specialized in mobile app development, ERP systems, and accounting software. Passionate about innovative solutions, exceptional user experiences, and technical excellence with a proven track record in custom solution design, project management, and team coordination.
+Experienced **Flutter**, **React Native**, **Odoo**, and **AI / LLM** developer with extensive expertise in building robust, scalable enterprise solutions. Specialized in mobile app development, ERP systems, and AI-driven automation. Passionate about innovative solutions, exceptional user experiences, and technical excellence with a proven track record in custom solution design, project management, and team coordination.
 
 **Core Strengths:**
 - ✅ Creative problem-solving and user experience optimization
@@ -23,9 +23,10 @@ Experienced **Flutter**, **React Native**, and **Odoo** developer with extensive
 
 ## 🛠️ Technical Skills
 
-### **Mobile Development**
+### **Mobile & AI Development**
 - **Flutter** - Cross-platform mobile app development (Android, iOS)
 - **React Native** - Native mobile applications with Redux
+- **Artificial Intelligence** - OpenAI API, LangChain, AI Agents, Prompt Engineering
 - **Firebase** - Backend services, authentication, cloud messaging
 
 ### **ERP & Backend Development**

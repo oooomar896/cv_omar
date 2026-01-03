@@ -24,9 +24,14 @@ const Navbar = () => {
     { name: 'المشاريع', href: '#projects' },
     { name: 'الأخبار', href: '#news' },
     { name: 'تواصل معي', href: '#contact' },
+    { name: 'بناء مشروع AI', href: '/builder', isHighlight: true },
   ];
 
-  const scrollToSection = href => {
+  const scrollToSection = (href, isHighlight) => {
+    if (isHighlight) {
+      window.location.href = href;
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -38,11 +43,10 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
           ? 'bg-dark-900/95 backdrop-blur-md border-b border-gray-800'
           : 'bg-transparent'
-      }`}
+        }`}
     >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between h-16'>
@@ -61,8 +65,9 @@ const Navbar = () => {
               {navItems.map(item => (
                 <button
                   key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className='nav-link px-3 py-2 text-sm font-medium'
+                  onClick={() => scrollToSection(item.href, item.isHighlight)}
+                  className={`nav-link px-3 py-2 text-sm font-medium ${item.isHighlight ? 'text-primary-500 border border-primary-500/30 rounded-lg bg-primary-500/5 px-4' : ''
+                    }`}
                 >
                   {item.name}
                 </button>

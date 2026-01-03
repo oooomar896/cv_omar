@@ -7,9 +7,10 @@ const Skills = () => {
 
   const skillCategories = [
     { id: 'all', name: 'الكل', icon: Code2 },
-    { id: 'mobile', name: 'تطوير التطبيقات', icon: Smartphone },
+    { id: 'mobile', name: 'تطبيقات موبايل', icon: Smartphone },
     { id: 'web', name: 'الواجهات الأمامية', icon: Globe },
     { id: 'backend', name: 'البرمجة الخلفية', icon: Database },
+    { id: 'ai', name: 'الذكاء الاصطناعي', icon: Zap },
     { id: 'erp', name: 'أنظمة ERP', icon: Zap },
     { id: 'design', name: 'التصميم', icon: Palette },
   ];
@@ -34,6 +35,12 @@ const Skills = () => {
       { name: 'Node.js', level: 75, color: 'from-green-500 to-green-600' },
       { name: 'Firebase', level: 85, color: 'from-orange-500 to-yellow-500' },
       { name: 'Supabase', level: 80, color: 'from-green-500 to-emerald-500' },
+    ],
+    ai: [
+      { name: 'OpenAI SDK', level: 90, color: 'from-emerald-500 to-teal-500' },
+      { name: 'LangChain', level: 85, color: 'from-blue-600 to-cyan-500' },
+      { name: 'AI Agents', level: 88, color: 'from-purple-500 to-indigo-500' },
+      { name: 'Vector DBs', level: 80, color: 'from-blue-500 to-blue-400' },
     ],
     erp: [
       { name: 'Odoo', level: 90, color: 'from-green-500 to-blue-500' },
@@ -81,11 +88,10 @@ const Skills = () => {
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`flex items-center space-x-2 space-x-reverse px-6 py-3 rounded-full border transition-all duration-300 ${
-                activeCategory === category.id
+              className={`flex items-center space-x-2 space-x-reverse px-6 py-3 rounded-full border transition-all duration-300 ${activeCategory === category.id
                   ? 'border-primary-500 bg-primary-500/20 text-primary-500'
                   : 'border-gray-600 text-gray-400 hover:border-primary-500 hover:text-primary-500'
-              }`}
+                }`}
             >
               <category.icon className='h-5 w-5' />
               <span>{category.name}</span>

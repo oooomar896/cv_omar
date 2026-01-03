@@ -7,6 +7,7 @@ import {
   Globe,
   Database,
   Smartphone,
+  Zap,
 } from 'lucide-react';
 
 const Projects = () => {
@@ -16,6 +17,7 @@ const Projects = () => {
     { id: 'all', name: 'الكل', icon: Globe },
     { id: 'mobile', name: 'تطبيقات موبايل', icon: Smartphone },
     { id: 'web', name: 'مواقع إلكترونية', icon: Globe },
+    { id: 'ai-bots', name: 'بوتات ذكاء اصطناعي', icon: Zap },
     { id: 'odoo', name: 'موديولات Odoo', icon: Database },
     { id: 'open-source', name: 'مشاريع مفتوحة', icon: Github },
   ];
@@ -116,6 +118,24 @@ const Projects = () => {
         icon: Globe,
         color: 'from-blue-500 to-purple-500',
         image: '/images/projects/molhimah.svg',
+      },
+    ],
+    'ai-bots': [
+      {
+        title: 'بوت المساعد الذكي - AI Assistant',
+        description: 'بوت Telegram متطور يعتمد على GPT-4o لتقديم استشارات تقنية وأتمتة المهام',
+        link: 'https://github.com/oooomar896',
+        icon: Zap,
+        color: 'from-purple-600 to-indigo-600',
+        image: '/images/projects/ai-bot.svg',
+      },
+      {
+        title: 'نظام تحليل البيانات الآلي',
+        description: 'AI Agent مخصص لتحويل البيانات الخام إلى تقارير تفاعلية باستخدام LangChain',
+        link: 'https://github.com/oooomar896',
+        icon: Zap,
+        color: 'from-cyan-500 to-blue-500',
+        image: '/images/projects/ai-agent.svg',
       },
     ],
     odoo: [

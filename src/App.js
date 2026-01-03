@@ -13,6 +13,7 @@ const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
 const NewsSection = lazy(() => import('./components/NewsSection'));
 const Contact = lazy(() => import('./components/Contact'));
+const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -53,6 +54,16 @@ function App() {
                         <Contact />
                       </Suspense>
                     </motion.div>
+                  }
+                />
+                <Route
+                  path='/builder'
+                  element={
+                    <Suspense fallback={<LoadingFallback />}>
+                      <div className="pt-24 pb-12">
+                        <ProjectBuilderForm />
+                      </div>
+                    </Suspense>
                   }
                 />
               </Routes>
