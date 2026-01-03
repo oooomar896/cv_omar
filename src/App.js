@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -14,6 +14,11 @@ const Projects = lazy(() => import('./components/Projects'));
 const NewsSection = lazy(() => import('./components/NewsSection'));
 const Contact = lazy(() => import('./components/Contact'));
 const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const DashboardHome = lazy(() => import('./components/admin/DashboardHome'));
+const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
+const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
+const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -27,49 +32,76 @@ const LoadingFallback = () => (
   </div>
 );
 
+const AppContent = () => {
+  const { pathname } = useLocation();
+  const isAdminPath = pathname.startsWith('/admin');
+
+  return (
+    <div className='min-h-screen bg-dark-950 text-white font-cairo'>
+      {!isAdminPath && <Navbar />}
+      <AnimatePresence mode='wait'>
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Suspense fallback={<LoadingFallback />}>
+                  <Hero />
+                  <About />
+                  <Skills />
+                  <Projects />
+                  <NewsSection />
+                  <Contact />
+                </Suspense>
+              </motion.div>
+            }
+          />
+          <Route
+            path='/builder'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <div className="pt-24 pb-12">
+                  <ProjectBuilderForm />
+                </div>
+              </Suspense>
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route
+            path='/admin/*'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <AdminLayout>
+                  <Routes>
+                    <Route index element={<DashboardHome />} />
+                    <Route path="projects" element={<ManageProjects />} />
+                    <Route path="skills" element={<ManageSkills />} />
+                    <Route path="users" element={<ManageUsers />} />
+                    <Route path="settings" element={<div className="p-8 text-center text-gray-400">قريباً: إعدادات النظام المتقدمة</div>} />
+                  </Routes>
+                </AdminLayout>
+              </Suspense>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
+      {!isAdminPath && <Footer />}
+    </div>
+  );
+};
+
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <Router>
-          <div className='min-h-screen bg-dark-950 text-white font-cairo'>
-            <Navbar />
-            <AnimatePresence mode='wait'>
-              <Routes>
-                <Route
-                  path='/'
-                  element={
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <Suspense fallback={<LoadingFallback />}>
-                        <Hero />
-                        <About />
-                        <Skills />
-                        <Projects />
-                        <NewsSection />
-                        <Contact />
-                      </Suspense>
-                    </motion.div>
-                  }
-                />
-                <Route
-                  path='/builder'
-                  element={
-                    <Suspense fallback={<LoadingFallback />}>
-                      <div className="pt-24 pb-12">
-                        <ProjectBuilderForm />
-                      </div>
-                    </Suspense>
-                  }
-                />
-              </Routes>
-            </AnimatePresence>
-            <Footer />
-          </div>
+          <AppContent />
         </Router>
       </ThemeProvider>
     </ErrorBoundary>

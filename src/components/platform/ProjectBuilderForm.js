@@ -6,7 +6,8 @@ import {
     Zap,
     ArrowLeft,
     ArrowRight,
-    CheckCircle2
+    CheckCircle2,
+    Sparkles
 } from 'lucide-react';
 import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS } from '../../constants/platformConstants';
 import AnalysisPreview from './AnalysisPreview';
@@ -198,6 +199,23 @@ const ProjectBuilderForm = () => {
 
     return (
         <div className="max-w-4xl mx-auto py-12 px-4">
+            {/* Beta Announcement */}
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mb-8 p-4 bg-primary-500/10 border border-primary-500/20 rounded-2xl flex items-center gap-4 text-primary-400"
+            >
+                <div className="p-2 bg-primary-500/20 rounded-lg">
+                    <Sparkles className="h-5 w-5" />
+                </div>
+                <div className="text-sm">
+                    <span className="font-bold ml-1">مرحلة البيتا (Beta):</span>
+                    المنصة حالياً في طور التطوير، جميع ميزات توليد الكود متاحة
+                    <span className="text-white font-bold mx-1 text-base">مجانًا</span>
+                    لفترة محدودة لدعم المبتكرين.
+                </div>
+            </motion.div>
+
             {/* Progress Stepper */}
             <div className="flex justify-between mb-12 relative">
                 <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 z-0" />

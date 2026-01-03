@@ -70,7 +70,7 @@ const AnalysisPreview = ({ ideaData, onConfirm }) => {
                     onClick={onConfirm}
                     className="bg-primary-500 hover:bg-primary-600 text-white px-12 py-4 rounded-2xl font-bold text-xl shadow-2xl shadow-primary-500/30 transition-all flex items-center gap-4"
                 >
-                    <span>تأكيد وبدء التوليد (500 ريال)</span>
+                    <span>تأكيد وبدء التوليد (مجانًا لفترة محدودة)</span>
                     <ArrowRight className="h-6 w-6" />
                 </button>
             </div>
