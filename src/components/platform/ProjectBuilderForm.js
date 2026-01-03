@@ -11,11 +11,14 @@ import {
 import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS } from '../../constants/platformConstants';
 import AnalysisPreview from './AnalysisPreview';
 import ProcessingStatus from './ProcessingStatus';
+import FileViewer from './FileViewer';
+import { coderAgent } from '../../utils/coderAgentLogic';
 
 const ProjectBuilderForm = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [generatedProject, setGeneratedProject] = useState(null);
     const [formData, setFormData] = useState({
         type: '',
         description: '',
@@ -52,8 +55,26 @@ const ProjectBuilderForm = () => {
         });
     };
 
+    if (generatedProject) {
+        return (
+            <FileViewer
+                files={generatedProject.files}
+                onDownload={() => alert('جاري تحميل حزمة المشروع...')}
+            />
+        );
+    }
+
     if (isProcessing) {
-        return <ProcessingStatus projectData={formData} onComplete={() => alert('تم الانتهاء!')} />;
+        return (
+            <ProcessingStatus
+                projectData={formData}
+                onComplete={async () => {
+                    const result = await coderAgent.generateProject(formData);
+                    setGeneratedProject(result);
+                    setIsProcessing(false);
+                }}
+            />
+        );
     }
 
     if (showAnalysis) {
@@ -89,7 +110,7 @@ const ProjectBuilderForm = () => {
                     </div>
                 );
 
-            case 1: // Step: Specific Details based on Type
+            case 1: { // Step: Specific Details based on Type
                 const questions = DYNAMIC_QUESTIONS[formData.type] || [];
                 return (
                     <div className="space-y-8">
@@ -106,8 +127,8 @@ const ProjectBuilderForm = () => {
                                                         key={opt}
                                                         onClick={() => updateSpecificAnswer(q.id, opt === 'نعم')}
                                                         className={`px-6 py-2 rounded-lg border transition-all ${formData.specificAnswers[q.id] === (opt === 'نعم')
-                                                                ? 'bg-primary-500 border-primary-500 text-white'
-                                                                : 'border-gray-600 text-gray-400 hover:border-primary-500'
+                                                            ? 'bg-primary-500 border-primary-500 text-white'
+                                                            : 'border-gray-600 text-gray-400 hover:border-primary-500'
                                                             }`}
                                                     >
                                                         {opt}
@@ -121,8 +142,8 @@ const ProjectBuilderForm = () => {
                                                         key={opt}
                                                         onClick={() => updateSpecificAnswer(q.id, opt)}
                                                         className={`px-4 py-3 rounded-xl border text-sm transition-all ${formData.specificAnswers[q.id] === opt
-                                                                ? 'bg-primary-500/20 border-primary-500 text-primary-500'
-                                                                : 'border-gray-700 text-gray-400 hover:border-gray-500'
+                                                            ? 'bg-primary-500/20 border-primary-500 text-primary-500'
+                                                            : 'border-gray-700 text-gray-400 hover:border-gray-500'
                                                             }`}
                                                     >
                                                         {opt}
@@ -136,6 +157,7 @@ const ProjectBuilderForm = () => {
                         </div>
                     </div>
                 );
+            }
 
             case 2: // Step: Description
                 return (
@@ -235,8 +257,8 @@ const SelectionCard = ({ icon: Icon, title, desc, onClick, selected }) => (
     <button
         onClick={onClick}
         className={`p-8 rounded-3xl border-2 text-right transition-all group ${selected
-                ? 'bg-primary-500/10 border-primary-500 shadow-xl shadow-primary-500/10'
-                : 'bg-dark-800 border-gray-700 hover:border-primary-500/50'
+            ? 'bg-primary-500/10 border-primary-500 shadow-xl shadow-primary-500/10'
+            : 'bg-dark-800 border-gray-700 hover:border-primary-500/50'
             }`}
     >
         <div className={`w-14 h-14 rounded-2xl mb-6 flex items-center justify-center transition-all ${selected ? 'bg-primary-500 text-white' : 'bg-dark-700 text-gray-400 group-hover:text-primary-500'

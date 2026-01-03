@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Code2,
     Terminal,
@@ -17,7 +17,7 @@ const ProcessingStatus = ({ projectData, onComplete }) => {
     const [isFinished, setIsFinished] = useState(false);
 
     const stages = [
-        { id: 'analysis', label: 'تحليل المتطلبات وهندسة البرومبتات', icon: Search },
+        { id: 'analysis', label: 'تحليل المتطلبات وهندسة البرومجيات', icon: Search },
         { id: 'structure', label: 'بناء هيكل المجلدات والملفات', icon: Settings },
         { id: 'coding', label: 'توليد الكود البرمجي (AI Coding)', icon: Code2 },
         { id: 'packaging', label: 'تجهيز ملف الـ ZIP والوثائق', icon: Terminal },
@@ -63,8 +63,8 @@ const ProcessingStatus = ({ projectData, onComplete }) => {
                     return (
                         <div key={s.id} className="relative z-10 flex flex-col items-center gap-3">
                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg ${isDone ? 'bg-green-500 text-white shadow-green-500/20' :
-                                    isActive ? 'bg-primary-500 text-white animate-pulse shadow-primary-500/20' :
-                                        'bg-dark-800 text-gray-600 border border-gray-700'
+                                isActive ? 'bg-primary-500 text-white animate-pulse shadow-primary-500/20' :
+                                    'bg-dark-800 text-gray-600 border border-gray-700'
                                 }`}>
                                 {isDone ? <CheckCircle2 className="h-7 w-7" /> : <Icon className="h-7 w-7" />}
                             </div>
