@@ -6,15 +6,19 @@ import {
     FileText,
     Package,
     Eye,
-    Download
+    Download,
+    ShieldCheck,
+    CheckCircle2,
+    AlertTriangle
 } from 'lucide-react';
 
-const FileViewer = ({ files, onDownload }) => {
+const FileViewer = ({ files, onDownload, qaReport }) => {
     const [selectedFile, setSelectedFile] = useState(Object.keys(files)[0]);
 
     return (
         <div className="max-w-6xl mx-auto py-12 px-4 space-y-8">
-            <div className="flex justify-between items-end">
+            {/* Header with QA Score */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2 text-primary-500 font-mono text-sm">
                         <Terminal className="h-4 w-4" />
@@ -22,14 +26,46 @@ const FileViewer = ({ files, onDownload }) => {
                     </div>
                     <h2 className="text-3xl font-bold text-white">معاينة ملفات المشروع</h2>
                 </div>
+
+                {qaReport && (
+                    <div className="flex items-center gap-4 bg-dark-800 border border-gray-700 p-2 rounded-2xl pr-6">
+                        <div className="text-left">
+                            <p className="text-[10px] text-gray-500 uppercase tracking-widest leading-none mb-1">QA Score</p>
+                            <p className="text-2xl font-black text-white leading-none">{qaReport.score}%</p>
+                        </div>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+                            <ShieldCheck className="h-7 w-7 text-emerald-500" />
+                        </div>
+                    </div>
+                )}
+
                 <button
                     onClick={onDownload}
-                    className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary-500/20"
+                    className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary-500/20 w-full md:w-auto justify-center"
                 >
                     <Download className="h-5 w-5" />
                     <span>تحميل الكل (.zip)</span>
                 </button>
             </div>
+
+            {/* QA Insights Bar */}
+            {qaReport && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    {qaReport.checks.map((check) => (
+                        <div key={check.id} className="bg-dark-900/50 border border-gray-800 p-4 rounded-xl flex items-center gap-3">
+                            {check.status === 'pass' ? (
+                                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                            ) : (
+                                <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                            )}
+                            <div className="min-w-0">
+                                <p className="text-xs font-bold text-gray-200 truncate">{check.title}</p>
+                                <p className="text-[10px] text-gray-500 truncate">{check.msg}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[600px]">
                 {/* Sidebar - File Tree */}

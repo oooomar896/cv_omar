@@ -14,12 +14,14 @@ import AnalysisPreview from './AnalysisPreview';
 import ProcessingStatus from './ProcessingStatus';
 import FileViewer from './FileViewer';
 import { coderAgent } from '../../utils/coderAgentLogic';
+import { qaAgent } from '../../utils/qaAgentLogic';
 
 const ProjectBuilderForm = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [generatedProject, setGeneratedProject] = useState(null);
+    const [qaReport, setQaReport] = useState(null);
     const [formData, setFormData] = useState({
         type: '',
         description: '',
@@ -60,6 +62,7 @@ const ProjectBuilderForm = () => {
         return (
             <FileViewer
                 files={generatedProject.files}
+                qaReport={qaReport}
                 onDownload={() => alert('جاري تحميل حزمة المشروع...')}
             />
         );
@@ -71,7 +74,9 @@ const ProjectBuilderForm = () => {
                 projectData={formData}
                 onComplete={async () => {
                     const result = await coderAgent.generateProject(formData);
+                    const report = await qaAgent.reviewProject();
                     setGeneratedProject(result);
+                    setQaReport(report);
                     setIsProcessing(false);
                 }}
             />

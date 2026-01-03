@@ -7,14 +7,16 @@ import {
     Download,
     Settings,
     Search,
-    FileCode
+    FileCode,
+    ShieldCheck
 } from 'lucide-react';
 
 const stages = [
-    { id: 'analysis', label: 'تحليل المتطلبات وهندسة البرومجيات', icon: Search },
-    { id: 'structure', label: 'بناء هيكل المجلدات والملفات', icon: Settings },
-    { id: 'coding', label: 'توليد الكود البرمجي (AI Coding)', icon: Code2 },
-    { id: 'packaging', label: 'تجهيز ملف الـ ZIP والوثائق', icon: Terminal },
+    { id: 'analysis', label: 'تحليل المتطلبات', icon: Search },
+    { id: 'structure', label: 'بناء الهيكل', icon: Settings },
+    { id: 'coding', label: 'توليد الكود', icon: Code2 },
+    { id: 'qa', label: 'فحص الجودة (QA)', icon: ShieldCheck },
+    { id: 'packaging', label: 'تجهيز الملفات', icon: Terminal },
 ];
 
 const ProcessingStatus = ({ onComplete }) => {
@@ -34,8 +36,19 @@ const ProcessingStatus = ({ onComplete }) => {
 
             for (let i = 0; i < stages.length; i++) {
                 setStage(i);
-                addLog(`جاري تنفيذ: ${stages[i].label}...`);
-                await delay(2000 + Math.random() * 2000);
+                addLog(`🔄 جاري تنفيذ: ${stages[i].label}...`);
+
+                if (stages[i].id === 'qa') {
+                    await delay(1000);
+                    addLog("🔍 فحص بنية الملفات (Linting)...");
+                    await delay(1500);
+                    addLog("🛡️ التأكد من المعايير الأمنية...");
+                    await delay(1000);
+                    addLog("✨ وكيل الـ QA: الكود سليم وجاهز للتجهيز.");
+                } else {
+                    await delay(2000 + Math.random() * 2000);
+                }
+
                 addLog(`✅ اكتملت مرحلة ${stages[i].label}`);
             }
 

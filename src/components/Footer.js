@@ -121,6 +121,12 @@ const Footer = () => {
               <p className="text-gray-400">
                 © {currentYear} عمر حميد العديني. جميع الحقوق محفوظة.
               </p>
+              <a
+                href="/admin/login"
+                className="text-[10px] text-gray-800 hover:text-primary-500/50 transition-colors mt-2 inline-block ml-2"
+              >
+                بوابة الإدارة
+              </a>
             </div>
 
             <div className="flex items-center space-x-4 space-x-reverse">
