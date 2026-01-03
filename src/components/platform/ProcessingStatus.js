@@ -1,27 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Code2,
     Terminal,
     CheckCircle2,
-    Loader2,
     Download,
     Settings,
     Search,
     FileCode
 } from 'lucide-react';
 
-const ProcessingStatus = ({ projectData, onComplete }) => {
+const stages = [
+    { id: 'analysis', label: 'تحليل المتطلبات وهندسة البرومجيات', icon: Search },
+    { id: 'structure', label: 'بناء هيكل المجلدات والملفات', icon: Settings },
+    { id: 'coding', label: 'توليد الكود البرمجي (AI Coding)', icon: Code2 },
+    { id: 'packaging', label: 'تجهيز ملف الـ ZIP والوثائق', icon: Terminal },
+];
+
+const ProcessingStatus = ({ onComplete }) => {
     const [stage, setStage] = useState(0);
     const [logs, setLogs] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
 
-    const stages = [
-        { id: 'analysis', label: 'تحليل المتطلبات وهندسة البرومجيات', icon: Search },
-        { id: 'structure', label: 'بناء هيكل المجلدات والملفات', icon: Settings },
-        { id: 'coding', label: 'توليد الكود البرمجي (AI Coding)', icon: Code2 },
-        { id: 'packaging', label: 'تجهيز ملف الـ ZIP والوثائق', icon: Terminal },
-    ];
+    const addLog = useCallback((msg) => {
+        setLogs(prev => [...prev.slice(-4), { id: Date.now(), msg }]);
+    }, []);
+
+    const delay = useCallback((ms) => new Promise(res => setTimeout(res, ms)), []);
 
     useEffect(() => {
         const runSimulation = async () => {
@@ -35,16 +40,11 @@ const ProcessingStatus = ({ projectData, onComplete }) => {
             }
 
             setIsFinished(true);
+            if (onComplete) onComplete();
         };
 
         runSimulation();
-    }, []);
-
-    const addLog = (msg) => {
-        setLogs(prev => [...prev.slice(-4), { id: Date.now(), msg }]);
-    };
-
-    const delay = (ms) => new Promise(res => setTimeout(res, ms));
+    }, [addLog, delay, onComplete]);
 
     return (
         <div className="max-w-4xl mx-auto py-12 px-4 space-y-12">

@@ -1,7 +1,4 @@
-/**
- * Coder Agent Prompts & Templates
- * مخصص لتوجيه الذكاء الاصطناعي لتوليد هيكل مشاريع متكامل
- */
+import { PROJECT_TYPES } from '../constants/platformConstants';
 
 export const CODER_AGENT_PROMPTS = {
     SYSTEM_ENGINEER: `

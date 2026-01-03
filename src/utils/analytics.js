@@ -22,9 +22,9 @@ class Analytics {
 
       // Initialize gtag
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
+      const gtag = function () {
         window.dataLayer.push(arguments);
-      }
+      };
       window.gtag = gtag;
 
       gtag('js', new Date());
