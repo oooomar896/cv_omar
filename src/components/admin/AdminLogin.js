@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Lock, Mail, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Toast from '../common/Toast';
+import { dataService } from '../../utils/dataService';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -16,22 +17,25 @@ const AdminLogin = () => {
         e.preventDefault();
         setIsLoading(true);
 
-        // Simulation of Admin Credentials check
-        // These are the credentials provided by the user
-        const ADMIN_EMAIL = 'oooomar123450@gmail.com';
-        const ADMIN_PASS = 'Omar@259779';
+        try {
+            const admin = await dataService.loginAdmin(email, password);
 
-        setTimeout(() => {
-            if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-                localStorage.setItem('admin_token', 'mock_admin_session_active');
-                localStorage.setItem('admin_user', JSON.stringify({ email: ADMIN_EMAIL, role: 'super_admin' }));
-                setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
-                setTimeout(() => navigate('/admin'), 1000);
-            } else {
+            if (!admin) {
                 setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور.', type: 'error' });
                 setIsLoading(false);
+                return;
             }
-        }, 1500);
+
+            localStorage.setItem('admin_token', 'supabase_admin_session_active');
+            localStorage.setItem('admin_user', JSON.stringify({ email: admin.email, role: admin.role }));
+            setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
+            setTimeout(() => navigate('/admin'), 1000);
+
+        } catch (error) {
+            console.error("Login failed:", error);
+            setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور.', type: 'error' });
+            setIsLoading(false);
+        }
     };
 
     return (

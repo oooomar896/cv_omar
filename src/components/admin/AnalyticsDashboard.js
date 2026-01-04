@@ -1,17 +1,67 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
 import { TrendingUp, Users, Cpu, Target, MessageSquare } from 'lucide-react';
+import { dataService } from '../../utils/dataService';
 import { systemAnalytics } from '../../utils/systemAnalytics';
+import { supabase } from '../../utils/supabaseClient';
+import Toast from '../common/Toast';
 
 const AnalyticsDashboard = () => {
     const [stats, setStats] = useState(null);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
     useEffect(() => {
-        setStats(systemAnalytics.getDashboardStats());
+        const loadAnalyticsData = async () => {
+            await Promise.all([
+                dataService.fetchUsers(),
+                dataService.fetchMessages(),
+                dataService.fetchGeneratedProjects()
+            ]);
+            setStats(systemAnalytics.getDashboardStats());
+        };
+
+        loadAnalyticsData();
+
+        // Real-time Subscription
+        const channel = supabase
+            .channel('dashboard-realtime')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'messages' },
+                async (payload) => {
+                    setToast({ show: true, message: '📩 رسالة جديدة وصلت!', type: 'success' });
+                    await dataService.fetchMessages(); // Refresh Data
+                    setStats(systemAnalytics.getDashboardStats()); // Recalculate Stats
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'leads' },
+                async (payload) => {
+                    setToast({ show: true, message: '👤 مستخدم جديد سجل في المنصة!', type: 'success' });
+                    await dataService.fetchUsers();
+                    setStats(systemAnalytics.getDashboardStats());
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'generated_projects' },
+                async (payload) => {
+                    setToast({ show: true, message: '🤖 تم إنشاء مشروع AI جديد!', type: 'success' });
+                    await dataService.fetchGeneratedProjects();
+                    setStats(systemAnalytics.getDashboardStats());
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+
     }, []);
 
     if (!stats) return <div className="p-20 text-center text-gray-500">جاري تحليل البيانات...</div>;
@@ -22,13 +72,20 @@ const AnalyticsDashboard = () => {
 
     return (
         <div className="space-y-8 font-cairo text-right" dir="rtl">
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
             <div className="flex items-center gap-3 mb-8">
                 <div className="p-3 bg-primary-500/10 text-primary-500 rounded-2xl">
                     <TrendingUp size={28} />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-white">إحصائيات المنصة</h2>
-                    <p className="text-gray-500 text-sm">تحليل دقيق لأداء باني المشاريع وتفاعل المستخدمين.</p>
+                    <h2 className="text-2xl font-bold text-white">إحصائيات المنصة (Live)</h2>
+                    <p className="text-gray-500 text-sm">متابعة لحظية لأداء باني المشاريع وتفاعل المستخدمين.</p>
                 </div>
             </div>
 

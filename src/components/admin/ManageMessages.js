@@ -1,4 +1,4 @@
-import { MessageSquare, Trash2, Mail, Clock, CheckCircle, Search, Send, Reply } from 'lucide-react';
+import { MessageSquare, Trash2, Mail, Clock, Search, Send, Reply, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -11,7 +11,11 @@ const ManageMessages = () => {
     const [selectedMessage, setSelectedMessage] = useState(null);
 
     useEffect(() => {
-        setMessages(dataService.getMessages().reverse());
+        const loadMessages = async () => {
+            await dataService.fetchMessages();
+            setMessages(dataService.getMessages().reverse());
+        };
+        loadMessages();
     }, []);
 
     const showToast = (message, type = 'success') => {
@@ -48,6 +52,21 @@ const ManageMessages = () => {
 
 
     const [replyText, setReplyText] = useState('');
+
+    const generateSmartReply = () => {
+        // Simulation of AI Reply Generation
+        // In a real scenario, this would call an OpenAI/Mistral API
+        const templates = [
+            `مرحباً ${selectedMessage.name}،\nشكراً لتواصلك معنا. لقد استلمنا رسالتك بخصوص "${selectedMessage.subject}" ونحن مهتمون جداً بمناقشة التفاصيل. هل يمكنك تزويدنا بموعد مناسب لاجتماع قصير؟\nتحياتي،\nعمر`,
+            `أهلاً ${selectedMessage.name}،\nسعدت جداً برسالتك. مشروعك يبدو واعداً! سأقوم بمراجعة التفاصيل والرد عليك بخطة مبدئية خلال 24 ساعة.\nشكراً لثقتك بنا.`,
+            `عزيزي ${selectedMessage.name}،\nشكراً لاهتمامك بخدماتنا. بخصوص استفسارك، يسعدني إخبارك أننا نوفر الحلول التي تبحث عنها. دعنا نحدد مكالمة لمناقشة المتطلبات بشكل أعمق.\nفي انتظار ردك.`
+        ];
+
+        // Pick a random template based on message length (simple logic for demo)
+        const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+        setReplyText(randomTemplate);
+        showToast('✨ تم توليد الرد الذكي بنجاح!');
+    };
 
     const handleSendReply = () => {
         if (!replyText.trim()) return;
@@ -229,7 +248,16 @@ const ManageMessages = () => {
                                 placeholder="اكتب ردك هنا..."
                                 className="w-full bg-dark-800 border border-gray-700 rounded-xl p-4 text-white focus:border-primary-500 outline-none resize-none h-24"
                             />
-                            <div className="flex justify-end">
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={generateSmartReply}
+                                    className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-2 text-sm font-bold px-3 py-2 hover:bg-purple-500/10 rounded-lg"
+                                    title="اقتراح رد باستخدام AI"
+                                >
+                                    <Sparkles size={16} />
+                                    اقتراح رد ذكي (AI)
+                                </button>
+
                                 <button
                                     onClick={handleSendReply}
                                     disabled={!replyText.trim()}

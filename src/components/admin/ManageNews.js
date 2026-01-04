@@ -20,7 +20,11 @@ const ManageNews = () => {
     };
 
     useEffect(() => {
-        setNews(dataService.getNews());
+        const loadNews = async () => {
+            await dataService.fetchNews();
+            setNews(dataService.getNews());
+        };
+        loadNews();
     }, []);
 
     const handleSaveNews = (e) => {

@@ -20,7 +20,11 @@ const ManageSkills = () => {
     };
 
     useEffect(() => {
-        setSkills(dataService.getSkills());
+        const loadSkills = async () => {
+            await dataService.fetchSkills();
+            setSkills(dataService.getSkills());
+        };
+        loadSkills();
     }, []);
 
     const handleSaveSkill = (e) => {

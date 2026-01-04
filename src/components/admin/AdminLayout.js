@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LayoutDashboard,
@@ -19,6 +19,13 @@ const AdminLayout = ({ children }) => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('admin_token');
+        if (!token) {
+            navigate('/admin/login');
+        }
+    }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem('admin_token');

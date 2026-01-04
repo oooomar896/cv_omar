@@ -11,8 +11,12 @@ const ManageUsers = () => {
     const [userProject, setUserProject] = useState(null);
 
     useEffect(() => {
-        setUsers(dataService.getUsers());
-        setProjects(dataService.getGeneratedProjects());
+        const loadUsers = async () => {
+            await dataService.fetchUsers();
+            setUsers(dataService.getUsers());
+            setProjects(dataService.getGeneratedProjects());
+        };
+        loadUsers();
     }, []);
 
     const handleDelete = (id) => {

@@ -4,6 +4,8 @@
  * لمحاكاة قاعدة بيانات حقيقية.
  */
 
+import { supabase } from './supabaseClient';
+
 const STORAGE_KEYS = {
     PROJECTS: 'omar_projects',
     SKILLS: 'omar_skills',
@@ -133,191 +135,745 @@ class DataService {
     }
 
     // Projects
+    // Projects (Supabase Integrated)
     getProjects() { return this._get(STORAGE_KEYS.PROJECTS, DEFAULT_DATA.PROJECTS); }
-    addProject(project) {
-        const projects = this.getProjects();
-        const newProject = { ...project, id: Date.now(), date: new Date().toISOString().split('T')[0] };
-        this._set(STORAGE_KEYS.PROJECTS, [...projects, newProject]);
-        this.logActivity('create', `تم إضافة مشروع جديد: ${project.name}`);
-        return newProject;
+
+    async fetchProjects() {
+        try {
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            // Normalize
+            const projects = data.map(p => ({
+                ...p,
+                id: p.id,
+                date: p.created_at,
+                // Ensure image field consistency if needed
+                image: p.image_url || p.image || '/placeholder.png'
+            }));
+
+            // Only update if we got data, otherwise keep defaults/local
+            if (projects.length > 0) {
+                this._set(STORAGE_KEYS.PROJECTS, projects);
+            }
+            return projects;
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+            return this.getProjects();
+        }
     }
-    deleteProject(id) {
-        const projects = this.getProjects();
-        const project = projects.find(p => p.id === id);
-        const filteredProjects = projects.filter(p => p.id !== id);
-        this._set(STORAGE_KEYS.PROJECTS, filteredProjects);
-        if (project) this.logActivity('delete', `تم حذف مشروع: ${project.name}`);
+
+    async addProject(project) {
+        try {
+            const { data, error } = await supabase
+                .from('projects')
+                .insert([{
+                    name: project.name,
+                    category: project.category,
+                    description: project.desc || project.description,
+                    link: project.link,
+                    image_url: project.image,
+                    status: 'published'
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            const newProject = {
+                ...data,
+                id: data.id,
+                date: data.created_at,
+                image: data.image_url,
+                desc: data.description
+            };
+
+            const projects = this.getProjects();
+            this._set(STORAGE_KEYS.PROJECTS, [newProject, ...projects]);
+            this.logActivity('create', `تم إضافة مشروع جديد: ${project.name}`);
+            return newProject;
+        } catch (error) {
+            console.error('Error adding project:', error);
+            // Fallback
+            const newProject = { ...project, id: Date.now(), date: new Date().toISOString().split('T')[0] };
+            const projects = this.getProjects();
+            this._set(STORAGE_KEYS.PROJECTS, [...projects, newProject]);
+            return newProject;
+        }
     }
-    updateProject(id, updatedData) {
-        const projects = this.getProjects().map(p =>
-            p.id === id ? { ...p, ...updatedData } : p
-        );
-        this._set(STORAGE_KEYS.PROJECTS, projects);
-        this.logActivity('update', `تم تحديث بيانات مشروع: ${updatedData.name}`);
+
+    async deleteProject(id) {
+        try {
+            const { error } = await supabase
+                .from('projects')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            const projects = this.getProjects();
+            const project = projects.find(p => p.id === id);
+            const filteredProjects = projects.filter(p => p.id !== id);
+            this._set(STORAGE_KEYS.PROJECTS, filteredProjects);
+            if (project) this.logActivity('delete', `تم حذف مشروع: ${project.name}`);
+        } catch (error) {
+            console.error('Error deleting project:', error);
+            // Fallback
+            const projects = this.getProjects();
+            const filteredProjects = projects.filter(p => p.id !== id);
+            this._set(STORAGE_KEYS.PROJECTS, filteredProjects);
+        }
+    }
+
+    async updateProject(id, updatedData) {
+        try {
+            const { error } = await supabase
+                .from('projects')
+                .update({
+                    name: updatedData.name,
+                    category: updatedData.category,
+                    description: updatedData.desc || updatedData.description,
+                    link: updatedData.link,
+                    image_url: updatedData.image
+                })
+                .eq('id', id);
+
+            if (error) throw error;
+
+            const projects = this.getProjects().map(p =>
+                p.id === id ? { ...p, ...updatedData } : p
+            );
+            this._set(STORAGE_KEYS.PROJECTS, projects);
+            this.logActivity('update', `تم تحديث بيانات مشروع: ${updatedData.name}`);
+        } catch (error) {
+            console.error('Error updating project:', error);
+            // Fallback
+            const projects = this.getProjects().map(p =>
+                p.id === id ? { ...p, ...updatedData } : p
+            );
+            this._set(STORAGE_KEYS.PROJECTS, projects);
+        }
     }
 
     // Skills
-    getSkills() {
-        const skills = this._get(STORAGE_KEYS.SKILLS, DEFAULT_DATA.SKILLS);
-        // تصحيح البيانات القديمة إذا كانت المستويات نصية
-        const levelMap = { 'Expert': 95, 'Professional': 85, 'Advanced': 75, 'Intermediate': 60 };
-        return skills.map(s => ({
-            ...s,
-            level: typeof s.level === 'string' ? (levelMap[s.level] || 75) : s.level
-        }));
+    // Skills (Supabase Integrated)
+    getSkills() { return this._get(STORAGE_KEYS.SKILLS, DEFAULT_DATA.SKILLS); }
+
+    async fetchSkills() {
+        try {
+            const { data, error } = await supabase.from('skills').select('*').order('level', { ascending: false });
+            if (error) throw error;
+            if (data.length > 0) this._set(STORAGE_KEYS.SKILLS, data);
+            return data;
+        } catch (err) {
+            console.error(err);
+            return this.getSkills();
+        }
     }
-    addSkill(skill) {
-        const skills = this.getSkills();
-        const newSkill = { ...skill, id: Date.now() };
-        this._set(STORAGE_KEYS.SKILLS, [...skills, newSkill]);
-        this.logActivity('create', `تم إضافة مهارة جديدة: ${skill.name}`);
-        return newSkill;
+
+    async addSkill(skill) {
+        try {
+            const { data, error } = await supabase.from('skills').insert([skill]).select().single();
+            if (error) throw error;
+            const skills = this.getSkills();
+            this._set(STORAGE_KEYS.SKILLS, [...skills, data]);
+            this.logActivity('create', `تم إضافة مهارة جديدة: ${skill.name}`);
+            return data;
+        } catch (err) {
+            console.error(err);
+            // Fallback
+            const newSkill = { ...skill, id: Date.now() };
+            const skills = this.getSkills();
+            this._set(STORAGE_KEYS.SKILLS, [...skills, newSkill]);
+            return newSkill;
+        }
     }
-    deleteSkill(id) {
-        const skills = this.getSkills();
-        const skill = skills.find(s => s.id === id);
-        const filteredSkills = skills.filter(s => s.id !== id);
-        this._set(STORAGE_KEYS.SKILLS, filteredSkills);
-        if (skill) this.logActivity('delete', `تم حذف مهارة: ${skill.name}`);
+
+    async deleteSkill(id) {
+        try {
+            await supabase.from('skills').delete().eq('id', id);
+            const skills = this.getSkills().filter(s => s.id !== id);
+            this._set(STORAGE_KEYS.SKILLS, skills);
+        } catch (err) {
+            console.error(err);
+            const skills = this.getSkills().filter(s => s.id !== id);
+            this._set(STORAGE_KEYS.SKILLS, skills);
+        }
     }
-    updateSkill(id, updatedData) {
-        const skills = this.getSkills().map(s =>
-            s.id === id ? { ...s, ...updatedData } : s
-        );
-        this._set(STORAGE_KEYS.SKILLS, skills);
-        this.logActivity('update', `تم تحديث مهارة: ${updatedData.name}`);
+
+    async updateSkill(id, updatedData) {
+        try {
+            await supabase.from('skills').update(updatedData).eq('id', id);
+            const skills = this.getSkills().map(s => s.id === id ? { ...s, ...updatedData } : s);
+            this._set(STORAGE_KEYS.SKILLS, skills);
+        } catch (err) {
+            console.error(err);
+            const skills = this.getSkills().map(s => s.id === id ? { ...s, ...updatedData } : s);
+            this._set(STORAGE_KEYS.SKILLS, skills);
+        }
     }
 
     // News
+    // News (Supabase Integrated)
     getNews() { return this._get(STORAGE_KEYS.NEWS, DEFAULT_DATA.NEWS); }
-    addNews(item) {
-        const news = this.getNews();
-        const newItem = { ...item, id: Date.now(), date: new Date().toISOString().split('T')[0] };
-        this._set(STORAGE_KEYS.NEWS, [...news, newItem]);
-        this.logActivity('create', `تم نشر خبر جديد: ${item.title}`);
-        return newItem;
+
+    async fetchNews() {
+        try {
+            const { data, error } = await supabase
+                .from('news')
+                .select('*')
+                .order('date', { ascending: false });
+
+            if (error) throw error;
+
+            // Normalize
+            const news = data.map(n => ({
+                ...n,
+                id: n.id,
+                // Ensure image field consistency
+                image: n.image_url || n.image || '/placeholder.png'
+            }));
+
+            if (news.length > 0) {
+                this._set(STORAGE_KEYS.NEWS, news);
+            }
+            return news;
+        } catch (error) {
+            console.error('Error fetching news:', error);
+            return this.getNews();
+        }
     }
-    deleteNews(id) {
-        const news = this.getNews();
-        const item = news.find(n => n.id === id);
-        const filteredNews = news.filter(n => n.id !== id);
-        this._set(STORAGE_KEYS.NEWS, filteredNews);
-        if (item) this.logActivity('delete', `تم حذف خبر: ${item.title}`);
+
+    async addNews(item) {
+        try {
+            const { data, error } = await supabase
+                .from('news')
+                .insert([{
+                    title: item.title,
+                    content: item.content,
+                    image_url: item.image,
+                    link: item.link,
+                    date: new Date().toISOString()
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            const newItem = {
+                ...data,
+                id: data.id,
+                image: data.image_url
+            };
+
+            const news = this.getNews();
+            this._set(STORAGE_KEYS.NEWS, [newItem, ...news]);
+            this.logActivity('create', `تم نشر خبر جديد: ${item.title}`);
+            return newItem;
+        } catch (error) {
+            console.error('Error adding news:', error);
+            // Fallback
+            const newItem = { ...item, id: Date.now(), date: new Date().toISOString().split('T')[0] };
+            const news = this.getNews();
+            this._set(STORAGE_KEYS.NEWS, [...news, newItem]);
+            return newItem;
+        }
     }
-    updateNews(id, updatedData) {
-        const news = this.getNews().map(n =>
-            n.id === id ? { ...n, ...updatedData } : n
-        );
-        this._set(STORAGE_KEYS.NEWS, news);
-        this.logActivity('update', `تم تحديث خبر: ${updatedData.title}`);
+
+    async deleteNews(id) {
+        try {
+            const { error } = await supabase
+                .from('news')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            const news = this.getNews();
+            const item = news.find(n => n.id === id);
+            const filteredNews = news.filter(n => n.id !== id);
+            this._set(STORAGE_KEYS.NEWS, filteredNews);
+            if (item) this.logActivity('delete', `تم حذف خبر: ${item.title}`);
+        } catch (error) {
+            console.error('Error deleting news:', error);
+            // Fallback
+            const news = this.getNews();
+            const filteredNews = news.filter(n => n.id !== id);
+            this._set(STORAGE_KEYS.NEWS, filteredNews);
+        }
+    }
+
+    async updateNews(id, updatedData) {
+        try {
+            const { error } = await supabase
+                .from('news')
+                .update({
+                    title: updatedData.title,
+                    content: updatedData.content,
+                    image_url: updatedData.image,
+                    link: updatedData.link,
+                    date: updatedData.date
+                })
+                .eq('id', id);
+
+            if (error) throw error;
+
+            const news = this.getNews().map(n =>
+                n.id === id ? { ...n, ...updatedData } : n
+            );
+            this._set(STORAGE_KEYS.NEWS, news);
+            this.logActivity('update', `تم تحديث خبر: ${updatedData.title}`);
+        } catch (error) {
+            console.error('Error updating news:', error);
+            // Fallback
+            const news = this.getNews().map(n =>
+                n.id === id ? { ...n, ...updatedData } : n
+            );
+            this._set(STORAGE_KEYS.NEWS, news);
+        }
     }
 
     // Users & Leads
+    // Users & Leads (Supabase Integrated)
     getUsers() { return this._get(STORAGE_KEYS.USERS, []); }
-    addUser(user) {
-        const users = this.getUsers();
-        const newUser = {
-            ...user,
-            id: Date.now(),
-            date: new Date().toISOString().split('T')[0]
-        };
-        this._set(STORAGE_KEYS.USERS, [...users, newUser]);
-        this.logActivity('create', `تسجيل مستخدم جديد: ${user.name}`);
-        return newUser;
+
+    async fetchUsers() {
+        try {
+            const { data, error } = await supabase
+                .from('leads')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            // Normalize
+            const users = data.map(u => ({
+                ...u,
+                id: u.id,
+                date: u.created_at,
+                // Ensure array for generated_projects
+                // Note: generated_project in DB vs local might differ structure slightly, normalize if needed
+            }));
+
+            if (users.length > 0) {
+                this._set(STORAGE_KEYS.USERS, users);
+            }
+            return users;
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return this.getUsers();
+        }
     }
-    deleteUser(id) {
-        const users = this.getUsers();
-        const user = users.find(u => u.id === id);
-        const filteredUsers = users.filter(u => u.id !== id);
-        this._set(STORAGE_KEYS.USERS, filteredUsers);
-        if (user) this.logActivity('delete', `تم حذف المستخدم: ${user.name}`);
+
+    async addUser(user) {
+        try {
+            // Check if user exists (by email) - optional but good logic
+            // For now, simple insert
+            const { data, error } = await supabase
+                .from('leads')
+                .insert([{
+                    name: user.name,
+                    email: user.email,
+                    role: user.role || 'user',
+                    generated_projects: []
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            const newUser = {
+                ...data,
+                id: data.id,
+                date: data.created_at
+            };
+
+            const users = this.getUsers();
+            this._set(STORAGE_KEYS.USERS, [...users, newUser]);
+            this.logActivity('create', `تسجيل مستخدم جديد: ${user.name}`);
+            return newUser;
+        } catch (error) {
+            console.error('Error adding user:', error);
+            // Fallback
+            const newUser = {
+                ...user,
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0]
+            };
+            const users = this.getUsers();
+            this._set(STORAGE_KEYS.USERS, [...users, newUser]);
+            return newUser;
+        }
+    }
+
+    async deleteUser(id) {
+        try {
+            const { error } = await supabase
+                .from('leads')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            const users = this.getUsers();
+            const user = users.find(u => u.id === id);
+            const filteredUsers = users.filter(u => u.id !== id);
+            this._set(STORAGE_KEYS.USERS, filteredUsers);
+            if (user) this.logActivity('delete', `تم حذف المستخدم: ${user.name}`);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            // Fallback
+            const users = this.getUsers();
+            const filteredUsers = users.filter(u => u.id !== id);
+            this._set(STORAGE_KEYS.USERS, filteredUsers);
+        }
+    }
+
+    // Auth
+    async loginAdmin(email, password) {
+        try {
+            const { data, error } = await supabase
+                .from('admins')
+                .select('*')
+                .eq('email', email)
+                .eq('password', password)
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
+        }
     }
 
     // Generated Projects (AI Projects)
+    // Generated Projects (Supabase Integrated)
     getGeneratedProjects() { return this._get(STORAGE_KEYS.GENERATED_PROJECTS, []); }
-    saveGeneratedProject(projectId, data) {
-        const projects = this.getGeneratedProjects();
-        const newProject = {
-            ...data,
-            id: projectId,
-            timestamp: new Date().toISOString()
-        };
-        this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, newProject]);
-        return newProject;
+
+    async fetchGeneratedProjects() {
+        try {
+            const { data, error } = await supabase.from('generated_projects').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            if (data.length > 0) this._set(STORAGE_KEYS.GENERATED_PROJECTS, data);
+            return data;
+        } catch (err) {
+            console.error(err);
+            return this.getGeneratedProjects();
+        }
     }
 
-    // Settings
+    async saveGeneratedProject(projectId, data) {
+        try {
+            const projectData = {
+                id: (Date.now() + Math.floor(Math.random() * 1000)), // Ensure BigInt compatible ID if not using UUID
+                user_email: data.userEmail,
+                project_name: data.projectName,
+                project_type: data.projectType,
+                features: data.features,
+                description: data.description,
+                status: 'pending'
+            };
+
+            const { data: savedData, error } = await supabase.from('generated_projects').insert([projectData]).select().single();
+            if (error) throw error;
+
+            const projects = this.getGeneratedProjects();
+            const normalized = {
+                ...data,
+                id: savedData.id,
+                timestamp: savedData.created_at
+            };
+            this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, normalized]);
+            return normalized;
+        } catch (err) {
+            console.error('Error saving generated project:', err);
+            // Fallback
+            const projects = this.getGeneratedProjects();
+            const newProject = {
+                ...data,
+                id: projectId,
+                timestamp: new Date().toISOString()
+            };
+            this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, newProject]);
+            return newProject;
+        }
+    }
+
+    // Settings (Supabase Integrated)
     getSettings() { return this._get(STORAGE_KEYS.SETTINGS, DEFAULT_DATA.SETTINGS); }
-    saveSettings(settings) {
-        this._set(STORAGE_KEYS.SETTINGS, settings);
-        this.logActivity('update', 'تم تحديث إعدادات النظام');
+
+    async fetchSettings() {
+        try {
+            const { data, error } = await supabase.from('settings').select('*').single();
+            if (error) throw error;
+            if (data) {
+                const normalized = {
+                    siteName: data.site_name,
+                    adminEmail: data.admin_email,
+                    enableAIBuilder: data.enable_ai_builder,
+                    maintenanceMode: data.maintenance_mode,
+                    notifications: data.notifications_enabled,
+                    saveLocalCopy: true,
+                    id: data.id
+                };
+                this._set(STORAGE_KEYS.SETTINGS, normalized);
+                return normalized;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        return this.getSettings();
     }
 
-    // Activity Log System
+    async saveSettings(settings) {
+        try {
+            // Upsert handled by logic or explicit ID
+            const dbSettings = {
+                site_name: settings.siteName,
+                admin_email: settings.adminEmail,
+                enable_ai_builder: settings.enableAIBuilder,
+                maintenance_mode: settings.maintenanceMode,
+                notifications_enabled: settings.notifications
+                // id: settings.id // if updating
+            };
+
+            // Check if exists first to decide update vs insert (or assume single row id=1)
+            const { data: existing } = await supabase.from('settings').select('id').limit(1).single();
+
+            if (existing) {
+                await supabase.from('settings').update(dbSettings).eq('id', existing.id);
+            } else {
+                await supabase.from('settings').insert([dbSettings]);
+            }
+
+            this._set(STORAGE_KEYS.SETTINGS, settings);
+            this.logActivity('update', 'تم تحديث إعدادات النظام');
+        } catch (err) {
+            console.error('Error saving settings:', err);
+            // Fallback
+            this._set(STORAGE_KEYS.SETTINGS, settings);
+        }
+    }
+
+    // Activity Log System (Supabase Integrated)
     getActivities() {
         return this._get(STORAGE_KEYS.ACTIVITIES, []);
     }
 
-    logActivity(type, message) {
-        const activities = this.getActivities();
-        const newActivity = {
-            id: Date.now(),
-            type, // 'create', 'update', 'delete', 'system'
-            message,
-            timestamp: new Date().toISOString()
-        };
-        // Keep only last 50 activities
-        const updatedActivities = [newActivity, ...activities].slice(0, 50);
-        this._set(STORAGE_KEYS.ACTIVITIES, updatedActivities);
+    async fetchActivities() {
+        try {
+            const { data, error } = await supabase.from('activities').select('*').order('created_at', { ascending: false }).limit(50);
+            if (error) throw error;
+
+            // Normalize if needed, or mostly same structure
+            const activities = data.map(a => ({
+                id: a.id,
+                type: a.type,
+                message: a.message,
+                timestamp: a.created_at
+            }));
+
+            if (activities.length > 0) this._set(STORAGE_KEYS.ACTIVITIES, activities);
+            return activities;
+        } catch (err) {
+            console.error(err);
+            return this.getActivities();
+        }
     }
 
-    // Messages (Contact Form)
+    async logActivity(type, message) {
+        try {
+            const newActivity = {
+                type,
+                message,
+                admin_email: 'oooomar123450@gmail.com' // Could be dynamic
+            };
+
+            await supabase.from('activities').insert([newActivity]);
+
+            // Sync local
+            const activities = this.getActivities();
+            const localActivity = {
+                ...newActivity,
+                id: Date.now(),
+                timestamp: new Date().toISOString()
+            };
+            this._set(STORAGE_KEYS.ACTIVITIES, [localActivity, ...activities].slice(0, 50));
+
+        } catch (err) {
+            console.error('Error logging activity:', err);
+            // Fallback
+            const activities = this.getActivities();
+            const newActivity = {
+                id: Date.now(),
+                type,
+                message,
+                timestamp: new Date().toISOString()
+            };
+            const updatedActivities = [newActivity, ...activities].slice(0, 50);
+            this._set(STORAGE_KEYS.ACTIVITIES, updatedActivities);
+        }
+    }
+
+    // Messages (Supabase Integrated)
     getMessages() { return this._get(STORAGE_KEYS.MESSAGES, []); }
-    addMessage(msg) {
-        const messages = this.getMessages();
-        const newMessage = {
-            ...msg,
-            id: Date.now(),
-            date: new Date().toISOString(),
-            read: false,
-            replies: [] // Initialize empty replies array
-        };
-        this._set(STORAGE_KEYS.MESSAGES, [...messages, newMessage]);
-        this.logActivity('create', `رسالة جديدة من: ${msg.email}`);
-        return newMessage;
-    }
-    deleteMessage(id) {
-        const messages = this.getMessages();
-        const filtered = messages.filter(m => m.id !== id);
-        this._set(STORAGE_KEYS.MESSAGES, filtered);
-        this.logActivity('delete', 'تم حذف رسالة');
-    }
-    markMessageRead(id) {
-        const messages = this.getMessages().map(m =>
-            m.id === id ? { ...m, read: true } : m
-        );
-        this._set(STORAGE_KEYS.MESSAGES, messages);
-    }
-    sendReply(messageId, replyContent) {
-        const messages = this.getMessages();
-        const reply = {
-            id: Date.now(),
-            content: replyContent,
-            date: new Date().toISOString(),
-            type: 'admin' // sender type
-        };
 
-        const updatedMessages = messages.map(m => {
-            if (m.id === messageId) {
-                const currentReplies = m.replies || [];
-                return { ...m, replies: [...currentReplies, reply], read: true };
-            }
-            return m;
-        });
+    async fetchMessages() {
+        try {
+            const { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        this._set(STORAGE_KEYS.MESSAGES, updatedMessages);
-        this.logActivity('update', `تم الرد على الرسالة #${messageId}`);
-        return reply;
+            if (error) throw error;
+
+            // Normalize data
+            const messages = data.map(msg => ({
+                ...msg,
+                id: msg.id,
+                date: msg.created_at,
+                replies: msg.replies || []
+            }));
+
+            this._set(STORAGE_KEYS.MESSAGES, messages);
+            return messages;
+        } catch (error) {
+            console.error('Error fetching messages from Supabase:', error);
+            // Fallback
+            return this.getMessages();
+        }
+    }
+
+    async addMessage(msg) {
+        try {
+            const { data, error } = await supabase
+                .from('messages')
+                .insert([{
+                    name: msg.name,
+                    email: msg.email,
+                    subject: msg.subject,
+                    message: msg.message,
+                    read: false,
+                    replies: []
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            const newMessage = {
+                ...data,
+                date: data.created_at,
+                replies: []
+            };
+
+            const messages = this.getMessages();
+            this._set(STORAGE_KEYS.MESSAGES, [newMessage, ...messages]);
+            this.logActivity('create', `رسالة جديدة من: ${msg.email}`);
+
+            return newMessage;
+        } catch (error) {
+            console.error('Error adding message:', error);
+            // Fallback
+            const localMsg = {
+                ...msg,
+                id: Date.now(),
+                date: new Date().toISOString(),
+                read: false,
+                replies: [],
+                _local: true
+            };
+            const messages = this.getMessages();
+            this._set(STORAGE_KEYS.MESSAGES, [localMsg, ...messages]);
+            return localMsg;
+        }
+    }
+    async deleteMessage(id) {
+        try {
+            const { error } = await supabase
+                .from('messages')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            // Update Local
+            const messages = this.getMessages();
+            const filtered = messages.filter(m => m.id !== id);
+            this._set(STORAGE_KEYS.MESSAGES, filtered);
+            this.logActivity('delete', 'تم حذف رسالة');
+        } catch (error) {
+            console.error('Error deleting message:', error);
+            // Fallback: Delete locally
+            const messages = this.getMessages();
+            const filtered = messages.filter(m => m.id !== id);
+            this._set(STORAGE_KEYS.MESSAGES, filtered);
+        }
+    }
+    async markMessageRead(id) {
+        try {
+            const { error } = await supabase
+                .from('messages')
+                .update({ read: true })
+                .eq('id', id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error marking message as read:', error);
+        } finally {
+            // Update Local Always
+            const messages = this.getMessages().map(m =>
+                m.id === id ? { ...m, read: true } : m
+            );
+            this._set(STORAGE_KEYS.MESSAGES, messages);
+        }
+    }
+    async sendReply(messageId, replyContent) {
+        try {
+            const messages = this.getMessages();
+            const message = messages.find(m => m.id === messageId);
+            if (!message) throw new Error('Message not found');
+
+            const newReply = {
+                id: Date.now(),
+                content: replyContent,
+                date: new Date().toISOString(),
+                type: 'admin'
+            };
+
+            const updatedReplies = [...(message.replies || []), newReply];
+
+            // Update Supabase
+            const { error } = await supabase
+                .from('messages')
+                .update({
+                    replies: updatedReplies,
+                    read: true
+                })
+                .eq('id', messageId);
+
+            if (error) throw error;
+
+            // Update Local
+            const updatedMessages = messages.map(m => {
+                if (m.id === messageId) {
+                    return { ...m, replies: updatedReplies, read: true };
+                }
+                return m;
+            });
+
+            this._set(STORAGE_KEYS.MESSAGES, updatedMessages);
+            this.logActivity('update', `تم الرد على الرسالة #${messageId}`);
+            return newReply;
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            throw error;
+        }
     }
 
     // Utility

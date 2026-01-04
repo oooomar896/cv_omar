@@ -35,7 +35,11 @@ const ManageProjects = () => {
     };
 
     useEffect(() => {
-        setProjects(dataService.getProjects());
+        const loadProjects = async () => {
+            await dataService.fetchProjects();
+            setProjects(dataService.getProjects());
+        };
+        loadProjects();
     }, []);
 
     const handleSaveProject = (e) => {
