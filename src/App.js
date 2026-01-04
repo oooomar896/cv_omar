@@ -21,6 +21,7 @@ const DashboardHome = lazy(() => import('./components/admin/DashboardHome'));
 const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
 const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
 const ManageNews = lazy(() => import('./components/admin/ManageNews'));
+const ManageMessages = lazy(() => import('./components/admin/ManageMessages'));
 const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
 const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
@@ -119,6 +120,7 @@ const AppContent = () => {
                       <Route path="projects" element={<ManageProjects />} />
                       <Route path="skills" element={<ManageSkills />} />
                       <Route path="news" element={<ManageNews />} />
+                      <Route path="messages" element={<ManageMessages />} />
                       <Route path="users" element={<ManageUsers />} />
                       <Route path="analytics" element={<AnalyticsDashboard />} />
                       <Route path="settings" element={<ManageSettings />} />

@@ -13,12 +13,14 @@ import {
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
+import Toast from '../../components/common/Toast';
 
 const ManageProjects = () => {
     const [projects, setProjects] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [currentProject, setCurrentProject] = useState({
         name: '',
         category: 'web',
@@ -28,20 +30,30 @@ const ManageProjects = () => {
         status: 'published'
     });
 
+    const showToast = (message, type = 'success') => {
+        setToast({ show: true, message, type });
+    };
+
     useEffect(() => {
         setProjects(dataService.getProjects());
     }, []);
 
     const handleSaveProject = (e) => {
         e.preventDefault();
-        if (editMode) {
-            dataService.updateProject(currentProject.id, currentProject);
-        } else {
-            dataService.addProject(currentProject);
+        try {
+            if (editMode) {
+                dataService.updateProject(currentProject.id, currentProject);
+                showToast('تم تحديث المشروع بنجاح', 'success');
+            } else {
+                dataService.addProject(currentProject);
+                showToast('تمت إضافة المشروع بنجاح', 'success');
+            }
+            setProjects(dataService.getProjects());
+            setIsModalOpen(false);
+            resetForm();
+        } catch (error) {
+            showToast('حدث خطأ أثناء الحفظ', 'error');
         }
-        setProjects(dataService.getProjects());
-        setIsModalOpen(false);
-        resetForm();
     };
 
     const handleEditClick = (project) => {
@@ -57,8 +69,13 @@ const ManageProjects = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('هل أنت متأكد من حذف هذا المشروع؟')) {
-            dataService.deleteProject(id);
-            setProjects(dataService.getProjects());
+            try {
+                dataService.deleteProject(id);
+                setProjects(dataService.getProjects());
+                showToast('تم حذف المشروع بنجاح', 'success');
+            } catch (error) {
+                showToast('فشل حذف المشروع', 'error');
+            }
         }
     };
 
@@ -76,6 +93,13 @@ const ManageProjects = () => {
 
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
             {/* Header Actions */}
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
                 <div className="relative w-full md:w-96">

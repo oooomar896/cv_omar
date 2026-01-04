@@ -101,6 +101,8 @@ const ProjectBuilderForm = () => {
                         userEmail: formData.email,
                         userName: formData.userName,
                         projectType: formData.type,
+                        description: formData.description,
+                        specificAnswers: formData.specificAnswers,
                         ...result
                     });
 

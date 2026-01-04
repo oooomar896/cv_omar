@@ -2,18 +2,18 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Mail, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Toast from '../common/Toast';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError('');
         setIsLoading(true);
 
         // Simulation of Admin Credentials check
@@ -25,11 +25,12 @@ const AdminLogin = () => {
             if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
                 localStorage.setItem('admin_token', 'mock_admin_session_active');
                 localStorage.setItem('admin_user', JSON.stringify({ email: ADMIN_EMAIL, role: 'super_admin' }));
-                navigate('/admin');
+                setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
+                setTimeout(() => navigate('/admin'), 1000);
             } else {
-                setError('خطأ في البريد الإلكتروني أو كلمة المرور. يرجى المحاولة مرة أخرى.');
+                setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور.', type: 'error' });
+                setIsLoading(false);
             }
-            setIsLoading(false);
         }, 1500);
     };
 
@@ -55,14 +56,12 @@ const AdminLogin = () => {
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm text-center"
-                        >
-                            {error}
-                        </motion.div>
+                    {toast.show && (
+                        <Toast
+                            message={toast.message}
+                            type={toast.type}
+                            onClose={() => setToast({ ...toast, show: false })}
+                        />
                     )}
 
                     <div className="space-y-2">

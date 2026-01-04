@@ -4,7 +4,7 @@ import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
-import { TrendingUp, Users, Cpu, Target, Calendar } from 'lucide-react';
+import { TrendingUp, Users, Cpu, Target, MessageSquare } from 'lucide-react';
 import { systemAnalytics } from '../../utils/systemAnalytics';
 
 const AnalyticsDashboard = () => {
@@ -49,18 +49,18 @@ const AnalyticsDashboard = () => {
                     desc="مشروع تم بناؤه بالذكاء الاصطناعي"
                 />
                 <StatCard
+                    title="رسائل التواصل"
+                    value={stats.totalMessages}
+                    icon={MessageSquare}
+                    color="text-orange-500"
+                    desc={`${stats.unreadMessages} رسائل غير مقروءة`}
+                />
+                <StatCard
                     title="معدل التحويل"
                     value={`${stats.conversionRate}%`}
                     icon={Target}
                     color="text-emerald-500"
                     desc="زوار تحولوا لمستخدمين"
-                />
-                <StatCard
-                    title="نشاط اليوم"
-                    value={stats.last7Days[6].leads + stats.last7Days[6].projects}
-                    icon={Calendar}
-                    color="text-pink-500"
-                    desc="عمليات خلال آخر 24 ساعة"
                 />
             </div>
 
@@ -89,6 +89,7 @@ const AnalyticsDashboard = () => {
                                     itemStyle={{ fontFamily: 'Cairo' }}
                                 />
                                 <Area type="monotone" dataKey="projects" name="المشاريع" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+                                <Area type="monotone" dataKey="messages" name="الرسائل" stroke="#f97316" strokeWidth={3} fillOpacity={0} />
                                 <Area type="monotone" dataKey="leads" name="المسجلين" stroke="#ec4899" strokeWidth={3} fillOpacity={0} />
                             </AreaChart>
                         </ResponsiveContainer>

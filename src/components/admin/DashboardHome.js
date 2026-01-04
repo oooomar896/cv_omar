@@ -5,7 +5,9 @@ import {
     MessageSquare,
     ArrowUpRight,
     ArrowDownRight,
-    Newspaper
+    Newspaper,
+    Activity,
+    Clock
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { dataService } from '../../utils/dataService';
@@ -19,12 +21,14 @@ const DashboardHome = () => {
         skills: 0
     });
     const [recentUsers, setRecentUsers] = useState([]);
+    const [activities, setActivities] = useState([]);
 
     useEffect(() => {
         const projects = dataService.getProjects();
         const users = dataService.getUsers();
         const news = dataService.getNews();
         const skills = dataService.getSkills();
+        const acts = dataService.getActivities();
 
         setCounts({
             projects: projects.length,
@@ -34,7 +38,22 @@ const DashboardHome = () => {
         });
 
         setRecentUsers(users.slice(-5).reverse());
+        setActivities(acts.slice(0, 6)); // Get last 6 activities
     }, []);
+
+    const formatTimeAgo = (dateString) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+
+        if (seconds < 60) return 'منذ لحظات';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `منذ ${minutes} دقيقة`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `منذ ${hours} ساعة`;
+        const days = Math.floor(hours / 24);
+        return `منذ ${days} يوم`;
+    };
 
     const stats = [
         { label: 'إجمالي المشاريع', value: counts.projects, icon: Briefcase, change: '+12%', isPositive: true },
@@ -42,6 +61,26 @@ const DashboardHome = () => {
         { label: 'المستخدمين النشطين', value: counts.users + 120, icon: Users, change: '+18%', isPositive: true },
         { label: 'الأخبار المنشورة', value: counts.news, icon: Newspaper, change: '+2', isPositive: true },
     ];
+
+    const getActivityIcon = (type) => {
+        switch (type) {
+            case 'create': return <Zap size={16} />;
+            case 'update': return <Activity size={16} />;
+            case 'delete': return <Users size={16} />; // Or Trash
+            case 'system': return <Clock size={16} />;
+            default: return <MessageSquare size={16} />;
+        }
+    };
+
+    const getActivityColor = (type) => {
+        switch (type) {
+            case 'create': return 'text-emerald-500 bg-emerald-500/10';
+            case 'update': return 'text-blue-500 bg-blue-500/10';
+            case 'delete': return 'text-red-500 bg-red-500/10';
+            case 'system': return 'text-amber-500 bg-amber-500/10';
+            default: return 'text-gray-500 bg-gray-500/10';
+        }
+    };
 
     return (
         <div className="space-y-8 font-cairo" dir="rtl">
@@ -120,32 +159,35 @@ const DashboardHome = () => {
                     </div>
                 </div>
 
-                {/* Quick Actions / Notifications */}
-                <div className="bg-dark-900/50 border border-gray-800 rounded-3xl p-6 space-y-6">
-                    <h2 className="font-bold border-b border-gray-800 pb-4">إشعارات النظام</h2>
-                    <div className="space-y-4">
-                        <div className="flex gap-4 items-start p-3 hover:bg-white/5 rounded-2xl transition-all border border-primary-500/20 bg-primary-500/5">
-                            <div className="p-2 bg-primary-500/10 text-primary-500 rounded-xl mt-1">
-                                <Zap size={16} />
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium">جاهزية باني المشاريع</p>
-                                <p className="text-xs text-gray-400">نظام الـ AI يعمل بكفاءة 100%.</p>
-                                <p className="text-[10px] text-gray-600 mt-1">الآن</p>
-                            </div>
-                        </div>
-                        <div className="flex gap-4 items-start p-3 hover:bg-white/5 rounded-2xl transition-all">
-                            <div className="p-2 bg-blue-500/10 text-blue-500 rounded-xl mt-1">
-                                <MessageSquare size={16} />
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium">تحديث قاعدة البيانات</p>
-                                <p className="text-xs text-gray-400">تمت مزامنة بيانات المشاريع بنجاح.</p>
-                                <p className="text-[10px] text-gray-600 mt-1">منذ ساعة</p>
-                            </div>
-                        </div>
+                {/* System Activity Feed */}
+                <div className="bg-dark-900/50 border border-gray-800 rounded-3xl p-6 space-y-6 flex flex-col h-full">
+                    <h2 className="font-bold border-b border-gray-800 pb-4 flex items-center gap-2">
+                        <Activity className="text-primary-500" size={20} />
+                        سجل النشاطات
+                    </h2>
+
+                    <div className="space-y-4 flex-grow overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
+                        {activities.length === 0 ? (
+                            <div className="text-center text-gray-500 py-8 text-sm">لا يوجد نشاطات مسجلة بعد.</div>
+                        ) : (
+                            activities.map((act) => (
+                                <div key={act.id} className="flex gap-4 items-start p-3 hover:bg-white/5 rounded-2xl transition-all border border-gray-800/50">
+                                    <div className={`p-2 rounded-xl mt-1 ${getActivityColor(act.type)}`}>
+                                        {getActivityIcon(act.type)}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-gray-200 line-clamp-2">{act.message}</p>
+                                        <p className="text-[10px] text-gray-500 mt-1 flex items-center gap-1">
+                                            <Clock size={10} />
+                                            {formatTimeAgo(act.timestamp)}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
-                    <Link to="/admin/projects" className="block text-center w-full py-4 border-2 border-dashed border-gray-700 rounded-2xl text-gray-500 hover:border-primary-500 hover:text-primary-500 transition-all font-bold text-sm">
+
+                    <Link to="/admin/projects" className="block text-center w-full py-4 border-2 border-dashed border-gray-700 rounded-2xl text-gray-500 hover:border-primary-500 hover:text-primary-500 transition-all font-bold text-sm mt-auto">
                         إضافة مشروع جديد +
                     </Link>
                 </div>

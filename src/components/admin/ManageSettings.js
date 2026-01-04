@@ -1,30 +1,60 @@
-import { Settings, Shield, Bell, Database, Save, User, Laptop } from 'lucide-react';
+import { Settings, Shield, Bell, Database, Save, User, Laptop, Upload, DownloadCloud } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
+import Toast from '../../components/common/Toast';
 
 const ManageSettings = () => {
-    const [settings, setSettings] = useState({
-        siteName: 'عمر التقني - Portfolio',
-        adminEmail: 'oooomar123450@gmail.com',
-        enableAIBuilder: true,
-        maintenanceMode: false,
-        notifications: true,
-        saveLocalCopy: true
-    });
-
+    const [settings, setSettings] = useState(dataService.getSettings());
     const [isSaving, setIsSaving] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+    const showToast = (message, type = 'success') => {
+        setToast({ show: true, message, type });
+    };
+
+    const validateSettings = () => {
+        if (!settings.siteName.trim()) {
+            showToast('يجب إدخال اسم الموقع', 'error');
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!settings.adminEmail.trim() || !emailRegex.test(settings.adminEmail)) {
+            showToast('الرجاء إدخال بريد إلكتروني صحيح', 'error');
+            return false;
+        }
+
+        return true;
+    };
 
     const handleSave = () => {
+        if (!validateSettings()) return;
+
         setIsSaving(true);
+
         setTimeout(() => {
-            setIsSaving(false);
-            alert('تم حفظ الإعدادات بنجاح!');
-        }, 1000);
+            try {
+                dataService.saveSettings(settings);
+                setIsSaving(false);
+                showToast('تم حفظ الإعدادات بنجاح!', 'success');
+            } catch (error) {
+                setIsSaving(false);
+                showToast('حدث خطأ أثناء الحفظ، حاول مرة أخرى', 'error');
+            }
+        }, 800);
     };
 
     return (
-        <div className="space-y-6 font-cairo text-right" dir="rtl">
+        <div className="space-y-6 font-cairo text-right relative" dir="rtl">
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
+
             <div className="flex items-center gap-3 mb-8">
                 <div className="p-3 bg-primary-500/10 text-primary-500 rounded-2xl">
                     <Settings size={28} />
@@ -49,23 +79,25 @@ const ManageSettings = () => {
 
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <label htmlFor="site-name" className="text-sm text-gray-400">اسم الموقع</label>
+                            <label htmlFor="site-name" className="text-sm text-gray-400">اسم الموقع <span className="text-red-500">*</span></label>
                             <input
                                 id="site-name"
                                 type="text"
-                                className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none transition-colors"
                                 value={settings.siteName}
                                 onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
+                                placeholder="أدخل اسم موقعك..."
                             />
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="admin-email" className="text-sm text-gray-400">بريد المسؤول التقني</label>
+                            <label htmlFor="admin-email" className="text-sm text-gray-400">بريد المسؤول التقني <span className="text-red-500">*</span></label>
                             <input
                                 id="admin-email"
                                 type="email"
-                                className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none font-sans"
+                                className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none font-sans transition-colors"
                                 value={settings.adminEmail}
                                 onChange={(e) => setSettings({ ...settings, adminEmail: e.target.value })}
+                                placeholder="name@example.com"
                             />
                         </div>
                     </div>
@@ -116,27 +148,84 @@ const ManageSettings = () => {
                 transition={{ delay: 0.2 }}
                 className="bg-dark-900 border border-gray-800 rounded-3xl p-8 mt-8 border-red-500/20"
             >
-                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="space-y-2 text-center md:text-right">
-                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                            <Database className="text-red-500" size={20} />
-                            إدارة بيانات النظام
-                        </h3>
-                        <p className="text-gray-500 text-sm">
-                            يمكنك من هنا إعادة تعيين كافة البيانات (المشاريع، المهارات، الأخبار) إلى حالتها الافتراضية.
-                            <span className="text-red-500/70 block mt-1 font-bold">تنبيه: هذا الإجراء سيحذف كافة التعديلات التي أجريتها.</span>
-                        </p>
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 pb-6 border-b border-gray-800">
+                        <div className="space-y-2 text-center md:text-right flex-1">
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <DownloadCloud className="text-blue-500" size={20} />
+                                النسخ الاحتياطي والاستعادة
+                            </h3>
+                            <p className="text-gray-500 text-sm">
+                                يمكنك تحميل نسخة احتياطية من كافة بيانات الموقع (JSON) لاستعادتها لاحقاً.
+                            </p>
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => {
+                                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localStorage));
+                                    const downloadAnchorNode = document.createElement('a');
+                                    downloadAnchorNode.setAttribute("href", dataStr);
+                                    downloadAnchorNode.setAttribute("download", `oma_backup_${new Date().toISOString().split('T')[0]}.json`);
+                                    document.body.appendChild(downloadAnchorNode);
+                                    downloadAnchorNode.click();
+                                    downloadAnchorNode.remove();
+                                    showToast('تم تحميل النسخة الاحتياطية', 'success');
+                                }}
+                                className="bg-blue-500/10 hover:bg-blue-500 text-blue-500 hover:text-white border border-blue-500/20 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
+                            >
+                                <DownloadCloud size={18} />
+                                تصدير البيانات
+                            </button>
+                            <label className="bg-dark-800 hover:bg-dark-700 text-gray-300 border border-gray-700 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer">
+                                <Upload size={18} />
+                                استيراد بيانات
+                                <input
+                                    type="file"
+                                    accept=".json"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const fileReader = new FileReader();
+                                        fileReader.readAsText(e.target.files[0], "UTF-8");
+                                        fileReader.onload = e => {
+                                            try {
+                                                const json = JSON.parse(e.target.result);
+                                                Object.keys(json).forEach(key => {
+                                                    localStorage.setItem(key, json[key]);
+                                                });
+                                                showToast('تمت استعادة البيانات بنجاح! سيتم تحديث الصفحة...', 'success');
+                                                setTimeout(() => window.location.reload(), 1500);
+                                            } catch (err) {
+                                                showToast('ملف البيانات غير صالح', 'error');
+                                            }
+                                        };
+                                    }}
+                                />
+                            </label>
+                        </div>
                     </div>
-                    <button
-                        onClick={() => {
-                            if (window.confirm('هل أنت متأكد من حذف كافة بياناتك واستعادة البيانات الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.')) {
-                                dataService.resetToDefaults();
-                            }
-                        }}
-                        className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 px-8 py-4 rounded-2xl font-bold transition-all whitespace-nowrap"
-                    >
-                        استعادة بيانات المصنع
-                    </button>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div className="space-y-2 text-center md:text-right">
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <Database className="text-red-500" size={20} />
+                                منطقة الخطر
+                            </h3>
+                            <p className="text-gray-500 text-sm">
+                                إعادة تعيين كافة البيانات إلى حالتها الافتراضية وحذف جميع التعديلات.
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                if (window.confirm('هل أنت متأكد من حذف كافة بياناتك واستعادة البيانات الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                                    dataService.resetToDefaults();
+                                    showToast('تمت استعادة البيانات الافتراضية بنجاح', 'success');
+                                }
+                            }}
+                            className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 px-8 py-3 rounded-xl font-bold transition-all whitespace-nowrap"
+                        >
+                            استعادة بيانات المصنع
+                        </button>
+                    </div>
                 </div>
             </motion.div>
 
@@ -144,7 +233,7 @@ const ManageSettings = () => {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="bg-primary-500 hover:bg-primary-600 disabled:bg-primary-500/50 text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-xl shadow-primary-500/20 transition-all"
+                    className="bg-primary-500 hover:bg-primary-600 disabled:bg-primary-500/50 text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-xl shadow-primary-500/20 transition-all active:scale-95 transform duration-150"
                 >
                     {isSaving ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -157,6 +246,7 @@ const ManageSettings = () => {
         </div>
     );
 };
+
 
 const Toggle = ({ icon: Icon, label, desc, checked, onChange }) => (
     <div className="flex items-center justify-between">

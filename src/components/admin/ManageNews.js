@@ -2,16 +2,22 @@ import { Newspaper, Plus, Trash2, Calendar, MessageSquare, X, Edit2 } from 'luci
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
+import Toast from '../../components/common/Toast';
 
 const ManageNews = () => {
     const [news, setNews] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [currentItem, setCurrentItem] = useState({
         title: '',
         content: '',
         image: ''
     });
+
+    const showToast = (message, type = 'success') => {
+        setToast({ show: true, message, type });
+    };
 
     useEffect(() => {
         setNews(dataService.getNews());
@@ -19,14 +25,20 @@ const ManageNews = () => {
 
     const handleSaveNews = (e) => {
         e.preventDefault();
-        if (editMode) {
-            dataService.updateNews(currentItem.id, currentItem);
-        } else {
-            dataService.addNews(currentItem);
+        try {
+            if (editMode) {
+                dataService.updateNews(currentItem.id, currentItem);
+                showToast('تم تحديث الخبر بنجاح', 'success');
+            } else {
+                dataService.addNews(currentItem);
+                showToast('تمت إضافة الخبر بنجاح', 'success');
+            }
+            setNews(dataService.getNews());
+            setIsModalOpen(false);
+            resetForm();
+        } catch (error) {
+            showToast('حدث خطأ أثناء الحفظ', 'error');
         }
-        setNews(dataService.getNews());
-        setIsModalOpen(false);
-        resetForm();
     };
 
     const handleEditClick = (item) => {
@@ -42,13 +54,25 @@ const ManageNews = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('هل أنت متأكد من حذف هذا الخبر؟')) {
-            dataService.deleteNews(id);
-            setNews(dataService.getNews());
+            try {
+                dataService.deleteNews(id);
+                setNews(dataService.getNews());
+                showToast('تم حذف الخبر بنجاح', 'success');
+            } catch (error) {
+                showToast('فشل حذف الخبر', 'error');
+            }
         }
     };
 
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold flex items-center gap-2 text-white">
                     <Newspaper className="text-primary-500" />

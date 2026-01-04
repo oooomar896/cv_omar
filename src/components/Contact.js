@@ -12,6 +12,8 @@ import {
   MessageCircle,
   Download,
 } from 'lucide-react';
+import Toast from './common/Toast';
+import { dataService } from '../utils/dataService';
 
 const Contact = () => {
   const [copiedField, setCopiedField] = useState(null);
@@ -21,6 +23,11 @@ const Contact = () => {
     subject: '',
     message: '',
   });
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+  };
 
   const contactInfo = [
     {
@@ -64,9 +71,11 @@ const Contact = () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedField(field);
+      showToast(`تم نسخ ${field} بنجاح`, 'success');
       setTimeout(() => setCopiedField(null), 2000);
     } catch (err) {
       console.error('Failed to copy text: ', err);
+      showToast('فشل النسخ، حاول يدوياً', 'error');
     }
   };
 
@@ -77,15 +86,27 @@ const Contact = () => {
     });
   };
 
+
   const handleSubmit = e => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // You can add email service integration here
+    try {
+      dataService.addMessage(formData);
+      showToast('تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.', 'success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      showToast('حدث خطأ أثناء الإرسال', 'error');
+    }
   };
 
   return (
-    <section id='contact' className='py-20'>
+    <section id='contact' className='py-20 relative'>
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <motion.div
           initial={{ opacity: 0, y: 50 }}

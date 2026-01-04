@@ -9,7 +9,10 @@ const STORAGE_KEYS = {
     SKILLS: 'omar_skills',
     NEWS: 'omar_news',
     USERS: 'omar_users',
-    GENERATED_PROJECTS: 'omar_gen_projects'
+    GENERATED_PROJECTS: 'omar_gen_projects',
+    SETTINGS: 'omar_settings',
+    ACTIVITIES: 'omar_activities',
+    MESSAGES: 'omar_messages'
 };
 
 // البيانات الافتراضية الأولية
@@ -106,7 +109,15 @@ const DEFAULT_DATA = {
             date: '2024-09-15',
             image: '/images/news/conference.svg'
         }
-    ]
+    ],
+    SETTINGS: {
+        siteName: 'عمر التقني - Portfolio',
+        adminEmail: 'oooomar123450@gmail.com',
+        enableAIBuilder: true,
+        maintenanceMode: false,
+        notifications: true,
+        saveLocalCopy: true
+    }
 };
 
 class DataService {
@@ -127,17 +138,22 @@ class DataService {
         const projects = this.getProjects();
         const newProject = { ...project, id: Date.now(), date: new Date().toISOString().split('T')[0] };
         this._set(STORAGE_KEYS.PROJECTS, [...projects, newProject]);
+        this.logActivity('create', `تم إضافة مشروع جديد: ${project.name}`);
         return newProject;
     }
     deleteProject(id) {
-        const projects = this.getProjects().filter(p => p.id !== id);
-        this._set(STORAGE_KEYS.PROJECTS, projects);
+        const projects = this.getProjects();
+        const project = projects.find(p => p.id === id);
+        const filteredProjects = projects.filter(p => p.id !== id);
+        this._set(STORAGE_KEYS.PROJECTS, filteredProjects);
+        if (project) this.logActivity('delete', `تم حذف مشروع: ${project.name}`);
     }
     updateProject(id, updatedData) {
         const projects = this.getProjects().map(p =>
             p.id === id ? { ...p, ...updatedData } : p
         );
         this._set(STORAGE_KEYS.PROJECTS, projects);
+        this.logActivity('update', `تم تحديث بيانات مشروع: ${updatedData.name}`);
     }
 
     // Skills
@@ -154,17 +170,22 @@ class DataService {
         const skills = this.getSkills();
         const newSkill = { ...skill, id: Date.now() };
         this._set(STORAGE_KEYS.SKILLS, [...skills, newSkill]);
+        this.logActivity('create', `تم إضافة مهارة جديدة: ${skill.name}`);
         return newSkill;
     }
     deleteSkill(id) {
-        const skills = this.getSkills().filter(s => s.id !== id);
-        this._set(STORAGE_KEYS.SKILLS, skills);
+        const skills = this.getSkills();
+        const skill = skills.find(s => s.id === id);
+        const filteredSkills = skills.filter(s => s.id !== id);
+        this._set(STORAGE_KEYS.SKILLS, filteredSkills);
+        if (skill) this.logActivity('delete', `تم حذف مهارة: ${skill.name}`);
     }
     updateSkill(id, updatedData) {
         const skills = this.getSkills().map(s =>
             s.id === id ? { ...s, ...updatedData } : s
         );
         this._set(STORAGE_KEYS.SKILLS, skills);
+        this.logActivity('update', `تم تحديث مهارة: ${updatedData.name}`);
     }
 
     // News
@@ -173,17 +194,22 @@ class DataService {
         const news = this.getNews();
         const newItem = { ...item, id: Date.now(), date: new Date().toISOString().split('T')[0] };
         this._set(STORAGE_KEYS.NEWS, [...news, newItem]);
+        this.logActivity('create', `تم نشر خبر جديد: ${item.title}`);
         return newItem;
     }
     deleteNews(id) {
-        const news = this.getNews().filter(n => n.id !== id);
-        this._set(STORAGE_KEYS.NEWS, news);
+        const news = this.getNews();
+        const item = news.find(n => n.id === id);
+        const filteredNews = news.filter(n => n.id !== id);
+        this._set(STORAGE_KEYS.NEWS, filteredNews);
+        if (item) this.logActivity('delete', `تم حذف خبر: ${item.title}`);
     }
     updateNews(id, updatedData) {
         const news = this.getNews().map(n =>
             n.id === id ? { ...n, ...updatedData } : n
         );
         this._set(STORAGE_KEYS.NEWS, news);
+        this.logActivity('update', `تم تحديث خبر: ${updatedData.title}`);
     }
 
     // Users & Leads
@@ -196,11 +222,15 @@ class DataService {
             date: new Date().toISOString().split('T')[0]
         };
         this._set(STORAGE_KEYS.USERS, [...users, newUser]);
+        this.logActivity('create', `تسجيل مستخدم جديد: ${user.name}`);
         return newUser;
     }
     deleteUser(id) {
-        const users = this.getUsers().filter(u => u.id !== id);
-        this._set(STORAGE_KEYS.USERS, users);
+        const users = this.getUsers();
+        const user = users.find(u => u.id === id);
+        const filteredUsers = users.filter(u => u.id !== id);
+        this._set(STORAGE_KEYS.USERS, filteredUsers);
+        if (user) this.logActivity('delete', `تم حذف المستخدم: ${user.name}`);
     }
 
     // Generated Projects (AI Projects)
@@ -214,6 +244,58 @@ class DataService {
         };
         this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, newProject]);
         return newProject;
+    }
+
+    // Settings
+    getSettings() { return this._get(STORAGE_KEYS.SETTINGS, DEFAULT_DATA.SETTINGS); }
+    saveSettings(settings) {
+        this._set(STORAGE_KEYS.SETTINGS, settings);
+        this.logActivity('update', 'تم تحديث إعدادات النظام');
+    }
+
+    // Activity Log System
+    getActivities() {
+        return this._get(STORAGE_KEYS.ACTIVITIES, []);
+    }
+
+    logActivity(type, message) {
+        const activities = this.getActivities();
+        const newActivity = {
+            id: Date.now(),
+            type, // 'create', 'update', 'delete', 'system'
+            message,
+            timestamp: new Date().toISOString()
+        };
+        // Keep only last 50 activities
+        const updatedActivities = [newActivity, ...activities].slice(0, 50);
+        this._set(STORAGE_KEYS.ACTIVITIES, updatedActivities);
+    }
+
+    // Messages (Contact Form)
+    getMessages() { return this._get(STORAGE_KEYS.MESSAGES, []); }
+    addMessage(msg) {
+        const messages = this.getMessages();
+        const newMessage = {
+            ...msg,
+            id: Date.now(),
+            date: new Date().toISOString(),
+            read: false
+        };
+        this._set(STORAGE_KEYS.MESSAGES, [...messages, newMessage]);
+        this.logActivity('create', `رسالة جديدة من: ${msg.email}`);
+        return newMessage;
+    }
+    deleteMessage(id) {
+        const messages = this.getMessages();
+        const filtered = messages.filter(m => m.id !== id);
+        this._set(STORAGE_KEYS.MESSAGES, filtered);
+        this.logActivity('delete', 'تم حذف رسالة');
+    }
+    markMessageRead(id) {
+        const messages = this.getMessages().map(m =>
+            m.id === id ? { ...m, read: true } : m
+        );
+        this._set(STORAGE_KEYS.MESSAGES, messages);
     }
 
     // Utility
