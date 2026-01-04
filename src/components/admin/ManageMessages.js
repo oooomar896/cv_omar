@@ -1,4 +1,4 @@
-import { MessageSquare, Trash2, Mail, Clock, CheckCircle, Search } from 'lucide-react';
+import { MessageSquare, Trash2, Mail, Clock, CheckCircle, Search, Send, Reply } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -46,6 +46,26 @@ const ManageMessages = () => {
         return new Date(isoString).toLocaleString('ar-EG');
     };
 
+
+    const [replyText, setReplyText] = useState('');
+
+    const handleSendReply = () => {
+        if (!replyText.trim()) return;
+
+        const newReply = dataService.sendReply(selectedMessage.id, replyText);
+
+        // Update local state
+        const updatedMessage = {
+            ...selectedMessage,
+            replies: [...(selectedMessage.replies || []), newReply]
+        };
+
+        setSelectedMessage(updatedMessage);
+        setMessages(messages.map(m => m.id === selectedMessage.id ? updatedMessage : m));
+        setReplyText('');
+        showToast('تم إرسال الرد بنجاح');
+    };
+
     return (
         <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6 font-cairo" dir="rtl">
             {toast.show && (
@@ -85,14 +105,25 @@ const ManageMessages = () => {
                                 key={msg.id}
                                 layout
                                 onClick={() => handleSelectMessage(msg)}
-                                className={`p-4 rounded-xl cursor-pointer border transition-all ${selectedMessage?.id === msg.id
+                                className={`p-4 rounded-xl cursor-pointer border transition-all relative group ${selectedMessage?.id === msg.id
                                     ? 'bg-primary-500/10 border-primary-500'
                                     : 'bg-dark-900 border-gray-800 hover:border-gray-600'
                                     } ${!msg.read ? 'border-r-4 border-r-primary-500' : ''}`}
                             >
+                                <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <a
+                                        href={`mailto:${msg.email}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="p-1.5 bg-dark-800 hover:bg-primary-500 text-gray-400 hover:text-white rounded-lg flex items-center justify-center transition-colors"
+                                        title="رد سريع"
+                                    >
+                                        <Reply size={14} />
+                                    </a>
+                                </div>
+
                                 <div className="flex justify-between items-start mb-1">
                                     <h3 className={`font-bold ${!msg.read ? 'text-white' : 'text-gray-400'}`}>{msg.name}</h3>
-                                    <span className="text-[10px] text-gray-500 flex items-center gap-1">
+                                    <span className="text-[10px] text-gray-500 flex items-center gap-1 pl-6">
                                         <Clock size={10} />
                                         {formatTime(msg.date).split(',')[0]}
                                     </span>
@@ -135,30 +166,83 @@ const ManageMessages = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button
-                                onClick={(e) => handleDelete(e, selectedMessage.id)}
-                                className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
-                                title="حذف الرسالة"
-                            >
-                                <Trash2 size={20} />
-                            </button>
+                            <div className="flex gap-2">
+                                <a
+                                    href={`mailto:${selectedMessage.email}`}
+                                    className="p-3 bg-primary-500/10 text-primary-500 rounded-xl hover:bg-primary-500 hover:text-white transition-all hidden md:flex"
+                                    title="رد عبر البريد"
+                                >
+                                    <Reply size={20} />
+                                </a>
+                                <button
+                                    onClick={(e) => handleDelete(e, selectedMessage.id)}
+                                    className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                                    title="حذف الرسالة"
+                                >
+                                    <Trash2 size={20} />
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="flex-grow bg-dark-950/50 rounded-2xl p-6 border border-gray-800 text-gray-300 leading-relaxed overflow-y-auto custom-scrollbar">
-                            {selectedMessage.message}
+                        {/* Conversation Thread */}
+                        <div className="flex-grow bg-dark-950/50 rounded-2xl p-6 border border-gray-800 overflow-y-auto custom-scrollbar space-y-6">
+                            {/* Original Message */}
+                            <div className="flex gap-4">
+                                <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                    {selectedMessage.name.charAt(0)}
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-white font-bold text-sm">{selectedMessage.name}</span>
+                                        <span className="text-gray-500 text-xs">{formatTime(selectedMessage.date)}</span>
+                                    </div>
+                                    <p className="text-gray-300 text-sm leading-relaxed p-3 bg-dark-800 rounded-2xl rounded-tr-none">
+                                        {selectedMessage.message}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Replies */}
+                            {(selectedMessage.replies || []).map(reply => (
+                                <div key={reply.id} className="flex gap-4 flex-row-reverse">
+                                    <div className="w-8 h-8 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                        Me
+                                    </div>
+                                    <div className="space-y-1 text-left" dir="ltr">
+                                        <div className="flex items-center gap-2 justify-end">
+                                            <span className="text-gray-500 text-xs">{formatTime(reply.date)}</span>
+                                            <span className="text-white font-bold text-sm">You</span>
+                                        </div>
+                                        <p className="text-white text-sm leading-relaxed p-3 bg-primary-600 rounded-2xl rounded-tl-none text-right" dir="rtl">
+                                            {reply.content}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
-                        <div className="mt-6 flex justify-end">
-                            <a
-                                href={`mailto:${selectedMessage.email}`}
-                                className="bg-primary-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-primary-600 transition-all flex items-center gap-2"
-                            >
-                                <CheckCircle size={18} />
-                                الرد على المرسل
-                            </a>
+                        {/* Reply Input Area */}
+                        <div className="mt-6 flex flex-col gap-3">
+                            <textarea
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                                placeholder="اكتب ردك هنا..."
+                                className="w-full bg-dark-800 border border-gray-700 rounded-xl p-4 text-white focus:border-primary-500 outline-none resize-none h-24"
+                            />
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={handleSendReply}
+                                    disabled={!replyText.trim()}
+                                    className="bg-primary-500 disabled:bg-gray-700 disabled:text-gray-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-600 transition-all flex items-center gap-2 shadow-lg shadow-primary-500/20"
+                                >
+                                    <Send size={18} />
+                                    إرسال الرد
+                                </button>
+                            </div>
                         </div>
                     </motion.div>
                 ) : (
+
                     <div className="h-full flex flex-col items-center justify-center text-gray-500">
                         <div className="w-20 h-20 bg-dark-800 rounded-full flex items-center justify-center mb-4">
                             <Mail size={32} className="opacity-50" />

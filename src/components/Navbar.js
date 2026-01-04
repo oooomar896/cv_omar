@@ -54,10 +54,16 @@ const Navbar = () => {
           {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className='flex items-center space-x-2 space-x-reverse'
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <Code2 className='h-8 w-8 text-primary-500' />
-            <span className='text-xl font-bold gradient-text'>عمر التقني</span>
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-green-600 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-200"></div>
+              <div className="relative p-2 bg-dark-800 ring-1 ring-white/10 rounded-lg">
+                <Code2 className="h-6 w-6 text-emerald-500" />
+              </div>
+            </div>
+            <span className="text-xl font-bold font-mono text-white tracking-tight">OMAR<span className="text-emerald-500">.DEV</span></span>
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -68,10 +74,10 @@ const Navbar = () => {
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
                   className={`nav-link px-3 py-2 text-sm font-medium transition-all ${item.isHighlight
-                      ? 'text-primary-500 border border-primary-500/30 rounded-lg bg-primary-500/5 px-4 hover:bg-primary-500 hover:text-white'
-                      : item.isSecondary
-                        ? 'text-gray-400 border border-gray-700 rounded-lg px-4 hover:border-primary-500 hover:text-white'
-                        : ''
+                    ? 'text-primary-500 border border-primary-500/30 rounded-lg bg-primary-500/5 px-4 hover:bg-primary-500 hover:text-white'
+                    : item.isSecondary
+                      ? 'text-gray-400 border border-gray-700 rounded-lg px-4 hover:border-primary-500 hover:text-white'
+                      : ''
                     }`}
                 >
                   {item.name}

@@ -82,6 +82,13 @@ const ManageUsers = () => {
                                         >
                                             <Eye size={16} />
                                         </button>
+                                        <a
+                                            href={`mailto:${user.email}`}
+                                            className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center"
+                                            title="إرسال بريد إلكتروني"
+                                        >
+                                            <Mail size={16} />
+                                        </a>
                                         <button
                                             onClick={() => handleDelete(user.id)}
                                             className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"

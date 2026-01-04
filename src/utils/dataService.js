@@ -279,7 +279,8 @@ class DataService {
             ...msg,
             id: Date.now(),
             date: new Date().toISOString(),
-            read: false
+            read: false,
+            replies: [] // Initialize empty replies array
         };
         this._set(STORAGE_KEYS.MESSAGES, [...messages, newMessage]);
         this.logActivity('create', `رسالة جديدة من: ${msg.email}`);
@@ -296,6 +297,27 @@ class DataService {
             m.id === id ? { ...m, read: true } : m
         );
         this._set(STORAGE_KEYS.MESSAGES, messages);
+    }
+    sendReply(messageId, replyContent) {
+        const messages = this.getMessages();
+        const reply = {
+            id: Date.now(),
+            content: replyContent,
+            date: new Date().toISOString(),
+            type: 'admin' // sender type
+        };
+
+        const updatedMessages = messages.map(m => {
+            if (m.id === messageId) {
+                const currentReplies = m.replies || [];
+                return { ...m, replies: [...currentReplies, reply], read: true };
+            }
+            return m;
+        });
+
+        this._set(STORAGE_KEYS.MESSAGES, updatedMessages);
+        this.logActivity('update', `تم الرد على الرسالة #${messageId}`);
+        return reply;
     }
 
     // Utility
