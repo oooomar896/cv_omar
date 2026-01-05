@@ -541,12 +541,14 @@ class DataService {
                 .select('*')
                 .eq('email', email)
                 .eq('password', password)
-                .single();
+                .maybeSingle();
 
             if (error) throw error;
+            if (!data) return null; // Invalid credentials
+
             return data;
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('Login error details:', error);
             throw error;
         }
     }

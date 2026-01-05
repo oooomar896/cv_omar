@@ -18,7 +18,10 @@ const AdminLogin = () => {
         setIsLoading(true);
 
         try {
-            const admin = await dataService.loginAdmin(email, password);
+            const trimmedEmail = email.trim().toLowerCase();
+            const trimmedPassword = password.trim();
+
+            const admin = await dataService.loginAdmin(trimmedEmail, trimmedPassword);
 
             if (!admin) {
                 setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور.', type: 'error' });
@@ -29,7 +32,8 @@ const AdminLogin = () => {
             localStorage.setItem('admin_token', 'supabase_admin_session_active');
             localStorage.setItem('admin_user', JSON.stringify({ email: admin.email, role: admin.role }));
             setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
-            setTimeout(() => navigate('/admin'), 1000);
+            setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
+            navigate('/admin', { replace: true });
 
         } catch (error) {
             console.error("Login failed:", error);

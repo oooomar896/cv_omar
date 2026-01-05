@@ -26,7 +26,6 @@ async function checkAdminSetup() {
             }
             return;
         }
-
         console.log('SUCCESS: "admins" table exists and is accessible.');
 
         // 2. Check if the specific admin user exists
