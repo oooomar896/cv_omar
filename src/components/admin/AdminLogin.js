@@ -33,7 +33,8 @@ const AdminLogin = () => {
 
         } catch (error) {
             console.error("Login failed:", error);
-            setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور.', type: 'error' });
+            console.error("Error details:", error.message, error.code);
+            setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور (أو خطأ في الاتصال).', type: 'error' });
             setIsLoading(false);
         }
     };

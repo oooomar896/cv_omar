@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     AreaChart, Area, PieChart, Pie, Cell
@@ -32,7 +32,7 @@ const AnalyticsDashboard = () => {
             .on(
                 'postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'messages' },
-                async (payload) => {
+                async () => {
                     setToast({ show: true, message: '📩 رسالة جديدة وصلت!', type: 'success' });
                     await dataService.fetchMessages(); // Refresh Data
                     setStats(systemAnalytics.getDashboardStats()); // Recalculate Stats
@@ -41,7 +41,7 @@ const AnalyticsDashboard = () => {
             .on(
                 'postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'leads' },
-                async (payload) => {
+                async () => {
                     setToast({ show: true, message: '👤 مستخدم جديد سجل في المنصة!', type: 'success' });
                     await dataService.fetchUsers();
                     setStats(systemAnalytics.getDashboardStats());
@@ -50,7 +50,7 @@ const AnalyticsDashboard = () => {
             .on(
                 'postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'generated_projects' },
-                async (payload) => {
+                async () => {
                     setToast({ show: true, message: '🤖 تم إنشاء مشروع AI جديد!', type: 'success' });
                     await dataService.fetchGeneratedProjects();
                     setStats(systemAnalytics.getDashboardStats());
