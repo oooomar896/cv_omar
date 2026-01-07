@@ -92,10 +92,13 @@ ${formData.description.substring(0, 500)}...
     useEffect(() => {
         if (isSuccess) {
             const url = `https://wa.me/${waNumber}?text=${waMessage}`;
-            // Small delay to ensure user sees the success state first
+
+            // 使用 Flash Message أو Toast لإخبار المستخدم
+            // Use window.location.href to avoid popup blockers and ensure mobile app opens directly
             const timer = setTimeout(() => {
-                window.open(url, '_blank');
-            }, 1500);
+                window.location.href = url;
+            }, 1000);
+
             return () => clearTimeout(timer);
         }
     }, [isSuccess, waMessage]);
