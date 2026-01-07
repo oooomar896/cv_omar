@@ -122,6 +122,29 @@ const ManageProjects = () => {
         }
     };
 
+    const convertGoogleDriveLink = (url) => {
+        if (!url) return url;
+        try {
+            if (url.includes('drive.google.com') || url.includes('share.google')) {
+                let id = '';
+                const match1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                const match3 = url.match(/share\.google\/([a-zA-Z0-9_-]+)/);
+
+                if (match1) id = match1[1];
+                else if (match2) id = match2[1];
+                else if (match3) id = match3[1];
+
+                if (id) {
+                    return `https://drive.google.com/uc?export=view&id=${id}`;
+                }
+            }
+        } catch (e) {
+            console.error('Error converting Google Drive link:', e);
+        }
+        return url;
+    };
+
     const categories = {
         web: { icon: Globe, color: 'text-blue-500', bg: 'bg-blue-500/10', label: 'موقع ويب' },
         mobile: { icon: Smartphone, color: 'text-purple-500', bg: 'bg-purple-500/10', label: 'تطبيق جوال' },
@@ -317,13 +340,18 @@ const ManageProjects = () => {
                                     </div>
 
                                     {imageInputType === 'url' ? (
-                                        <input
-                                            id="proj-image"
-                                            className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                            value={currentProject.image || ''}
-                                            onChange={(e) => setCurrentProject({ ...currentProject, image: e.target.value })}
-                                            placeholder="https://example.com/image.png"
-                                        />
+                                        <div>
+                                            <input
+                                                id="proj-image"
+                                                className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                                value={currentProject.image || ''}
+                                                onChange={(e) => setCurrentProject({ ...currentProject, image: convertGoogleDriveLink(e.target.value) })}
+                                                placeholder="https://example.com/image.png أو رابط Google Drive"
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1 mr-1">
+                                                يدعم روابط الصور المباشرة وروابط Google Drive (تأكد من أن الرابط "عام").
+                                            </p>
+                                        </div>
                                     ) : (
                                         <div className="relative">
                                             <input

@@ -15,6 +15,32 @@ const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [dynamicProjects, setDynamicProjects] = useState([]);
 
+  // Helper to convert Google Drive links to direct image links
+  const convertGoogleDriveLink = (url) => {
+    if (!url) return url;
+    try {
+      if (url.includes('drive.google.com') || url.includes('share.google')) {
+        let id = '';
+        const match1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        // Handle simplified share.google links if they follow a pattern like share.google/ID
+        // Note: share.google is often a redirect, but if it has an ID, we assume standard Drive ID
+        const match3 = url.match(/share\.google\/([a-zA-Z0-9_-]+)/);
+
+        if (match1) id = match1[1];
+        else if (match2) id = match2[1];
+        else if (match3) id = match3[1];
+
+        if (id) {
+          return `https://drive.google.com/uc?export=view&id=${id}`;
+        }
+      }
+    } catch (e) {
+      console.error('Error converting Google Drive link:', e);
+    }
+    return url;
+  };
+
   const loadData = useCallback(() => {
     const adminDocs = dataService.getProjects();
     const adapted = adminDocs.map(p => ({
@@ -114,7 +140,7 @@ const Projects = () => {
                 {project.image ? (
                   <>
                     <img
-                      src={project.image}
+                      src={convertGoogleDriveLink(project.image)}
                       alt={project.title}
                       className={`w-full h-full ${project.imageClass || 'object-cover'
                         } group-hover:scale-110 transition-transform duration-300`}
