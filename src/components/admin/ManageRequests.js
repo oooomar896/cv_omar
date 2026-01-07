@@ -1,13 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
     Search,
-    Filter,
     Eye,
     MessageSquare,
-    Trash2,
-    CheckCircle,
-    Clock,
-    XCircle,
     Smartphone,
     Mail
 } from 'lucide-react';
@@ -28,49 +23,36 @@ const ManageRequests = () => {
     }, []);
 
     useEffect(() => {
+        const filterRequests = () => {
+            let temp = [...requests];
+
+            if (filter !== 'all') {
+                if (filter === 'pending') temp = temp.filter(r => r.status !== 'completed');
+                if (filter === 'completed') temp = temp.filter(r => r.status === 'completed');
+            }
+
+            if (searchTerm) {
+                temp = temp.filter(r =>
+                    r.project_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    r.user_email?.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            setFilteredRequests(temp);
+        };
+
         filterRequests();
     }, [requests, filter, searchTerm]);
 
     const loadRequests = async () => {
-        // We use generated_projects as the unified requests table
         const data = await dataService.fetchGeneratedProjects();
         setRequests(data);
-    };
-
-    const filterRequests = () => {
-        let temp = [...requests];
-
-        if (filter !== 'all') {
-            // Mapping status might not be perfect, assuming 'pending' and 'completed' exist or mapped
-            if (filter === 'pending') temp = temp.filter(r => r.status !== 'completed');
-            if (filter === 'completed') temp = temp.filter(r => r.status === 'completed');
-        }
-
-        if (searchTerm) {
-            temp = temp.filter(r =>
-                r.project_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                r.user_email?.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        setFilteredRequests(temp);
     };
 
     const extractPhone = (desc) => {
         if (!desc) return null;
         const match = desc.match(/PHONE:\s*([+\d\s-]+)/);
         return match ? match[1].trim() : null;
-    };
-
-    const handleDelete = async (id) => {
-        if (window.confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
-            // Assuming dataService needs a delete method for generated_projects or we strictly use Supabase here?
-            // dataService doesn't have deleteGeneratedProject exposed in the snippet read earlier.
-            // But we can add it or just ignore for now and say "Not implemented" or try to implement.
-            // Let's assume user needs it. I'll stick to view/chat for now or mock it.
-            setToast({ show: true, message: 'تم الحذف (محاكاة)', type: 'error' });
-            // In real app: await supabase.from('generated_projects').delete().eq('id', id);
-        }
     };
 
     const getStatusColor = (status) => {

@@ -8,12 +8,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 
 // Lazy load components for better performance
-const Hero = lazy(() => import('./components/Hero'));
-const About = lazy(() => import('./components/About'));
-const Skills = lazy(() => import('./components/Skills'));
-const Projects = lazy(() => import('./components/Projects'));
-const NewsSection = lazy(() => import('./components/NewsSection'));
-const Contact = lazy(() => import('./components/Contact'));
+
 const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
 const RequestService = lazy(() => import('./components/platform/RequestService'));
 const DeveloperProfile = lazy(() => import('./components/DeveloperProfile'));
