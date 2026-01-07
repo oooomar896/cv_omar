@@ -14,11 +14,22 @@ import {
     Newspaper
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import AdminNotificationsManager from './AdminNotificationsManager';
+import Toast from '../common/Toast';
 
 const AdminLayout = ({ children }) => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+    const handleNotification = (notif) => {
+        setToast({
+            show: true,
+            message: notif.message,
+            type: 'info' // or custom style for notification
+        });
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('admin_token');
@@ -36,6 +47,7 @@ const AdminLayout = ({ children }) => {
     const menuItems = [
         { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard, path: '/admin' },
         { id: 'analytics', label: 'التحليلات والمبيعات', icon: TrendingUp, path: '/admin/analytics' },
+        { id: 'requests', label: 'طلبات المشاريع', icon: Briefcase, path: '/admin/requests' },
         { id: 'messages', label: 'الرسائل الواردة', icon: MessageSquare, path: '/admin/messages' },
         { id: 'projects', label: 'إدارة المشاريع', icon: Briefcase, path: '/admin/projects' },
         { id: 'skills', label: 'إدارة المهارات', icon: Layers, path: '/admin/skills' },
@@ -145,6 +157,19 @@ const AdminLayout = ({ children }) => {
                     </AnimatePresence>
                 </div>
             </main>
+            {/* Notification Manager */}
+            <AdminNotificationsManager onNotification={handleNotification} />
+
+            {/* Global Admin Toast */}
+            {toast.show && (
+                <div className="fixed top-4 left-4 z-[100]">
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast({ ...toast, show: false })}
+                    />
+                </div>
+            )}
         </div>
     );
 };

@@ -8,11 +8,17 @@ import {
     Database,
     Zap,
     Github,
-    X
+    X,
+    Upload,
+    Link as LinkIcon,
+    Image as ImageIcon,
+    Loader
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import { dataService } from '../../utils/dataService';
+import { supabase } from '../../utils/supabaseClient';
 import Toast from '../../components/common/Toast';
 
 const ManageProjects = () => {
@@ -21,6 +27,8 @@ const ManageProjects = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [imageInputType, setImageInputType] = useState('url');
+    const [uploading, setUploading] = useState(false);
     const [currentProject, setCurrentProject] = useState({
         name: '',
         category: 'web',
@@ -69,6 +77,7 @@ const ManageProjects = () => {
     const resetForm = () => {
         setCurrentProject({ name: '', category: 'web', desc: '', link: '', image: '', status: 'published' });
         setEditMode(false);
+        setImageInputType('url');
     };
 
     const handleDelete = (id) => {
@@ -80,6 +89,36 @@ const ManageProjects = () => {
             } catch (error) {
                 showToast('فشل حذف المشروع', 'error');
             }
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('projects')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data } = supabase.storage
+                .from('projects')
+                .getPublicUrl(filePath);
+
+            setCurrentProject({ ...currentProject, image: data.publicUrl });
+            showToast('تم رفع الصورة بنجاح', 'success');
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            showToast('فشل رفع الصورة', 'error');
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -250,14 +289,87 @@ const ManageProjects = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="proj-image" className="text-sm text-gray-400">رابط صورة المعاينة</label>
-                                    <input
-                                        id="proj-image"
-                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
-                                        value={currentProject.image || ''}
-                                        onChange={(e) => setCurrentProject({ ...currentProject, image: e.target.value })}
-                                        placeholder="/images/projects/example.svg"
-                                    />
+                                    <span className="block text-sm text-gray-400">صورة المشروع</span>
+
+                                    <div className="flex gap-4 mb-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setImageInputType('url')}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${imageInputType === 'url'
+                                                ? 'bg-primary-500 text-white border-primary-500'
+                                                : 'bg-dark-800 text-gray-400 border-gray-700 hover:border-gray-600'
+                                                }`}
+                                        >
+                                            <LinkIcon size={16} />
+                                            <span>رابط خارجي</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setImageInputType('upload')}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${imageInputType === 'upload'
+                                                ? 'bg-primary-500 text-white border-primary-500'
+                                                : 'bg-dark-800 text-gray-400 border-gray-700 hover:border-gray-600'
+                                                }`}
+                                        >
+                                            <Upload size={16} />
+                                            <span>رفع صورة</span>
+                                        </button>
+                                    </div>
+
+                                    {imageInputType === 'url' ? (
+                                        <input
+                                            id="proj-image"
+                                            className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none"
+                                            value={currentProject.image || ''}
+                                            onChange={(e) => setCurrentProject({ ...currentProject, image: e.target.value })}
+                                            placeholder="https://example.com/image.png"
+                                        />
+                                    ) : (
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="hidden"
+                                                id="image-upload"
+                                            />
+                                            <label
+                                                htmlFor="image-upload"
+                                                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${currentProject.image && imageInputType === 'upload'
+                                                    ? 'border-primary-500 bg-primary-500/10'
+                                                    : 'border-gray-700 hover:border-primary-500 hover:bg-dark-800/50'
+                                                    }`}
+                                            >
+                                                {uploading ? (
+                                                    <div className="flex flex-col items-center gap-2 text-primary-500">
+                                                        <Loader className="animate-spin" size={24} />
+                                                        <span>جاري الرفع...</span>
+                                                    </div>
+                                                ) : currentProject.image && imageInputType === 'upload' ? (
+                                                    <div className="flex flex-col items-center gap-2 text-primary-500">
+                                                        <ImageIcon size={32} />
+                                                        <span>تم رفع الصورة بنجاح</span>
+                                                        <span className="text-xs text-gray-400 truncate max-w-[200px]">{currentProject.image}</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center gap-2 text-gray-400">
+                                                        <Upload size={32} />
+                                                        <span>اضغط لرفع صورة</span>
+                                                        <span className="text-xs text-gray-500">PNG, JPG up to 5MB</span>
+                                                    </div>
+                                                )}
+                                            </label>
+                                        </div>
+                                    )}
+                                    {currentProject.image && (
+                                        <div className="mt-2 relative w-full h-40 rounded-xl overflow-hidden border border-gray-800">
+                                            <img
+                                                src={currentProject.image}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">

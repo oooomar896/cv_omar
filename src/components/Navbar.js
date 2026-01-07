@@ -3,10 +3,14 @@ import { motion } from 'framer-motion';
 import { Menu, X, Sun, Moon, Code2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,26 +22,41 @@ const Navbar = () => {
   }, []);
 
   const navItems = [
-    { name: 'الرئيسية', href: '#home' },
-    { name: 'عني', href: '#about' },
-    { name: 'المهارات', href: '#skills' },
-    { name: 'المشاريع', href: '#projects' },
-    { name: 'الأخبار', href: '#news' },
-    { name: 'تواصل معي', href: '#contact' },
-    { name: 'بناء مشروع AI', href: '/builder', isHighlight: true },
+    { name: 'طلب مشروع', href: '/' },
+    { name: 'المطور', href: '/developer' },
+    { name: 'المشاريع', href: '/developer#projects' },
+    { name: 'عني', href: '/developer#about' },
+    { name: 'تواصل معي', href: '/developer#contact' },
     { name: 'بوابة العميل', href: '/portal/login', isSecondary: true },
   ];
 
   const scrollToSection = (href) => {
-    if (!href.startsWith('#')) {
-      window.location.href = href;
-      return;
-    }
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
     setIsOpen(false);
+
+    // Check if it's a direct route or hash
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+
+      // If we are already on the page, just scroll
+      if (location.pathname === path || (path === '/' && location.pathname === '/')) {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // Navigate to the page, wait for load then scroll (handled by useEffect in target page preferably, but simple navigation for now)
+        // We can just navigate to the full href, browser/router usually handles hash
+        navigate(href);
+        // Fallback for SPA routing if hash doesn't scroll automatically
+        setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) element.scrollIntoView({ behavior: 'smooth' });
+        }, 500);
+      }
+    } else {
+      navigate(href);
+      window.scrollTo(0, 0);
+    }
   };
 
   return (
@@ -55,7 +74,7 @@ const Navbar = () => {
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-3 cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => navigate('/')}
           >
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-green-600 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-200"></div>
