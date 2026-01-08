@@ -55,3 +55,26 @@ export const DYNAMIC_QUESTIONS = {
         },
     ],
 };
+
+export const STARTER_KITS = {
+    [PROJECT_TYPES.WEB]: [
+        { name: 'React + Vite Starter', desc: 'هيكل أساسي لمشروع React سريع جداً مع Tailwind CSS.', link: 'https://github.com/vitejs/vite-plugin-react' },
+        { name: 'Next.js Premium Template', desc: 'قالب Next.js جاهز مع نظام SEO ونظام ملفات متطور.', link: 'https://nextjs.org/docs/getting-started' }
+    ],
+    [PROJECT_TYPES.MOBILE]: [
+        { name: 'Flutter Clean Arch', desc: 'هيكل مشروع Flutter يتبع معايير Clean Architecture.', link: 'https://flutter.dev' },
+        { name: 'React Native Base', desc: 'قالب React Native مع Expo و Navigation جاهز.', link: 'https://reactnative.dev' }
+    ],
+    [PROJECT_TYPES.AI_BOT]: [
+        { name: 'Node.js Bot Core', desc: 'نظام أساسي لبناء بوتات Telegram و Discord باستخدام Node.js.', link: 'https://github.com/telegraf/telegraf' },
+        { name: 'Python AI Agent Kit', desc: 'هيكل لبناء وكلاء ذكاء اصطناعي باستخدام LangChain و OpenAI.', link: 'https://python.langchain.com' }
+    ]
+};
+
+export const UI_UX_RESOURCES = [
+    { name: 'Framer Motion', desc: 'أفضل مكتبة للأنيميشن والتحركات التفاعلية في React.', link: 'https://www.framer.com/motion/' },
+    { name: 'Lucide Icons', desc: 'مجموعة أيقونات مرنة وجميلة مفتوحة المصدر.', link: 'https://lucide.dev/' },
+    { name: 'Tailwind CSS', desc: 'إطار عمل CSS يركز على الإنتاجية والتصميم السريع.', link: 'https://tailwindcss.com/' },
+    { name: 'Google Fonts (Cairo)', desc: 'الخط العربي الرسمي والأكثر احترافية للواجهات.', link: 'https://fonts.google.com/specimen/Cairo' },
+    { name: 'Radix UI', desc: 'مكونات واجهة مستخدم غير معقدة (Headless) للوصول العالي.', link: 'https://www.radix-ui.com/' }
+];

@@ -3,10 +3,11 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
     Cpu, Package, Download, LogOut, Code2,
-    Smartphone, Bot, Globe, ExternalLink
+    Smartphone, Bot, Globe, ExternalLink, Library, Palette
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
+import { STARTER_KITS, UI_UX_RESOURCES } from '../../constants/platformConstants';
 import FileViewer from './FileViewer';
 import ProjectRoadmap from './ProjectRoadmap';
 
@@ -88,6 +89,60 @@ const UserPortal = () => {
 
                     <div className="bg-dark-900 border border-gray-800 rounded-3xl p-6">
                         <ProjectRoadmap currentStage={selectedProject.projectStage || 'analysis'} />
+                    </div>
+
+                    {/* Starter Kits & Resources */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg">
+                                <Library size={20} />
+                            </div>
+                            <h3 className="text-xl font-bold text-white font-cairo">أدوات ومكتبات بناء هذا المشروع</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {(STARTER_KITS[selectedProject.projectType || 'web'] || []).map((kit, i) => (
+                                <a
+                                    key={kit.name}
+                                    href={kit.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-dark-900 border border-gray-800 p-5 rounded-2xl group hover:border-amber-500/50 transition-all text-right"
+                                >
+                                    <div className="flex justify-between items-start mb-2">
+                                        <ExternalLink size={16} className="text-gray-600 group-hover:text-amber-500" />
+                                        <h4 className="font-bold text-white font-cairo">{kit.name}</h4>
+                                    </div>
+                                    <p className="text-xs text-gray-400 font-cairo leading-relaxed">{kit.desc}</p>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* UI/UX Resources */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-pink-500/10 text-pink-500 rounded-lg">
+                                <Palette size={20} />
+                            </div>
+                            <h3 className="text-xl font-bold text-white font-cairo">موارد التصميم وتجربة المستخدم (UI/UX)</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {UI_UX_RESOURCES.map((resource) => (
+                                <a
+                                    key={resource.name}
+                                    href={resource.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-dark-900 border border-gray-800 p-4 rounded-xl group hover:border-pink-500/50 transition-all text-right flex flex-col justify-between"
+                                >
+                                    <div className="flex justify-between items-start mb-2">
+                                        <ExternalLink size={14} className="text-gray-600 group-hover:text-pink-500" />
+                                        <h4 className="font-bold text-white font-cairo text-sm">{resource.name}</h4>
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 font-cairo leading-relaxed">{resource.desc}</p>
+                                </a>
+                            ))}
+                        </div>
                     </div>
 
                     <FileViewer

@@ -39,6 +39,7 @@ const AIAssistant = () => {
             if (msg.includes('كود')) response = 'الأكواد المولدة مكتوبة بلغة React/Flutter حديثة، تتبع أفضل المعايير لضمان الأداء والقابلية للتوسع.';
             else if (msg.includes('نشر') || msg.includes('أنشر')) response = 'يمكنك نشر مشاريع الويب فوراً عبر Netlify أو Vercel. أما تطبيقات الجوال فنحن نساعدك في رفعها لمتاجر Google Play و App Store.';
             else if (msg.includes('تكلف') || msg.includes('سعر')) response = 'تعتمد التكلفة على حجم الميزات المطلوبة. غالباً ما تبدأ مشاريعنا الاحترافية من أسعار تنافسية جداً مع ضمان الجودة العالية.';
+            else if (msg.includes('مكتبات') || msg.includes('قوالب') || msg.includes('بناء')) response = 'نوفر لك مكتبات برمجية جاهزة (Starter Kits) لكل نوع من المشاريع (ويب، جوال، بوت) لتسهيل عملية التطوير وتقليل الوقت المستغرق في البنية التحتية.';
             else response = 'فهمت ما تقصده. كفريق تقني، نحن نركز على تحويل هذه الرؤية لواقع ملموس بأسرع وقت وأعلى جودة.';
 
             setMessages(prev => [...prev, { role: 'assistant', text: response }]);
