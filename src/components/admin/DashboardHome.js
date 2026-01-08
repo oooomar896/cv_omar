@@ -2,12 +2,11 @@ import {
     Users,
     Briefcase,
     Zap,
-    MessageSquare,
-    ArrowUpRight,
-    ArrowDownRight,
     Newspaper,
     Activity,
-    Clock
+    Clock,
+    ArrowUpRight,
+    ArrowDownRight
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { dataService } from '../../utils/dataService';
@@ -62,25 +61,8 @@ const DashboardHome = () => {
         { label: 'الأخبار المنشورة', value: counts.news, icon: Newspaper, change: '+2', isPositive: true },
     ];
 
-    const getActivityIcon = (type) => {
-        switch (type) {
-            case 'create': return <Zap size={16} />;
-            case 'update': return <Activity size={16} />;
-            case 'delete': return <Users size={16} />; // Or Trash
-            case 'system': return <Clock size={16} />;
-            default: return <MessageSquare size={16} />;
-        }
-    };
+    // Helper functions removed as they were replacing inline logic
 
-    const getActivityColor = (type) => {
-        switch (type) {
-            case 'create': return 'text-emerald-500 bg-emerald-500/10';
-            case 'update': return 'text-blue-500 bg-blue-500/10';
-            case 'delete': return 'text-red-500 bg-red-500/10';
-            case 'system': return 'text-amber-500 bg-amber-500/10';
-            default: return 'text-gray-500 bg-gray-500/10';
-        }
-    };
 
     return (
         <div className="space-y-8 font-cairo" dir="rtl">

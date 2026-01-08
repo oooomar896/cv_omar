@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
-import { Globe, Smartphone, Bot, Database, Zap, Code, Layout, MessageSquare } from 'lucide-react';
+import { Globe, Smartphone, Bot, Database } from 'lucide-react';
 
 const ServiceCard = ({ service, index, onSelect }) => {
-    const isEven = index % 2 === 0;
 
     return (
         <motion.div

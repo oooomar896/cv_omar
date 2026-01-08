@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
     Cpu, Package, Download, LogOut, Code2,
-    Calendar, ArrowRight, Smartphone, Bot, Globe, ExternalLink
+    Smartphone, Bot, Globe, ExternalLink
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import FileViewer from './FileViewer';
