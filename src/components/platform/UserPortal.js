@@ -53,6 +53,36 @@ const UserPortal = () => {
         );
     }
 
+    const downloadBlueprint = (project) => {
+        if (!project.files) return;
+        const blob = new Blob([JSON.stringify(project.files, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `blueprint_${project.id}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    const getStatusBadge = (status) => {
+        const styles = {
+            pending: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+            completed: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+            rejected: "bg-red-500/10 text-red-500 border-red-500/20"
+        };
+        const labels = {
+            pending: "قيد المراجعة",
+            completed: "مكتمل",
+            rejected: "مرفوض"
+        };
+        return (
+            <span className={`text-[10px] px-2 py-1 rounded-full border font-bold mb-1 ${styles[status] || styles.pending}`}>
+                {labels[status] || "قيد المراجعة"}
+            </span>
+        );
+    };
+
     return (
         <div className="min-h-screen font-cairo text-right" dir="rtl">
             {/* Header */}
@@ -167,9 +197,7 @@ const UserPortal = () => {
                                                         project.projectType === 'ai-bot' ? <Bot size={24} /> : <Globe size={24} />}
                                                 </div>
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-full border border-emerald-500/20 font-bold mb-1">
-                                                        JUNIOR PLAN
-                                                    </span>
+                                                    {getStatusBadge(project.status)}
                                                     <span className="text-xs text-gray-500 font-mono">
                                                         {new Date(project.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                                     </span>
@@ -193,7 +221,7 @@ const UserPortal = () => {
                                                 <span>عرض الملفات</span>
                                             </button>
                                             <button
-                                                onClick={() => alert('Download started...')}
+                                                onClick={() => downloadBlueprint(project)}
                                                 className="p-3 bg-primary-500/10 text-primary-400 hover:bg-primary-500 hover:text-white rounded-xl transition-all border border-primary-500/20"
                                             >
                                                 <Download size={18} />

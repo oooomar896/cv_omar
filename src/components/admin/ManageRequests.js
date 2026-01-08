@@ -9,6 +9,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
 import Toast from '../../components/common/Toast';
+import FileViewer from '../platform/FileViewer';
 
 const ManageRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -198,6 +199,27 @@ const ManageRequests = () => {
                                     </div>
                                 )}
                             </div>
+
+                            {selectedRequest.files && (
+                                <div className="mt-6 border-t border-gray-800 pt-6">
+                                    <h3 className="text-lg font-bold text-white mb-4">المخطط التقني (Blueprint)</h3>
+                                    <div className="bg-dark-950 rounded-2xl border border-gray-800 overflow-hidden max-h-[400px] overflow-y-auto">
+                                        <FileViewer
+                                            files={selectedRequest.files}
+                                            onDownload={() => {
+                                                const blob = new Blob([JSON.stringify(selectedRequest.files, null, 2)], { type: 'application/json' });
+                                                const url = URL.createObjectURL(blob);
+                                                const a = document.createElement('a');
+                                                a.href = url;
+                                                a.download = `blueprint_${selectedRequest.id}.json`;
+                                                document.body.appendChild(a);
+                                                a.click();
+                                                document.body.removeChild(a);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </motion.div>
                     </div>
                 )}
