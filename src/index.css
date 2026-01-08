@@ -9,12 +9,18 @@
     scroll-behavior: smooth;
     scroll-padding-top: 100px;
   }
-  
+
   body {
     font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     direction: rtl;
+    background-color: #030712;
+    /* dark-950 */
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(0, 122, 204, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(78, 201, 176, 0.08), transparent 25%);
+    background-attachment: fixed;
   }
-  
+
   * {
     @apply border-gray-700;
   }
@@ -24,27 +30,27 @@
   .btn-primary {
     @apply bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-glow transition-all duration-300 hover:scale-105;
   }
-  
+
   .btn-secondary {
     @apply bg-dark-800 text-white px-6 py-3 rounded-full font-semibold border border-gray-600 hover:border-primary-500 transition-all duration-300;
   }
-  
+
   .card {
     @apply bg-dark-800 border border-gray-700 rounded-2xl p-6 hover:border-primary-500 transition-all duration-300;
   }
-  
+
   .gradient-text {
     @apply bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent;
   }
-  
+
   .section-title {
     @apply text-4xl font-bold text-center mb-12 gradient-text;
   }
-  
+
   .nav-link {
     @apply text-gray-300 hover:text-primary-500 transition-colors duration-300 font-medium;
   }
-  
+
   .nav-link.active {
     @apply text-primary-500;
   }
@@ -54,7 +60,7 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .backdrop-blur-xs {
     backdrop-filter: blur(2px);
   }
@@ -65,6 +71,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -103,19 +110,19 @@ img {
 
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(107, 114, 128, 0.3);
-    border-radius: 20px;
+  background-color: rgba(107, 114, 128, 0.3);
+  border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(107, 114, 128, 0.5);
+  background-color: rgba(107, 114, 128, 0.5);
 }

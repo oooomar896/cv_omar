@@ -20,7 +20,7 @@ const PortalLogin = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4 font-cairo" dir="rtl">
+        <div className="min-h-screen flex items-center justify-center p-4 font-cairo" dir="rtl">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}

@@ -11,6 +11,7 @@ import {
     Loader
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
+import ServicesGallery from './ServicesGallery';
 
 const RequestService = () => {
     const [step, setStep] = useState(1);
@@ -207,29 +208,38 @@ ${formData.description.substring(0, 500)}...
                                     className="space-y-8"
                                 >
                                     <div>
-                                        <h3 className="text-2xl font-bold text-white mb-6">ما نوع الخدمة التي تبحث عنها؟</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {services.map((s) => (
-                                                <button
-                                                    key={s.id}
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, serviceType: s.id })}
-                                                    className={`flex items-start gap-4 p-6 rounded-2xl border text-right transition-all group ${formData.serviceType === s.id
-                                                        ? 'bg-primary-500/10 border-primary-500'
-                                                        : 'bg-dark-800 border-gray-700 hover:border-gray-600'
-                                                        }`}
+                                        <div className="w-full">
+                                            <ServicesGallery
+                                                title={null}
+                                                onSelectService={(id) => {
+                                                    setFormData({ ...formData, serviceType: id });
+                                                    // Optional: Auto advance or let user click 'Next'
+                                                    // setStep(2); 
+                                                }}
+                                            />
+
+                                            {/* Selected Service Highlight */}
+                                            {formData.serviceType && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="mt-6 p-4 bg-primary-500/10 border border-primary-500 rounded-2xl flex items-center justify-between"
                                                 >
-                                                    <div className={`p-3 rounded-xl ${formData.serviceType === s.id ? 'bg-primary-500 text-white' : 'bg-dark-700 text-gray-400'
-                                                        }`}>
-                                                        <s.icon size={24} />
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
+                                                        <span className="text-white font-bold">
+                                                            تم اختيار: {services.find(s => s.id === formData.serviceType)?.title}
+                                                        </span>
                                                     </div>
-                                                    <div>
-                                                        <h4 className={`font-bold text-lg mb-1 ${formData.serviceType === s.id ? 'text-white' : 'text-gray-300'
-                                                            }`}>{s.title}</h4>
-                                                        <p className="text-sm text-gray-500">{s.desc}</p>
-                                                    </div>
-                                                </button>
-                                            ))}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setStep(2)}
+                                                        className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all"
+                                                    >
+                                                        متابعة
+                                                    </button>
+                                                </motion.div>
+                                            )}
                                         </div>
                                     </div>
 

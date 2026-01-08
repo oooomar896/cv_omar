@@ -281,36 +281,52 @@ const ProjectBuilderForm = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4">
+        <div className="max-w-6xl mx-auto py-12 px-4">
+            {/* SEO Title */}
+            <h1 className="text-3xl md:text-5xl font-black text-center text-white mb-12 relative z-10">
+                ابنِ هيكل مشروعك <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-500">بالذكاء الاصطناعي</span>
+            </h1>
+
             {/* Beta Announcement */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-8 p-4 bg-primary-500/10 border border-primary-500/20 rounded-2xl flex items-center gap-4 text-primary-400"
+                className="mb-12 p-1 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-2xl border border-primary-500/20"
             >
-                <div className="p-2 bg-primary-500/20 rounded-lg">
-                    <Sparkles className="h-5 w-5" />
-                </div>
-                <div className="text-sm">
-                    <span className="font-bold ml-1">مرحلة البيتا (Beta):</span>
-                    المنصة حالياً في طور التطوير، جميع ميزات توليد الكود متاحة
-                    <span className="text-white font-bold mx-1 text-base">مجانًا</span>
-                    لفترة محدودة لدعم المبتكرين.
+                <div className="bg-dark-950/80 backdrop-blur-md rounded-xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-right">
+                    <div className="p-3 bg-primary-500/20 rounded-xl">
+                        <Sparkles className="h-6 w-6 text-primary-400" />
+                    </div>
+                    <div className="text-sm md:text-base text-gray-300">
+                        <span className="font-bold text-white ml-2">مرحلة البيتا (Beta):</span>
+                        المنصة حالياً في طور التطوير، جميع ميزات توليد الكود متاحة
+                        <span className="text-secondary-400 font-bold mx-1 text-lg">مجانًا</span>
+                        لفترة محدودة لدعم المبتكرين.
+                    </div>
                 </div>
             </motion.div>
 
             {/* Progress Stepper */}
-            <div className="flex justify-between mb-12 relative">
-                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 z-0" />
-                {FORM_STEPS.map((step, idx) => (
-                    <div key={idx} className="relative z-10 flex flex-col items-center gap-2">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${idx <= currentStep ? 'bg-primary-500 border-primary-500 text-white' : 'bg-dark-900 border-gray-700 text-gray-500'
-                            }`}>
-                            {idx < currentStep ? <CheckCircle2 className="h-6 w-6" /> : idx + 1}
+            <div className="mb-16">
+                <div className="flex justify-between relative max-w-3xl mx-auto">
+                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 z-0" />
+                    {FORM_STEPS.map((step, idx) => (
+                        <div key={idx} className="relative z-10 flex flex-col items-center gap-4">
+                            <motion.div
+                                initial={false}
+                                animate={{
+                                    scale: idx === currentStep ? 1.2 : 1,
+                                    borderColor: idx <= currentStep ? 'rgba(16, 185, 129, 0.5)' : 'rgba(55, 65, 81, 1)'
+                                }}
+                                className={`w-12 h-12 rounded-2xl flex items-center justify-center border-2 transition-all shadow-lg ${idx <= currentStep ? 'bg-gradient-to-br from-primary-600 to-secondary-600 text-white shadow-primary-500/20 border-transparent' : 'bg-dark-900 border-gray-700 text-gray-500'
+                                    }`}
+                            >
+                                {idx < currentStep ? <CheckCircle2 className="h-6 w-6" /> : <span className="font-bold text-lg">{idx + 1}</span>}
+                            </motion.div>
+                            <span className={`text-xs md:text-sm font-bold ${idx <= currentStep ? 'text-white' : 'text-gray-600'}`}>{step.title}</span>
                         </div>
-                        <span className={`text-xs font-medium ${idx <= currentStep ? 'text-primary-500' : 'text-gray-500'}`}>{step.title}</span>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             {/* Step Content */}
@@ -318,10 +334,10 @@ const ProjectBuilderForm = () => {
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={currentStep}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.4 }}
                     >
                         {renderStep()}
                     </motion.div>
@@ -329,23 +345,23 @@ const ProjectBuilderForm = () => {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="mt-12 flex justify-between items-center bg-dark-800/50 p-6 rounded-2xl border border-gray-800">
+            <div className="mt-16 flex justify-between items-center pt-8 border-t border-gray-800/50">
                 <button
                     onClick={handleBack}
                     disabled={currentStep === 0}
-                    className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all ${currentStep === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-400 hover:text-white'
+                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${currentStep === 0 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white hover:bg-white/5'
                         }`}
                 >
                     <ArrowRight className="h-5 w-5" />
-                    <span>السابق</span>
+                    <span>العودة للسابق</span>
                 </button>
 
                 {currentStep > 0 && (
                     <button
                         onClick={handleNext}
-                        className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all shadow-lg shadow-primary-500/20"
+                        className="bg-gradient-to-r from-primary-500 to-secondary-500 hover:shadow-lg hover:shadow-primary-500/25 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 transition-all transform hover:-translate-y-1"
                     >
-                        <span>{currentStep === FORM_STEPS.length - 1 ? 'إتمام وحفظ' : 'المتابعة'}</span>
+                        <span>{currentStep === FORM_STEPS.length - 1 ? 'إتمام بناء المشروع' : 'الخطوة التالية'}</span>
                         <ArrowLeft className="h-5 w-5" />
                     </button>
                 )}
@@ -355,20 +371,41 @@ const ProjectBuilderForm = () => {
 };
 
 const SelectionCard = ({ icon: Icon, title, desc, onClick, selected }) => (
-    <button
+    <motion.div
+        whileHover={{ y: -10 }}
         onClick={onClick}
-        className={`p-8 rounded-3xl border-2 text-right transition-all group ${selected
-            ? 'bg-primary-500/10 border-primary-500 shadow-xl shadow-primary-500/10'
-            : 'bg-dark-800 border-gray-700 hover:border-primary-500/50'
+        className={`relative cursor-pointer group rounded-3xl p-1 transition-all duration-300 ${selected ? 'bg-gradient-to-br from-primary-500 to-secondary-500 shadow-2xl shadow-primary-500/20' : 'bg-transparent hover:bg-white/5'
             }`}
     >
-        <div className={`w-14 h-14 rounded-2xl mb-6 flex items-center justify-center transition-all ${selected ? 'bg-primary-500 text-white' : 'bg-dark-700 text-gray-400 group-hover:text-primary-500'
-            }`}>
-            <Icon className="h-8 w-8" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
+
+        <div className="relative h-full bg-dark-900 border border-gray-800 rounded-[22px] p-8 overflow-hidden">
+            {/* Ornament Circles */}
+            <div className={`absolute -right-20 -top-20 w-40 h-40 rounded-full transition-all duration-500 ${selected ? 'bg-primary-500/10' : 'bg-gray-800/20 group-hover:bg-primary-500/5'}`} />
+
+            <div className="relative z-10 flex flex-col items-center text-center">
+                {/* Icon Container with Orbit */}
+                <div className="relative mb-6 w-24 h-24">
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className={`absolute inset-0 border-2 border-dashed rounded-full ${selected ? 'border-primary-500/30' : 'border-gray-700'}`}
+                    />
+                    <div className={`absolute inset-2 rounded-full flex items-center justify-center transition-colors ${selected ? 'bg-gradient-to-br from-primary-500 to-secondary-600 text-white' : 'bg-dark-800 text-gray-400 group-hover:text-primary-500 group-hover:bg-dark-700'}`}>
+                        <Icon size={32} />
+                    </div>
+                </div>
+
+                <h3 className={`text-xl font-bold mb-3 transition-colors ${selected ? 'text-primary-400' : 'text-white'}`}>{title}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed font-light">{desc}</p>
+
+                {/* Selection Indicator */}
+                <div className={`mt-6 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${selected ? 'border-primary-500 bg-primary-500 text-white' : 'border-gray-700 text-transparent group-hover:border-primary-500/50'}`}>
+                    <CheckCircle2 size={16} />
+                </div>
+            </div>
         </div>
-        <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-        <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
-    </button>
+    </motion.div>
 );
 
 export default ProjectBuilderForm;

@@ -190,71 +190,136 @@ const ManageProjects = () => {
             </div>
 
             {/* Projects Grid/Table */}
-            <div className="bg-dark-900/50 border border-gray-800 rounded-3xl overflow-hidden overflow-x-auto">
-                <table className="w-full text-right min-w-[600px]">
-                    <thead className="bg-dark-800/50 text-gray-400 text-xs uppercase tracking-wider">
-                        <tr>
-                            <th className="p-4 font-bold">المشروع</th>
-                            <th className="p-4 font-bold">التصنيف</th>
-                            <th className="p-4 font-bold">التاريخ</th>
-                            <th className="p-4 font-bold">الحالة</th>
-                            <th className="p-4 font-bold">الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-800 text-sm">
-                        {filteredProjects.map((project) => {
-                            const CatInfo = categories[project.category] || categories.web;
-                            const Icon = CatInfo.icon;
+            <div className="bg-dark-900/50 border border-gray-800 rounded-3xl overflow-hidden">
+                {/* Mobile View (Cards) */}
+                <div className="md:hidden space-y-4 p-4">
+                    {filteredProjects.map((project) => {
+                        const CatInfo = categories[project.category] || categories.web;
+                        const Icon = CatInfo.icon;
+                        return (
+                            <motion.div
+                                key={project.id}
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-dark-800 rounded-2xl p-5 border border-gray-700/50 shadow-sm relative overflow-hidden group"
+                            >
+                                <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                            return (
-                                <motion.tr
-                                    key={project.id}
-                                    layout
-                                    className="hover:bg-white/5 transition-colors group"
-                                >
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg ${CatInfo.bg} ${CatInfo.color}`}>
-                                                <Icon size={20} />
-                                            </div>
-                                            <span className="font-bold text-gray-200">{project.name}</span>
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2.5 rounded-xl ${CatInfo.bg} ${CatInfo.color}`}>
+                                            <Icon size={20} />
                                         </div>
-                                    </td>
-                                    <td className="p-4">
-                                        <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${CatInfo.bg} ${CatInfo.color}`}>
-                                            {CatInfo.label}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-gray-400 font-mono text-xs">{project.date}</td>
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
-                                            <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
-                                                {project.status === 'published' ? 'منشور' : 'مسودة'}
+                                        <div>
+                                            <h3 className="font-bold text-gray-200 text-lg">{project.name}</h3>
+                                            <span className={`text-xs px-2 py-0.5 rounded-md ${CatInfo.bg} ${CatInfo.color} bg-opacity-20`}>
+                                                {CatInfo.label}
                                             </span>
                                         </div>
-                                    </td>
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => handleEditClick(project)}
-                                                className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500"
-                                            >
-                                                <Edit2 size={16} />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(project.id)}
-                                                className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-all text-gray-500"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </motion.tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleEditClick(project)}
+                                            className="p-2 bg-dark-700/50 rounded-lg text-gray-400 hover:text-primary-400 transition-colors border border-gray-700 hover:border-primary-500/50"
+                                        >
+                                            <Edit2 size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(project.id)}
+                                            className="p-2 bg-dark-700/50 rounded-lg text-gray-400 hover:text-red-400 transition-colors border border-gray-700 hover:border-red-500/50"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between items-center text-sm text-gray-500 mt-4 pt-4 border-t border-gray-700/50">
+                                    <span className="font-mono">{project.date}</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
+                                        <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
+                                            {project.status === 'published' ? 'منشور' : 'مسودة'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
+                    {filteredProjects.length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                            لا توجد مشاريع مطابقة للبحث
+                        </div>
+                    )}
+                </div>
+
+                {/* Desktop View (Table) */}
+                <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-right min-w-[600px]">
+                        <thead className="bg-dark-800/50 text-gray-400 text-xs uppercase tracking-wider">
+                            <tr>
+                                <th className="p-4 font-bold">المشروع</th>
+                                <th className="p-4 font-bold">التصنيف</th>
+                                <th className="p-4 font-bold">التاريخ</th>
+                                <th className="p-4 font-bold">الحالة</th>
+                                <th className="p-4 font-bold">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-800 text-sm">
+                            {filteredProjects.map((project) => {
+                                const CatInfo = categories[project.category] || categories.web;
+                                const Icon = CatInfo.icon;
+
+                                return (
+                                    <motion.tr
+                                        key={project.id}
+                                        layout
+                                        className="hover:bg-white/5 transition-colors group"
+                                    >
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-lg ${CatInfo.bg} ${CatInfo.color}`}>
+                                                    <Icon size={20} />
+                                                </div>
+                                                <span className="font-bold text-gray-200">{project.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${CatInfo.bg} ${CatInfo.color}`}>
+                                                {CatInfo.label}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-gray-400 font-mono text-xs">{project.date}</td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
+                                                <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
+                                                    {project.status === 'published' ? 'منشور' : 'مسودة'}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleEditClick(project)}
+                                                    className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(project.id)}
+                                                    className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-all text-gray-500"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </motion.tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Add Project Modal */}
@@ -349,7 +414,7 @@ const ManageProjects = () => {
                                                 placeholder="https://example.com/image.png أو رابط Google Drive"
                                             />
                                             <p className="text-xs text-gray-500 mt-1 mr-1">
-                                                يدعم روابط الصور المباشرة وروابط Google Drive (تأكد من أن الرابط "عام").
+                                                يدعم روابط الصور المباشرة وروابط Google Drive (تأكد من أن الرابط &quot;عام&quot;).
                                             </p>
                                         </div>
                                     ) : (

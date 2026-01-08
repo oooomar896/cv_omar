@@ -6,9 +6,9 @@ import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/admin/ProtectedRoute';
+import SEO from './components/common/SEO';
 
 // Lazy load components for better performance
-
 const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
 const RequestService = lazy(() => import('./components/platform/RequestService'));
 const DeveloperProfile = lazy(() => import('./components/DeveloperProfile'));
@@ -57,6 +57,10 @@ const AppContent = () => {
                 transition={{ duration: 0.5 }}
                 className="pt-24 pb-12"
               >
+                <SEO
+                  title="ابنِ مشروعك بالذكاء الاصطناعي | عمر العديني"
+                  description="حول فكرتك إلى تطبيق أو موقع إلكتروني في دقائق باستخدام وكيل الذكاء الاصطناعي من عمر العديني."
+                />
                 <Suspense fallback={<LoadingFallback />}>
                   <RequestService />
                 </Suspense>
@@ -72,6 +76,10 @@ const AppContent = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
+                <SEO
+                  title="عمر حميد العديني - مطور تطبيقات محترف"
+                  description="خبرة واسعة في Flutter, React Native, Odoo وتطوير الحلول التقنية المخصصة في المملكة العربية السعودية."
+                />
                 <Suspense fallback={<LoadingFallback />}>
                   <DeveloperProfile />
                 </Suspense>
@@ -83,6 +91,10 @@ const AppContent = () => {
             element={
               <Suspense fallback={<LoadingFallback />}>
                 <div className="pt-24 pb-12">
+                  <SEO
+                    title="باني المشاريع الذكي"
+                    description="أداة تفاعلية لبناء هيكل مشروعك البرمجي، توليد الكود، والحصول على خطة تنفيذية فورية."
+                  />
                   <ProjectBuilderForm />
                 </div>
               </Suspense>
@@ -93,6 +105,7 @@ const AppContent = () => {
             path='/portal/login'
             element={
               <Suspense fallback={<LoadingFallback />}>
+                <SEO title="تسجيل الدخول - بوابة العميل" />
                 <PortalLogin />
               </Suspense>
             }
@@ -102,6 +115,7 @@ const AppContent = () => {
             path='/portal/dashboard'
             element={
               <Suspense fallback={<LoadingFallback />}>
+                <SEO title="لوحة التحكم - بوابة العميل" />
                 <UserPortal />
               </Suspense>
             }
@@ -112,6 +126,7 @@ const AppContent = () => {
             path='/admin/login'
             element={
               <Suspense fallback={<LoadingFallback />}>
+                <SEO title="دخول المدير" />
                 <AdminLogin />
               </Suspense>
             }
@@ -124,6 +139,7 @@ const AppContent = () => {
               <Suspense fallback={<LoadingFallback />}>
                 <ProtectedRoute>
                   <AdminLayout>
+                    <SEO title="لوحة تحكم الإدارة" />
                     <Routes>
                       <Route index element={<DashboardHome />} />
                       <Route path="projects" element={<ManageProjects />} />
