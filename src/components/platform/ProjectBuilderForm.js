@@ -10,7 +10,9 @@ import {
     Sparkles,
     Palette,
     Terminal,
-    Briefcase
+    Briefcase,
+    Mic,
+    MicOff
 } from 'lucide-react';
 import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS, AI_AGENTS, COUNTRY_CODES } from '../../constants/platformConstants';
 import AnalysisPreview from './AnalysisPreview';
@@ -30,6 +32,7 @@ const ProjectBuilderForm = () => {
     const [qaReport, setQaReport] = useState(null);
     const [countryCode, setCountryCode] = useState('+966');
     const [localPhone, setLocalPhone] = useState('');
+    const [isListening, setIsListening] = useState(false);
     const [formData, setFormData] = useState({
         type: '',
         agent: 'expert',
@@ -37,6 +40,48 @@ const ProjectBuilderForm = () => {
         specificAnswers: {},
         email: '',
     });
+
+    const toggleVoiceInput = () => {
+        if (!('webkitSpeechRecognition' in window)) {
+            alert('خاصية التحدث غير مدعومة في هذا المتصفح. يرجى استخدام متصفح Chrome أو Edge.');
+            return;
+        }
+
+        if (isListening) {
+            setIsListening(false);
+            window.speechRecognitionInstance?.stop();
+            return;
+        }
+
+        const recognition = new window.webkitSpeechRecognition();
+        window.speechRecognitionInstance = recognition;
+
+        recognition.lang = 'ar-SA';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = () => setIsListening(true);
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setFormData(prev => ({
+                ...prev,
+                description: prev.description ? `${prev.description} ${transcript}` : transcript
+            }));
+            setIsListening(false);
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event.error);
+            setIsListening(false);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+
+        recognition.start();
+    };
 
     useEffect(() => {
         const loadUser = async () => {
@@ -287,14 +332,26 @@ const ProjectBuilderForm = () => {
             case 2: // Step: Description
                 return (
                     <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-white">وصف الفكرة (بشكل حر)</h3>
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-xl font-bold text-white">وصف الفكرة (بشكل حر)</h3>
+                            <button
+                                onClick={toggleVoiceInput}
+                                className={`p-3 rounded-xl transition-all flex items-center gap-2 text-sm font-bold ${isListening
+                                    ? 'bg-red-500 text-white animate-pulse'
+                                    : 'bg-dark-800 text-gray-400 hover:text-primary-500 border border-gray-700'
+                                    }`}
+                            >
+                                {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                                {isListening ? 'جاري الاستماع...' : 'تحدث للكتابة'}
+                            </button>
+                        </div>
                         <textarea
                             className="w-full h-48 bg-dark-800 border border-gray-700 rounded-2xl p-6 text-white focus:border-primary-500 outline-none transition-all"
                             placeholder="مثلاً: أريد بناء متجر للعطور يدعم الدفع بالبطاقة ويحتوي على ميزة ترشيح العطور بالذكاء الاصطناعي..."
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         />
-                        <p className="text-sm text-gray-500">سيقوم محلل اللغة لدينا باستخلاص المتطلبات التقنية من هذا الوصف.</p>
+                        <p className="text-sm text-gray-500">سيقوم محلل اللغة لدينا باستخلاص المتطلبات التقنية من هذا الوصف. يمكنك استخدام الميكروفون للإملاء الصوتي.</p>
                     </div>
                 );
 
