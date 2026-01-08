@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { Save, FileCode, CheckCircle, AlertCircle, RefreshCw, Trash2, Plus, ChevronDown, ChevronRight, Folder, Play, Code2 } from 'lucide-react';
+import { Save, FileCode, CheckCircle, RefreshCw, Trash2, Plus, ChevronDown, ChevronRight, Folder, Play, Code2 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 
 const getLanguageFromExt = (filename) => {
@@ -172,7 +172,6 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [code, setCode] = useState('');
     const [mode, setMode] = useState('code'); // 'code' or 'preview'
-    const [status, setStatus] = useState(null);
     const [saving, setSaving] = useState(false);
 
     // UI State
@@ -255,11 +254,8 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
             await dataService.updateGeneratedProject(project.id, { files: newFiles });
             setFiles(newFiles);
             setFileTree(buildFileTree(newFiles));
-            setStatus('success');
-            setTimeout(() => setStatus(null), 3000);
         } catch (error) {
             console.error(error);
-            setStatus('error');
         } finally {
             setSaving(false);
         }
@@ -442,7 +438,7 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
                                 language={getLanguageFromExt(selectedFile)}
                                 value={code}
                                 theme="vs-dark"
-                                onChange={(val) => { setCode(val); setStatus(null); }}
+                                onChange={(val) => { setCode(val); }}
                                 options={{
                                     minimap: { enabled: true },
                                     fontSize: 14,
