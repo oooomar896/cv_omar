@@ -44,7 +44,7 @@ const FileViewer = ({ files, onDownload, qaReport }) => {
                     className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary-500/20 w-full md:w-auto justify-center"
                 >
                     <Download className="h-5 w-5" />
-                    <span>تحميل الكل (.zip)</span>
+                    <span>تحميل المخطط (Blueprint)</span>
                 </button>
             </div>
 
