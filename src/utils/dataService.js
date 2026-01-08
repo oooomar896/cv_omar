@@ -588,7 +588,17 @@ class DataService {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            return data || [];
+
+            // Normalize for frontend
+            return (data || []).map(p => ({
+                ...p,
+                userEmail: p.user_email,
+                projectName: p.project_name,
+                projectType: p.project_type,
+                projectStage: p.project_stage,
+                files: p.files || {},
+                // Keep original keys too just in case
+            }));
         } catch (err) {
             console.error('Error fetching user projects:', err);
             return [];
@@ -598,24 +608,28 @@ class DataService {
     async saveGeneratedProject(projectId, data) {
         try {
             const projectData = {
-                id: (Date.now() + Math.floor(Math.random() * 1000)), // Ensure BigInt compatible ID if not using UUID
                 user_email: data.userEmail,
                 project_name: data.projectName,
                 project_type: data.projectType,
                 features: data.features,
                 description: data.description,
-                status: 'pending'
+                status: 'pending',
+                files: data.files,
+                project_stage: data.projectStage || 'analysis'
             };
 
             const { data: savedData, error } = await supabase.from('generated_projects').insert([projectData]).select().single();
             if (error) throw error;
 
-            const projects = this.getGeneratedProjects();
             const normalized = {
                 ...data,
                 id: savedData.id,
-                timestamp: savedData.created_at
+                timestamp: savedData.created_at,
+                projectType: savedData.project_type,
+                projectName: savedData.project_name
             };
+
+            const projects = this.getGeneratedProjects();
             this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, normalized]);
             return normalized;
         } catch (err) {
