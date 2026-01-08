@@ -12,6 +12,7 @@ import {
     LayoutDashboard
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
+import { supabase } from '../../utils/supabaseClient';
 import ServicesGallery from './ServicesGallery';
 import { COUNTRY_CODES } from '../../constants/platformConstants';
 
@@ -31,6 +32,19 @@ const RequestService = () => {
         description: '',
         features: []
     });
+
+    useEffect(() => {
+        const loadUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user?.email) {
+                setFormData(prev => ({
+                    ...prev,
+                    email: session.user.email
+                }));
+            }
+        };
+        loadUser();
+    }, []);
 
     const services = [
         { id: 'web', title: 'موقع إلكتروني', icon: Globe, desc: 'مواقع تعريفية، متاجر إلكترونية، لوحات تحكم' },

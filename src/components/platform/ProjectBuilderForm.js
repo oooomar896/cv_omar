@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Globe,
@@ -19,6 +19,7 @@ import FileViewer from './FileViewer';
 import { coderAgent } from '../../utils/coderAgentLogic';
 import { qaAgent } from '../../utils/qaAgentLogic';
 import { dataService } from '../../utils/dataService';
+import { supabase } from '../../utils/supabaseClient';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
 
 const ProjectBuilderForm = () => {
@@ -36,6 +37,19 @@ const ProjectBuilderForm = () => {
         specificAnswers: {},
         email: '',
     });
+
+    useEffect(() => {
+        const loadUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user?.email) {
+                setFormData(prev => ({
+                    ...prev,
+                    email: session.user.email
+                }));
+            }
+        };
+        loadUser();
+    }, []);
 
     const handleTypeSelect = (type) => {
         setFormData({ ...formData, type, specificAnswers: {} });
