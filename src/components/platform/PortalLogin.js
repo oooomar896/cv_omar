@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Mail, ArrowLeft, ShieldCheck, Sparkles, Lock, UserPlus, LogIn } from 'lucide-react';
+import { Mail, ShieldCheck, Sparkles, Lock, UserPlus, LogIn } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import Toast from '../common/Toast';
 
