@@ -12,7 +12,7 @@ import {
     Terminal,
     Briefcase
 } from 'lucide-react';
-import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS, AI_AGENTS } from '../../constants/platformConstants';
+import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS, AI_AGENTS, COUNTRY_CODES } from '../../constants/platformConstants';
 import AnalysisPreview from './AnalysisPreview';
 import ProcessingStatus from './ProcessingStatus';
 import FileViewer from './FileViewer';
@@ -27,6 +27,8 @@ const ProjectBuilderForm = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [generatedProject, setGeneratedProject] = useState(null);
     const [qaReport, setQaReport] = useState(null);
+    const [countryCode, setCountryCode] = useState('+966');
+    const [localPhone, setLocalPhone] = useState('');
     const [formData, setFormData] = useState({
         type: '',
         agent: 'expert',
@@ -322,12 +324,39 @@ const ProjectBuilderForm = () => {
                                 <label htmlFor="user-phone" className="text-sm text-gray-400 mr-2">رقم الهاتف</label>
                                 <input
                                     id="user-phone"
-                                    type="tel"
-                                    className="w-full px-6 py-4 bg-dark-800 border border-gray-700 rounded-xl text-white focus:border-primary-500 outline-none font-sans"
-                                    placeholder="+966 5X XXX XXXX"
+                                    required // Add required to be safe
+                                    style={{ display: 'none' }} // Hidden input to satisfy form logic if needed, but we don't use form submit here really.
                                     value={formData.phone || ''}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                    onChange={() => { }}
                                 />
+                                <div className="flex gap-2" dir="ltr">
+                                    <select
+                                        className="bg-dark-800 border border-gray-700 rounded-xl px-2 py-4 text-white focus:border-primary-500 outline-none w-36 text-xs"
+                                        value={countryCode}
+                                        onChange={(e) => {
+                                            const newCode = e.target.value;
+                                            setCountryCode(newCode);
+                                            setFormData({ ...formData, phone: `${newCode}${localPhone}` });
+                                        }}
+                                    >
+                                        {COUNTRY_CODES.map((country) => (
+                                            <option key={country.code} value={country.code}>
+                                                {country.flag} {country.code} ({country.country})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <input
+                                        type="tel"
+                                        className="flex-1 px-6 py-4 bg-dark-800 border border-gray-700 rounded-xl text-white focus:border-primary-500 outline-none font-sans text-left"
+                                        placeholder="50xxxxxxx"
+                                        value={localPhone}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '');
+                                            setLocalPhone(val);
+                                            setFormData({ ...formData, phone: `${countryCode}${val}` });
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

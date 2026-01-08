@@ -78,3 +78,23 @@ export const UI_UX_RESOURCES = [
     { name: 'Google Fonts (Cairo)', desc: 'الخط العربي الرسمي والأكثر احترافية للواجهات.', link: 'https://fonts.google.com/specimen/Cairo' },
     { name: 'Radix UI', desc: 'مكونات واجهة مستخدم غير معقدة (Headless) للوصول العالي.', link: 'https://www.radix-ui.com/' }
 ];
+
+export const COUNTRY_CODES = [
+    { code: '+966', country: 'SA', label: 'السعودية (+966)', flag: '🇸🇦' },
+    { code: '+20', country: 'EG', label: 'مصر (+20)', flag: '🇪🇬' },
+    { code: '+971', country: 'AE', label: 'الإمارات (+971)', flag: '🇦🇪' },
+    { code: '+965', country: 'KW', label: 'الكويت (+965)', flag: '🇰🇼' },
+    { code: '+974', country: 'QA', label: 'قطر (+974)', flag: '🇶🇦' },
+    { code: '+973', country: 'BH', label: 'البحرين (+973)', flag: '🇧🇭' },
+    { code: '+968', country: 'OM', label: 'عمان (+968)', flag: '🇴🇲' },
+    { code: '+962', country: 'JO', label: 'الأردن (+962)', flag: '🇯🇴' },
+    { code: '+961', country: 'LB', label: 'لبنان (+961)', flag: '🇱🇧' },
+    { code: '+964', country: 'IQ', label: 'العراق (+964)', flag: '🇮🇶' },
+    { code: '+967', country: 'YE', label: 'اليمن (+967)', flag: '🇾🇪' },
+    { code: '+970', country: 'PS', label: 'فلسطين (+970)', flag: '🇵🇸' },
+    { code: '+212', country: 'MA', label: 'المغرب (+212)', flag: '🇲🇦' },
+    { code: '+213', country: 'DZ', label: 'الجزائر (+213)', flag: '🇩🇿' },
+    { code: '+216', country: 'TN', label: 'تونس (+216)', flag: '🇹🇳' },
+    { code: '+218', country: 'LY', label: 'ليبيا (+218)', flag: '🇱🇾' },
+    { code: '+249', country: 'SD', label: 'السودان (+249)', flag: '🇸🇩' },
+];

@@ -12,11 +12,14 @@ import {
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import ServicesGallery from './ServicesGallery';
+import { COUNTRY_CODES } from '../../constants/platformConstants';
 
 const RequestService = () => {
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [countryCode, setCountryCode] = useState('+966');
+    const [localPhone, setLocalPhone] = useState('');
 
     const [formData, setFormData] = useState({
         name: '',
@@ -74,7 +77,7 @@ const RequestService = () => {
         }
     };
 
-    const waNumber = "9966558539717";
+    const waNumber = "966558539717";
     const waMessage = encodeURIComponent(
         `*طلب مشروع جديد من المنصة* 🚀
 ---------------------------
@@ -278,16 +281,37 @@ ${formData.description.substring(0, 500)}...
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label htmlFor="req-phone" className="text-gray-400 text-sm">رقم الهاتف (مع فتح الخط)</label>
-                                            <input
-                                                id="req-phone"
-                                                required
-                                                type="tel"
-                                                className="w-full bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none font-mono"
-                                                placeholder="+966..."
-                                                value={formData.phone}
-                                                onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                            />
+                                            <label htmlFor="req-phone" className="text-gray-400 text-sm">رقم الهاتف</label>
+                                            <div className="flex gap-2" dir="ltr">
+                                                <select
+                                                    className="bg-dark-800 border border-gray-700 rounded-xl px-2 py-3 text-white focus:border-primary-500 outline-none w-36 text-xs"
+                                                    value={countryCode}
+                                                    onChange={(e) => {
+                                                        const newCode = e.target.value;
+                                                        setCountryCode(newCode);
+                                                        setFormData({ ...formData, phone: `${newCode}${localPhone}` });
+                                                    }}
+                                                >
+                                                    {COUNTRY_CODES.map((country) => (
+                                                        <option key={country.code} value={country.code}>
+                                                            {country.flag} {country.code} ({country.country})
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <input
+                                                    id="req-phone"
+                                                    required
+                                                    type="tel"
+                                                    className="flex-1 bg-dark-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-primary-500 outline-none font-mono text-left"
+                                                    placeholder="50xxxxxxx"
+                                                    value={localPhone}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/\D/g, '');
+                                                        setLocalPhone(val);
+                                                        setFormData({ ...formData, phone: `${countryCode}${val}` });
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
