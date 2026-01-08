@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { Save, FileCode, CheckCircle, AlertCircle, RefreshCw, Trash2, Plus } from 'lucide-react';
+import { Save, FileCode, CheckCircle, AlertCircle, RefreshCw, Trash2, Plus, ChevronDown, ChevronRight, Folder } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 
 const getLanguageFromExt = (filename) => {
@@ -19,48 +19,115 @@ const getLanguageFromExt = (filename) => {
     }
 };
 
-const FileTreeItem = ({ name, isSelected, onClick, onDelete, isAdmin }) => (
-    <div className={`w-full flex items-center gap-2 mb-1 p-2 rounded-lg text-sm transition-all group ${isSelected
-        ? 'bg-primary-500/20 text-primary-400 border border-primary-500/20'
-        : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
-        }`}>
-        <button className="flex-1 flex items-center gap-2 text-left truncate" onClick={onClick}>
-            <FileCode size={16} />
-            <span className="truncate" dir="ltr">{name}</span>
-        </button>
-        {isAdmin && (
-            <button
-                onClick={(e) => { e.stopPropagation(); onDelete(); }}
-                className="opacity-0 group-hover:opacity-100 text-red-500 hover:bg-red-500/10 p-1 rounded transition-all"
-                title="Delete File"
+// Helper to build tree from flat paths
+const buildFileTree = (files) => {
+    const root = {};
+    Object.keys(files).forEach(path => {
+        const parts = path.split('/');
+        let current = root;
+        parts.forEach((part, index) => {
+            if (!current[part]) {
+                current[part] = index === parts.length - 1 ? { _file: true, content: files[path] } : {};
+            }
+            current = current[part];
+        });
+    });
+    return root;
+};
+
+const FileTreeNode = ({ name, node, path, selectedFile, onSelect, onDelete, isAdmin, depth = 0 }) => {
+    const [expanded, setExpanded] = useState(true);
+    const isFile = node._file;
+    const isSelected = path === selectedFile;
+    const hasChildren = !isFile && Object.keys(node).length > 0;
+
+    if (isFile) {
+        return (
+            <div
+                role="button"
+                tabIndex={0}
+                className={`flex items-center gap-2 mb-1 p-1.5 rounded-lg text-xs transition-all cursor-pointer group ${isSelected ? 'bg-primary-500/20 text-primary-400' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                    }`}
+                style={{ paddingLeft: `${depth * 12 + 12}px` }}
+                onClick={() => onSelect(path, node.content)}
+                onKeyDown={(e) => e.key === 'Enter' && onSelect(path, node.content)}
             >
-                <Trash2 size={12} />
-            </button>
-        )}
-    </div>
-);
+                <FileCode size={14} className="shrink-0" />
+                <span className="truncate flex-1">{name}</span>
+                {isAdmin && (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onDelete(path); }}
+                        className="opacity-0 group-hover:opacity-100 text-red-500 hover:bg-red-500/10 p-1 rounded"
+                    >
+                        <Trash2 size={12} />
+                    </button>
+                )}
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div
+                role="button"
+                tabIndex={0}
+                className="flex items-center gap-2 mb-1 p-1.5 rounded-lg text-xs text-gray-500 hover:text-gray-300 cursor-pointer select-none"
+                style={{ paddingLeft: `${depth * 12 + 4}px` }}
+                onClick={() => setExpanded(!expanded)}
+                onKeyDown={(e) => e.key === 'Enter' && setExpanded(!expanded)}
+            >
+                {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                <Folder size={14} className="text-amber-500/80" />
+                <span className="font-bold truncate">{name}</span>
+            </div>
+            {expanded && (
+                <div>
+                    {Object.entries(node).map(([childName, childNode]) => (
+                        <FileTreeNode
+                            key={childName}
+                            name={childName}
+                            node={childNode}
+                            path={`${path ? path + '/' : ''}${childName}`}
+                            selectedFile={selectedFile}
+                            onSelect={onSelect}
+                            onDelete={onDelete}
+                            isAdmin={isAdmin}
+                            depth={depth + 1}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const LiveCodeEditor = ({ project, userRole = 'user' }) => {
+    // ... code for state hooks ...
     const [files, setFiles] = useState({});
     const [selectedFile, setSelectedFile] = useState(null);
-    const [originalContent, setOriginalContent] = useState('');
     const [code, setCode] = useState('');
-    const [saving, setSaving] = useState(false);
+    const [originalContent, setOriginalContent] = useState('');
     const [status, setStatus] = useState(null);
+    const [saving, setSaving] = useState(false);
 
-    // File creation state
+    // File creation
     const [showNewFile, setShowNewFile] = useState(false);
     const [newFileName, setNewFileName] = useState('');
+
+    // Derived Tree
+    const [fileTree, setFileTree] = useState({});
 
     const isAdmin = userRole === 'admin';
 
     useEffect(() => {
         if (project?.files) {
             setFiles(project.files);
+            setFileTree(buildFileTree(project.files));
+
+            // Auto select logic
             if (!selectedFile) {
                 const firstFile = Object.keys(project.files)[0];
                 if (firstFile) {
-                    // Manually selecting to avoid dependency cycle
                     const content = project.files[firstFile];
                     setSelectedFile(firstFile);
                     const fileContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
@@ -71,6 +138,54 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [project]);
+
+    // ... helper functions persistChanges, handleSave, handleEditorChange ...
+
+    // Updated Create File to rebuild tree
+    const handleCreateFile = async (e) => {
+        e.preventDefault();
+        if (!newFileName.trim()) return;
+
+        // Normalize path (remove leading slash)
+        const fileName = newFileName.trim().replace(/^\/+/, '');
+
+        if (files[fileName]) {
+            alert('File already exists!');
+            return;
+        }
+
+        const newFiles = { ...files, [fileName]: '// New file' };
+
+        // Optimistic UI update
+        setFiles(newFiles);
+        setFileTree(buildFileTree(newFiles));
+
+        await persistChanges(newFiles);
+
+        setNewFileName('');
+        setShowNewFile(false);
+        selectFile(fileName, '// New file');
+    };
+
+    // Updated delete file to rebuild tree
+    const handleDeleteFile = async (fileName) => {
+        if (!window.confirm(`Delete ${fileName}?`)) return;
+
+        const newFiles = { ...files };
+        delete newFiles[fileName];
+
+        setFiles(newFiles);
+        setFileTree(buildFileTree(newFiles));
+
+        await persistChanges(newFiles);
+
+        if (selectedFile === fileName) {
+            setSelectedFile(null);
+            setCode('');
+        }
+    };
+
+    // Keep existing selectFile, handleEditorChange, handleSave, persistChanges... (need to ensure they are available in scope or redefined)
 
     const selectFile = (fileName, content) => {
         setSelectedFile(fileName);
@@ -88,7 +203,6 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
         setSaving(true);
         try {
             await dataService.updateGeneratedProject(project.id, { files: newFiles });
-            setFiles(newFiles);
             setStatus('success');
             setTimeout(() => setStatus(null), 3000);
         } catch (error) {
@@ -102,38 +216,8 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
     const handleSave = async () => {
         if (!selectedFile) return;
         const updatedFiles = { ...files, [selectedFile]: code };
-        setOriginalContent(code); // update local original
+        setOriginalContent(code);
         await persistChanges(updatedFiles);
-    };
-
-    const handleCreateFile = async (e) => {
-        e.preventDefault();
-        if (!newFileName.trim()) return;
-
-        const fileName = newFileName.trim();
-        if (files[fileName]) {
-            alert('File already exists!');
-            return;
-        }
-
-        const newFiles = { ...files, [fileName]: '// New file' };
-        await persistChanges(newFiles);
-        setNewFileName('');
-        setShowNewFile(false);
-        selectFile(fileName, '// New file');
-    };
-
-    const handleDeleteFile = async (fileName) => {
-        if (!window.confirm(`Are you sure you want to delete ${fileName}?`)) return;
-
-        const newFiles = { ...files };
-        delete newFiles[fileName];
-        await persistChanges(newFiles);
-
-        if (selectedFile === fileName) {
-            setSelectedFile(null);
-            setCode('');
-        }
     };
 
     const hasChanges = code !== originalContent;
@@ -171,11 +255,12 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
                 {/* File Explorer */}
                 <div className="w-64 bg-[#1e1e1e] border-r border-[#333] flex flex-col">
                     <div className="p-3 bg-[#252526] text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center justify-between">
-                        <span>Explorer</span>
+                        <span>Project Files</span>
                         {isAdmin && (
                             <button
                                 onClick={() => setShowNewFile(!showNewFile)}
                                 className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded"
+                                title="New File (use / for folders)"
                             >
                                 <Plus size={14} />
                             </button>
@@ -189,21 +274,24 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
                                 type="text"
                                 value={newFileName}
                                 onChange={(e) => setNewFileName(e.target.value)}
-                                placeholder="filename.js"
+                                placeholder="src/components/App.js"
                                 className="w-full bg-[#333] text-white text-xs p-2 rounded border border-gray-600 outline-none focus:border-primary-500"
                             />
+                            <p className="text-[10px] text-gray-500 mt-1">Use <code>/</code> to create folders</p>
                         </form>
                     )}
 
                     <div className="flex-1 overflow-y-auto p-2">
-                        {Object.entries(files).map(([name, content]) => (
-                            <FileTreeItem
+                        {Object.entries(fileTree).map(([name, node]) => (
+                            <FileTreeNode
                                 key={name}
                                 name={name}
+                                node={node}
+                                path={name}
+                                selectedFile={selectedFile}
+                                onSelect={selectFile}
+                                onDelete={handleDeleteFile}
                                 isAdmin={isAdmin}
-                                isSelected={name === selectedFile}
-                                onClick={() => selectFile(name, content)}
-                                onDelete={() => handleDeleteFile(name)}
                             />
                         ))}
                     </div>
