@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { Save, FileCode, Folder, ChevronRight, ChevronDown, CheckCircle, AlertCircle, RefreshCw, Trash2, Plus } from 'lucide-react';
+import { Save, FileCode, CheckCircle, AlertCircle, RefreshCw, Trash2, Plus } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
-import { motion } from 'framer-motion';
 
 const getLanguageFromExt = (filename) => {
     const ext = filename.split('.').pop();
@@ -20,7 +19,7 @@ const getLanguageFromExt = (filename) => {
     }
 };
 
-const FileTreeItem = ({ name, isSelected, onClick, onDelete, isAdmin, depth = 0 }) => (
+const FileTreeItem = ({ name, isSelected, onClick, onDelete, isAdmin }) => (
     <div className={`w-full flex items-center gap-2 mb-1 p-2 rounded-lg text-sm transition-all group ${isSelected
         ? 'bg-primary-500/20 text-primary-400 border border-primary-500/20'
         : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
@@ -61,10 +60,16 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
             if (!selectedFile) {
                 const firstFile = Object.keys(project.files)[0];
                 if (firstFile) {
-                    selectFile(firstFile, project.files[firstFile]);
+                    // Manually selecting to avoid dependency cycle
+                    const content = project.files[firstFile];
+                    setSelectedFile(firstFile);
+                    const fileContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+                    setCode(fileContent);
+                    setOriginalContent(fileContent);
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [project]);
 
     const selectFile = (fileName, content) => {

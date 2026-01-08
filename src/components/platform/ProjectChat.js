@@ -14,6 +14,11 @@ const ProjectChat = ({ project, userRole = 'user' }) => {
     };
 
     useEffect(() => {
+        const loadMessages = async () => {
+            const data = await dataService.fetchProjectMessages(project.id);
+            setMessages(data || []);
+        };
+
         loadMessages();
 
         const channel = supabase
@@ -41,11 +46,6 @@ const ProjectChat = ({ project, userRole = 'user' }) => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    const loadMessages = async () => {
-        const data = await dataService.fetchProjectMessages(project.id);
-        setMessages(data || []);
-    };
 
     const handleSend = async (e) => {
         e.preventDefault();
@@ -106,8 +106,8 @@ const ProjectChat = ({ project, userRole = 'user' }) => {
 
                             {/* Bubble */}
                             <div className={`max-w-[75%] p-3 rounded-2xl text-sm leading-relaxed ${isMe
-                                    ? 'bg-primary-600 text-white rounded-bl-sm'
-                                    : 'bg-dark-800 text-gray-200 border border-gray-700 rounded-br-sm'
+                                ? 'bg-primary-600 text-white rounded-bl-sm'
+                                : 'bg-dark-800 text-gray-200 border border-gray-700 rounded-br-sm'
                                 }`}>
                                 {msg.content}
                                 <span className="text-[9px] opacity-50 block mt-1 text-left" dir="ltr">
