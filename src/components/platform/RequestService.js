@@ -8,7 +8,8 @@ import {
     MessageSquare,
     CheckCircle,
     ArrowLeft,
-    Loader
+    Loader,
+    LayoutDashboard
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import ServicesGallery from './ServicesGallery';
@@ -123,8 +124,8 @@ ${formData.description.substring(0, 500)}...
                         شكراً لثقتك بنا. جاري تحويلك إلى واتساب لإرسال تفاصيل الطلب للمطور مباشرة...
                     </p>
 
-                    <div className="bg-dark-800 rounded-2xl p-6 mb-8 border border-gray-700">
-                        <div className="animate-pulse mb-4 flex justify-center">
+                    <div className="bg-dark-800 rounded-2xl p-6 mb-8 border border-gray-700 space-y-4">
+                        <div className="animate-pulse flex justify-center">
                             <span className="bg-emerald-500/10 text-emerald-500 text-xs px-2 py-1 rounded-full border border-emerald-500/20">جاري الفتح تلقائياً...</span>
                         </div>
                         <a
@@ -136,6 +137,17 @@ ${formData.description.substring(0, 500)}...
                             <MessageSquare size={24} />
                             <span>اضغط هنا إذا لم يفتح واتساب تلقائياً</span>
                         </a>
+
+                        <div className="border-t border-gray-700 pt-4 mt-4">
+                            <p className="text-gray-400 text-sm mb-3">يمكنك متابعة حالة مشروعك والوصول لبيئة التطوير:</p>
+                            <button
+                                onClick={() => window.location.href = '/portal/login'}
+                                className="w-full flex items-center justify-center gap-3 bg-dark-700 hover:bg-dark-600 text-white py-3 px-6 rounded-xl font-bold transition-all border border-gray-600 hover:border-primary-500"
+                            >
+                                <LayoutDashboard size={20} className="text-primary-500" />
+                                <span>الدخول لبيئة التطوير (العميل)</span>
+                            </button>
+                        </div>
                     </div>
 
                     <button
