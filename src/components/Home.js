@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bot, Code2, Rocket, ArrowLeft, ArrowUpRight, ShieldCheck, Zap } from 'lucide-react';
+import { Bot, Code2, Rocket, ArrowLeft, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -90,7 +90,7 @@ const Home = () => {
                                     <span>{'}'}</span>
                                 </div>
                                 <div className="mt-8 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
-                                    <div className="bg-emerald-500 rounded-full p-1">
+                                    <div className="bg-emerald-500 rounded-full p-1 text-white">
                                         <CheckCircleIcon />
                                     </div>
                                     <span className="text-emerald-500 font-bold">تم الإطلاق بنجاح 🚀</span>
@@ -142,7 +142,7 @@ const Home = () => {
                         <ServiceCard
                             icon={<Bot className="w-8 h-8 text-purple-500" />}
                             title="حلول الذكاء الاصطناعي"
-                            desc="بوتات محادثة، تحليل بيانات، وأتمتة المهام باستخدام أحدث تقنيات AI."
+                            desc="بوتات محادثة، تحليل بيانات، وأتمتة المهام باستخدام أحدث تقنيات الـ AI."
                             color="purple"
                         />
                     </div>
@@ -181,8 +181,8 @@ const Home = () => {
 };
 
 const ServiceCard = ({ icon, title, desc, color }) => (
-    <div className={`bg-dark-900 border border-gray-800 p-8 rounded-2xl hover:border-${color}-500/50 transition-all group hover:-translate-y-2`}>
-        <div className={`w-14 h-14 bg-dark-800 rounded-2xl flex items-center justify-center mb-6 border border-gray-700 group-hover:scale-110 transition-transform duration-300`}>
+    <div className={`bg-dark-900 border border-gray-800 p-8 rounded-2xl transition-all group hover:-translate-y-2 hover:border-${color}-500/50`}>
+        <div className="w-14 h-14 bg-dark-800 rounded-2xl flex items-center justify-center mb-6 border border-gray-700 group-hover:scale-110 transition-transform duration-300">
             {icon}
         </div>
         <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
@@ -191,10 +191,10 @@ const ServiceCard = ({ icon, title, desc, color }) => (
 );
 
 const CheckCircleIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
     </svg>
-)
+);
 
 export default Home;
