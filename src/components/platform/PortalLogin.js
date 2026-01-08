@@ -1,26 +1,73 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Mail, ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
+import { Mail, ArrowLeft, ShieldCheck, Sparkles, Lock, UserPlus, LogIn } from 'lucide-react';
+import { supabase } from '../../utils/supabaseClient';
+import Toast from '../common/Toast';
 
 const PortalLogin = () => {
+    const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleAuth = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        // محاكاة تسجيل الدخول أو إرسال كود التحقق
-        setTimeout(() => {
-            localStorage.setItem('portal_user', email);
-            navigate('/portal/dashboard');
+        setToast({ show: false, message: '', type: '' });
+
+        try {
+            if (isSignUp) {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                });
+                if (error) throw error;
+                if (data.user) {
+                    setToast({ show: true, message: 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.', type: 'success' });
+                    setIsSignUp(false); // Switch to login view
+                }
+            } else {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+                if (error) throw error;
+
+                if (data.user) {
+                    // Maintain backward compatibility for now
+                    localStorage.setItem('portal_user', data.user.email);
+                    localStorage.setItem('portal_token', data.session.access_token);
+
+                    setToast({ show: true, message: 'تم تسجيل الدخول بنجاح', type: 'success' });
+                    setTimeout(() => navigate('/portal/dashboard'), 1000);
+                }
+            }
+        } catch (error) {
+            console.error('Auth error:', error);
+            setToast({
+                show: true,
+                message: error.message === 'Invalid login credentials'
+                    ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+                    : error.message,
+                type: 'error'
+            });
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 font-cairo" dir="rtl">
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -33,24 +80,49 @@ const PortalLogin = () => {
                         <div className="inline-flex p-4 bg-primary-500/10 rounded-2xl mb-2">
                             <ShieldCheck className="h-8 w-8 text-primary-500" />
                         </div>
-                        <h2 className="text-2xl font-bold text-white">بوابة العميل الذكية</h2>
-                        <p className="text-gray-500 text-sm">أدخل بريدك الإلكتروني لاستعراض مشاريعك المولدة.</p>
+                        <h2 className="text-2xl font-bold text-white">
+                            {isSignUp ? 'إنشاء حساب جديد' : 'بوابة العميل الذكية'}
+                        </h2>
+                        <p className="text-gray-500 text-sm">
+                            {isSignUp
+                                ? 'أدخل بياناتك لإنشاء حساب وتأمين مشاريعك'
+                                : 'أدخل بيانات الدخول لاستعراض مشاريعك المولدة'}
+                        </p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div className="space-y-2">
-                            <label htmlFor="portal-email" className="text-sm text-gray-400 mr-1">البريد الإلكتروني</label>
-                            <div className="relative">
-                                <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
-                                <input
-                                    id="portal-email"
-                                    type="email"
-                                    required
-                                    className="w-full bg-dark-800 border border-gray-700 rounded-xl px-12 py-4 text-white focus:border-primary-500 outline-none transition-all font-sans"
-                                    placeholder="your-email@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
+                    <form onSubmit={handleAuth} className="space-y-6">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label htmlFor="portal-email" className="text-sm text-gray-400 mr-1">البريد الإلكتروني</label>
+                                <div className="relative">
+                                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
+                                    <input
+                                        id="portal-email"
+                                        type="email"
+                                        required
+                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-12 py-4 text-white focus:border-primary-500 outline-none transition-all font-sans"
+                                        placeholder="your-email@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="portal-password" className="text-sm text-gray-400 mr-1">كلمة المرور</label>
+                                <div className="relative">
+                                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
+                                    <input
+                                        id="portal-password"
+                                        type="password"
+                                        required
+                                        minLength={6}
+                                        className="w-full bg-dark-800 border border-gray-700 rounded-xl px-12 py-4 text-white focus:border-primary-500 outline-none transition-all font-sans"
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -63,11 +135,23 @@ const PortalLogin = () => {
                                 <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <>
-                                    <span>دخول للمنصة</span>
-                                    <ArrowLeft className="h-5 w-5" />
+                                    <span>{isSignUp ? 'إنشاء الحساب' : 'دخول للمنصة'}</span>
+                                    {isSignUp ? <UserPlus className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}
                                 </>
                             )}
                         </button>
+
+                        <div className="text-center pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setIsSignUp(!isSignUp)}
+                                className="text-sm text-gray-400 hover:text-white transition-colors"
+                            >
+                                {isSignUp
+                                    ? 'لديك حساب بالفعل؟ تسجيل الدخول'
+                                    : 'ليس لديك حساب؟ إنشاء حساب جديد'}
+                            </button>
+                        </div>
                     </form>
 
                     <div className="mt-8 pt-6 border-t border-gray-800 flex items-center justify-center gap-2 text-xs text-gray-500">
