@@ -4,6 +4,7 @@
   "description": "Omar Hamid Al-Adini - Professional Developer Portfolio",
   "private": true,
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@supabase/supabase-js": "^2.89.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",

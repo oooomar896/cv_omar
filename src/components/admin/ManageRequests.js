@@ -4,13 +4,25 @@ import {
     Eye,
     MessageSquare,
     Smartphone,
-    Mail
+    Mail,
+    Layout,
+    CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import Toast from '../../components/common/Toast';
 import FileViewer from '../platform/FileViewer';
+import ProjectChat from '../platform/ProjectChat';
+import LiveCodeEditor from '../platform/LiveCodeEditor';
+
+const ROADMAP_STAGES = [
+    { id: 'analysis', label: 'تحليل المتطلبات' },
+    { id: 'design', label: 'التصميم والواجهات' },
+    { id: 'dev', label: 'مرحلة البرمجة' },
+    { id: 'qa', label: 'فحص الجودة' },
+    { id: 'launch', label: 'الإطلاق النهائي' }
+];
 
 const ManageRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -55,6 +67,20 @@ const ManageRequests = () => {
         if (!desc) return null;
         const match = desc.match(/PHONE:\s*([+\d\s-]+)/);
         return match ? match[1].trim() : null;
+    };
+
+    const updateStage = async (newStage) => {
+        if (!selectedRequest) return;
+        try {
+            await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: newStage });
+            setToast({ show: true, message: 'تم تحديث مرحلة المشروع بنجاح', type: 'success' });
+
+            // Update local state
+            setSelectedRequest(prev => ({ ...prev, project_stage: newStage }));
+            setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, project_stage: newStage } : r));
+        } catch (error) {
+            setToast({ show: true, message: 'فشل تحديث المرحلة', type: 'error' });
+        }
     };
 
     const getStatusColor = (status) => {
@@ -199,6 +225,32 @@ const ManageRequests = () => {
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Stage Management */}
+                                <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6">
+                                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                        <Layout size={20} className="text-primary-500" />
+                                        <span>تقدم المشروع (Timeline)</span>
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {ROADMAP_STAGES.map((stage) => {
+                                            const isCurrent = (selectedRequest.project_stage || 'analysis') === stage.id;
+                                            return (
+                                                <button
+                                                    key={stage.id}
+                                                    onClick={() => updateStage(stage.id)}
+                                                    className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between ${isCurrent
+                                                        ? 'bg-primary-500/10 border-primary-500 text-primary-400'
+                                                        : 'bg-dark-900 border-gray-800 text-gray-400 hover:border-gray-600'
+                                                        }`}
+                                                >
+                                                    <span className="font-bold text-sm">{stage.label}</span>
+                                                    {isCurrent && <CheckCircle2 size={18} />}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
 
                             {selectedRequest.files && (
@@ -212,6 +264,15 @@ const ManageRequests = () => {
                                     </div>
                                 </div>
                             )}
+
+                            <div className="mt-6 border-t border-gray-800 pt-6">
+                                <h3 className="text-lg font-bold text-white mb-4">بيئة التطوير (IDE)</h3>
+                                <LiveCodeEditor project={selectedRequest} userRole="admin" />
+                            </div>
+
+                            <div className="mt-6 border-t border-gray-800 pt-6">
+                                <ProjectChat project={selectedRequest} userRole="admin" />
+                            </div>
                         </motion.div>
                     </div>
                 )}

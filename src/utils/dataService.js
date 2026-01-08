@@ -616,6 +616,67 @@ class DataService {
         }
     }
 
+    // Chat System
+    async fetchProjectMessages(projectId) {
+        try {
+            const { data, error } = await supabase
+                .from('project_messages')
+                .select('*')
+                .eq('project_id', projectId)
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error fetching chat:', error);
+            return [];
+        }
+    }
+
+    async sendProjectMessage(messageData) {
+        try {
+            const { data, error } = await supabase
+                .from('project_messages')
+                .insert([messageData])
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error sending message:', error);
+            throw error;
+        }
+    }
+
+    async updateGeneratedProject(id, updates) {
+        try {
+            const { data, error } = await supabase
+                .from('generated_projects')
+                .update(updates)
+                .eq('id', id)
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            const projects = this.getGeneratedProjects().map(p =>
+                p.id === id ? { ...p, ...data } : p
+            );
+            this._set(STORAGE_KEYS.GENERATED_PROJECTS, projects);
+
+            // Log activity
+            if (updates.project_stage) {
+                this.logActivity('update', `تم تحديث مرحلة المشروع #${id} إلى ${updates.project_stage}`);
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Error updating generated project:', error);
+            throw error;
+        }
+    }
+
     // Settings (Supabase Integrated)
     getSettings() { return this._get(STORAGE_KEYS.SETTINGS, DEFAULT_DATA.SETTINGS); }
 

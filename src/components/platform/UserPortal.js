@@ -10,6 +10,8 @@ import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import { STARTER_KITS, UI_UX_RESOURCES } from '../../constants/platformConstants';
 import FileViewer from './FileViewer';
 import ProjectRoadmap from './ProjectRoadmap';
+import ProjectChat from './ProjectChat';
+import LiveCodeEditor from './LiveCodeEditor';
 
 const UserPortal = () => {
     const [userEmail, setUserEmail] = useState(null);
@@ -88,7 +90,12 @@ const UserPortal = () => {
                     </div>
 
                     <div className="bg-dark-900 border border-gray-800 rounded-3xl p-6">
-                        <ProjectRoadmap currentStage={selectedProject.projectStage || 'analysis'} />
+                        <ProjectRoadmap currentStage={selectedProject.project_stage || selectedProject.projectStage || 'analysis'} />
+                    </div>
+
+                    {/* Chat Section */}
+                    <div id="project-chat-section">
+                        <ProjectChat project={selectedProject} userRole="user" />
                     </div>
 
                     {/* Starter Kits & Resources */}
@@ -143,6 +150,20 @@ const UserPortal = () => {
                                 </a>
                             ))}
                         </div>
+                    </div>
+
+                    {/* Live Developer Environment */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-500/10 text-blue-500 rounded-lg">
+                                <Code2 size={20} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-white font-cairo">بيئة التطوير الحية (IDE)</h3>
+                                <p className="text-sm text-gray-500">يمكنك تعديل كود المشروع وحفظ التغييرات مباشرة.</p>
+                            </div>
+                        </div>
+                        <LiveCodeEditor project={selectedProject} userRole="user" />
                     </div>
 
                     <FileViewer
