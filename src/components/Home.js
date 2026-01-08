@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bot, Code2, Rocket, ArrowLeft, Zap } from 'lucide-react';
+import { Bot, Rocket, ArrowLeft, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
