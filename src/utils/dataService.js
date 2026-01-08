@@ -579,6 +579,22 @@ class DataService {
         }
     }
 
+    async fetchUserProjects(email) {
+        try {
+            const { data, error } = await supabase
+                .from('generated_projects')
+                .select('*')
+                .eq('user_email', email)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            return data || [];
+        } catch (err) {
+            console.error('Error fetching user projects:', err);
+            return [];
+        }
+    }
+
     async saveGeneratedProject(projectId, data) {
         try {
             const projectData = {

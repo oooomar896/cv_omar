@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
     Cpu, Package, Download, LogOut, Code2,
-    Smartphone, Bot, Globe, ExternalLink, Library, Palette
+    Smartphone, Bot, Globe, ExternalLink, Library, Palette, Loader2
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
+import { supabase } from '../../utils/supabaseClient';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import { STARTER_KITS, UI_UX_RESOURCES } from '../../constants/platformConstants';
 import FileViewer from './FileViewer';
@@ -17,26 +18,57 @@ const UserPortal = () => {
     const [userEmail, setUserEmail] = useState(null);
     const [userProjects, setUserProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const email = localStorage.getItem('portal_user');
-        if (!email) {
-            navigate('/portal/login');
-            return;
-        }
-        setUserEmail(email);
+        const checkAuthAndLoad = async () => {
+            try {
+                // 1. Verify Session
+                const { data: { session }, error } = await supabase.auth.getSession();
 
-        // جلب مشاريع هذا المستخدم فقط
-        const allGenProjects = dataService.getGeneratedProjects();
-        const myProjects = allGenProjects.filter(p => p.userEmail === email);
-        setUserProjects(myProjects);
+                if (error || !session) {
+                    console.log('No valid session, redirecting to login');
+                    localStorage.removeItem('portal_user');
+                    localStorage.removeItem('portal_token');
+                    navigate('/portal/login');
+                    return;
+                }
+
+                setUserEmail(session.user.email);
+
+                // 2. Fetch Projects Securely
+                const projects = await dataService.fetchUserProjects(session.user.email);
+                setUserProjects(projects);
+
+            } catch (err) {
+                console.error('Portal Error:', err);
+                navigate('/portal/login');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        checkAuthAndLoad();
     }, [navigate]);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
         localStorage.removeItem('portal_user');
+        localStorage.removeItem('portal_token');
         navigate('/portal/login');
     };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-dark-950 font-cairo text-white">
+                <div className="text-center space-y-4">
+                    <Loader2 className="w-10 h-10 animate-spin text-primary-500 mx-auto" />
+                    <p>جاري التحقق من بياناتك...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (selectedProject) {
         return (
