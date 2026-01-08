@@ -100,7 +100,7 @@ const UserPortal = () => {
                             <h3 className="text-xl font-bold text-white font-cairo">أدوات ومكتبات بناء هذا المشروع</h3>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {(STARTER_KITS[selectedProject.projectType || 'web'] || []).map((kit, i) => (
+                            {(STARTER_KITS[selectedProject.projectType || 'web'] || []).map((kit) => (
                                 <a
                                     key={kit.name}
                                     href={kit.link}

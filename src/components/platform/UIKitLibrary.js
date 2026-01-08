@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Layout,
     Code2,
     Copy,
     Check,
-    Search,
     Type,
     Layers,
     MousePointer2
@@ -97,8 +95,8 @@ const UIKitLibrary = () => {
                                         key={comp.id}
                                         onClick={() => setSelectedId(comp.id)}
                                         className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center justify-between group ${selectedId === comp.id
-                                                ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
-                                                : 'text-gray-400 hover:bg-dark-800'
+                                            ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                                            : 'text-gray-400 hover:bg-dark-800'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">

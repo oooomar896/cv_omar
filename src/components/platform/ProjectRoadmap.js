@@ -38,7 +38,6 @@ const ProjectRoadmap = ({ currentStage = 'analysis' }) => {
                         const Icon = stage.icon;
                         const isDone = index < activeIndex;
                         const isActive = index === activeIndex;
-                        const isPending = index > activeIndex;
 
                         return (
                             <div key={stage.id} className="relative z-10 flex flex-col items-center">
@@ -47,8 +46,8 @@ const ProjectRoadmap = ({ currentStage = 'analysis' }) => {
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ delay: index * 0.1 }}
                                     className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 border-2 ${isDone ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-500/20' :
-                                            isActive ? 'bg-primary-500 border-primary-400 text-white animate-pulse shadow-lg shadow-primary-500/20' :
-                                                'bg-dark-800 border-gray-700 text-gray-500'
+                                        isActive ? 'bg-primary-500 border-primary-400 text-white animate-pulse shadow-lg shadow-primary-500/20' :
+                                            'bg-dark-800 border-gray-700 text-gray-500'
                                         }`}
                                 >
                                     {isDone ? <CheckCircle2 size={32} /> : <Icon size={32} />}

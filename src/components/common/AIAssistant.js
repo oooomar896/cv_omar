@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageSquare,
@@ -7,8 +7,7 @@ import {
     Send,
     Zap,
     HelpCircle,
-    Terminal,
-    CheckCircle2
+    Terminal
 } from 'lucide-react';
 
 const SUGGESTIONS = [
