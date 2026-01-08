@@ -156,7 +156,7 @@ const Home = () => {
 
                     <h2 className="text-4xl font-bold text-white mb-6 relative z-10">جاهز لبدء مشروعك القادم؟</h2>
                     <p className="text-gray-300 mb-10 text-lg relative z-10 max-w-2xl mx-auto">
-                        سواء كانت لديك فكرة تطبيق، موقع، أو حل ذكي، نحن هنا لتحويلها إلى واقع. ابدأ الآن بتجربة "باني المشاريع" المجاني.
+                        سواء كانت لديك فكرة تطبيق، موقع، أو حل ذكي، نحن هنا لتحويلها إلى واقع. ابدأ الآن بتجربة «باني المشاريع» المجاني.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
