@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
+import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import Toast from '../../components/common/Toast';
 import FileViewer from '../platform/FileViewer';
 
@@ -206,16 +207,7 @@ const ManageRequests = () => {
                                     <div className="bg-dark-950 rounded-2xl border border-gray-800 overflow-hidden max-h-[400px] overflow-y-auto">
                                         <FileViewer
                                             files={selectedRequest.files}
-                                            onDownload={() => {
-                                                const blob = new Blob([JSON.stringify(selectedRequest.files, null, 2)], { type: 'application/json' });
-                                                const url = URL.createObjectURL(blob);
-                                                const a = document.createElement('a');
-                                                a.href = url;
-                                                a.download = `blueprint_${selectedRequest.id}.json`;
-                                                document.body.appendChild(a);
-                                                a.click();
-                                                document.body.removeChild(a);
-                                            }}
+                                            onDownload={() => downloadProjectBlueprint(selectedRequest)}
                                         />
                                     </div>
                                 </div>

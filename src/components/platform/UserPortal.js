@@ -6,6 +6,7 @@ import {
     Smartphone, Bot, Globe, ExternalLink
 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
+import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import FileViewer from './FileViewer';
 
 const UserPortal = () => {
@@ -47,22 +48,15 @@ const UserPortal = () => {
                 </div>
                 <FileViewer
                     files={selectedProject.files}
-                    onDownload={() => alert('بدأ التحميل...')}
+                    onDownload={(e) => handleDownload(selectedProject, e)}
                 />
             </div>
         );
     }
 
-    const downloadBlueprint = (project) => {
-        if (!project.files) return;
-        const blob = new Blob([JSON.stringify(project.files, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `blueprint_${project.id}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    const handleDownload = (project, e) => {
+        if (e) e.stopPropagation();
+        downloadProjectBlueprint(project);
     };
 
     const getStatusBadge = (status) => {
@@ -221,7 +215,7 @@ const UserPortal = () => {
                                                 <span>عرض الملفات</span>
                                             </button>
                                             <button
-                                                onClick={() => downloadBlueprint(project)}
+                                                onClick={(e) => handleDownload(project, e)}
                                                 className="p-3 bg-primary-500/10 text-primary-400 hover:bg-primary-500 hover:text-white rounded-xl transition-all border border-primary-500/20"
                                             >
                                                 <Download size={18} />
