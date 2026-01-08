@@ -22,11 +22,10 @@ const Navbar = () => {
   }, []);
 
   const navItems = [
-    { name: 'طلب مشروع', href: '/' },
-    { name: 'المطور', href: '/developer' },
-    { name: 'المشاريع', href: '/developer#projects' },
-    { name: 'عني', href: '/developer#about' },
-    { name: 'تواصل معي', href: '/developer#contact' },
+    { name: 'الرئيسية', href: '/' },
+    { name: 'باني المشاريع (AI)', href: '/builder', isHighlight: true },
+    { name: 'طلب مشروع', href: '/request' },
+    { name: 'المطور (CV)', href: '/developer' },
     { name: 'بوابة العميل', href: '/portal/login', isSecondary: true },
   ];
 

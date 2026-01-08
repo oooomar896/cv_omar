@@ -9,6 +9,7 @@ import ProtectedRoute from './components/admin/ProtectedRoute';
 import SEO from './components/common/SEO';
 
 // Lazy load components for better performance
+const Home = lazy(() => import('./components/Home'));
 const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
 const RequestService = lazy(() => import('./components/platform/RequestService'));
 const DeveloperProfile = lazy(() => import('./components/DeveloperProfile'));
@@ -55,11 +56,31 @@ const AppContent = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
+              >
+                <SEO
+                  title="عمر العديني | حلول برمجية ذكية"
+                  description="مطور برمجيات شامل (Full Stack) ومتخصص في الذكاء الاصطناعي. ابدأ مشروعك التقني اليوم."
+                />
+                <Suspense fallback={<LoadingFallback />}>
+                  <Home />
+                </Suspense>
+              </motion.div>
+            }
+          />
+
+          <Route
+            path='/request'
+            element={
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
                 className="pt-24 pb-12"
               >
                 <SEO
-                  title="ابنِ مشروعك بالذكاء الاصطناعي | عمر العديني"
-                  description="حول فكرتك إلى تطبيق أو موقع إلكتروني في دقائق باستخدام وكيل الذكاء الاصطناعي من عمر العديني."
+                  title="طلب مشروع جديد | عمر العديني"
+                  description="ابدأ رحلة مشروعك التقني معنا. املأ النموذج وسنقوم بتحويل فكرتك إلى واقع."
                 />
                 <Suspense fallback={<LoadingFallback />}>
                   <RequestService />
@@ -67,6 +88,7 @@ const AppContent = () => {
               </motion.div>
             }
           />
+
           <Route
             path='/developer'
             element={
