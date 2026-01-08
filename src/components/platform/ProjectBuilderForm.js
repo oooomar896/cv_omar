@@ -87,6 +87,24 @@ const ProjectBuilderForm = () => {
         });
     }, [generatedProject, formData.description]);
 
+    const handleProcessingComplete = useCallback(async () => {
+        const result = await coderAgent.generateProject(formData);
+        const report = await qaAgent.reviewProject();
+
+        dataService.saveGeneratedProject(`proj_${Date.now()}`, {
+            userEmail: formData.email,
+            userName: formData.userName,
+            projectType: formData.type,
+            description: formData.description,
+            specificAnswers: formData.specificAnswers,
+            ...result
+        });
+
+        setGeneratedProject(result);
+        setQaReport(report);
+        setIsProcessing(false);
+    }, [formData]);
+
     if (generatedProject) {
         return (
             <FileViewer
@@ -100,23 +118,7 @@ const ProjectBuilderForm = () => {
     if (isProcessing) {
         return (
             <ProcessingStatus
-                onComplete={useCallback(async () => {
-                    const result = await coderAgent.generateProject(formData);
-                    const report = await qaAgent.reviewProject();
-
-                    dataService.saveGeneratedProject(`proj_${Date.now()}`, {
-                        userEmail: formData.email,
-                        userName: formData.userName,
-                        projectType: formData.type,
-                        description: formData.description,
-                        specificAnswers: formData.specificAnswers,
-                        ...result
-                    });
-
-                    setGeneratedProject(result);
-                    setQaReport(report);
-                    setIsProcessing(false);
-                }, [formData])}
+                onComplete={handleProcessingComplete}
             />
         );
     }
