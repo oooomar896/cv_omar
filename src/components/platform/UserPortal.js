@@ -8,6 +8,7 @@ import {
 import { dataService } from '../../utils/dataService';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import FileViewer from './FileViewer';
+import ProjectRoadmap from './ProjectRoadmap';
 
 const UserPortal = () => {
     const [userEmail, setUserEmail] = useState(null);
@@ -46,10 +47,54 @@ const UserPortal = () => {
                         العودة للمشاريع
                     </button>
                 </div>
-                <FileViewer
-                    files={selectedProject.files}
-                    onDownload={(e) => handleDownload(selectedProject, e)}
-                />
+
+                <div className="max-w-7xl mx-auto px-4 space-y-8 pb-12 text-right" dir="rtl">
+                    {/* Project Header Info */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <h2 className="text-3xl font-black text-white font-cairo mb-2">{selectedProject.projectName}</h2>
+                            <p className="text-gray-400 font-cairo">{selectedProject.description}</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={(e) => handleDownload(selectedProject, e)}
+                                className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-bold font-cairo flex items-center gap-3 transition-all"
+                            >
+                                <Download size={20} />
+                                <span>تحميل ملفات المشروع</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-dark-900 border border-gray-800 p-6 rounded-2xl text-center space-y-2">
+                            <p className="text-xs text-gray-500 font-cairo">عدد الملفات</p>
+                            <p className="text-2xl font-bold text-white font-mono">{Object.keys(selectedProject.files || {}).length}</p>
+                        </div>
+                        <div className="bg-dark-900 border border-gray-800 p-6 rounded-2xl text-center space-y-2">
+                            <p className="text-xs text-gray-500 font-cairo">توفير الوقت الذكي</p>
+                            <p className="text-2xl font-bold text-emerald-500 font-mono">15+ ساعة</p>
+                        </div>
+                        <div className="bg-dark-900 border border-gray-800 p-6 rounded-2xl text-center space-y-2">
+                            <p className="text-xs text-gray-500 font-cairo">جودة الكود (AI)</p>
+                            <p className="text-2xl font-bold text-primary-500 font-mono">98%</p>
+                        </div>
+                        <div className="bg-dark-900 border border-gray-800 p-6 rounded-2xl text-center space-y-2">
+                            <p className="text-xs text-gray-500 font-cairo">التكلفة المتوقعة</p>
+                            <p className="text-2xl font-bold text-amber-500 font-mono">$499+</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-dark-900 border border-gray-800 rounded-3xl p-6">
+                        <ProjectRoadmap currentStage={selectedProject.projectStage || 'analysis'} />
+                    </div>
+
+                    <FileViewer
+                        files={selectedProject.files}
+                        onDownload={(e) => handleDownload(selectedProject, e)}
+                    />
+                </div>
             </div>
         );
     }

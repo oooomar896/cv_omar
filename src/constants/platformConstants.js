@@ -4,6 +4,12 @@ export const PROJECT_TYPES = {
     AI_BOT: 'ai-bot',
 };
 
+export const AI_AGENTS = [
+    { id: 'expert', name: 'الخبير التقني', role: 'يركز على بنية الكود والأداء', icon: 'Terminal' },
+    { id: 'creative', name: 'المصمم الإبداعي', role: 'يركز على جمالية الواجهات وتجربة المستخدم', icon: 'Palette' },
+    { id: 'business', name: 'محلل الأعمال', role: 'يركز على القيمة السوقية واحتياجات العميل', icon: 'Briefcase' }
+];
+
 export const FORM_STEPS = [
     { id: 'type', title: 'نوع المشروع' },
     { id: 'details', title: 'تفاصيل المشروع' },

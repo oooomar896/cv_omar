@@ -14,7 +14,8 @@ const STORAGE_KEYS = {
     GENERATED_PROJECTS: 'omar_gen_projects',
     SETTINGS: 'omar_settings',
     ACTIVITIES: 'omar_activities',
-    MESSAGES: 'omar_messages'
+    MESSAGES: 'omar_messages',
+    NOTIFICATIONS: 'omar_notifications'
 };
 
 // البيانات الافتراضية الأولية
@@ -716,6 +717,13 @@ class DataService {
             };
             this._set(STORAGE_KEYS.ACTIVITIES, [localActivity, ...activities].slice(0, 50));
 
+            // Also create a notification for modern feel
+            this.addNotification({
+                title: type === 'create' ? 'إضافة جديدة' : 'تحديث في المنصة',
+                msg: message,
+                type: type
+            });
+
         } catch (err) {
             console.error('Error logging activity:', err);
             // Fallback
@@ -728,7 +736,40 @@ class DataService {
             };
             const updatedActivities = [newActivity, ...activities].slice(0, 50);
             this._set(STORAGE_KEYS.ACTIVITIES, updatedActivities);
+
+            this.addNotification({
+                title: 'تنبيه نظام',
+                msg: message,
+                type: type
+            });
         }
+    }
+
+    // Notifications System
+    getNotifications() {
+        return this._get(STORAGE_KEYS.NOTIFICATIONS, [
+            { id: 1, title: 'أهلاً بك 👋', msg: 'مرحباً بك في منصة باني المشاريع الذكي', time: 'الآن', read: false }
+        ]);
+    }
+
+    addNotification(notif) {
+        const notifications = this.getNotifications();
+        const newNotif = {
+            id: Date.now(),
+            title: notif.title,
+            msg: notif.msg,
+            time: 'منذ قليل',
+            read: false,
+            type: notif.type
+        };
+        this._set(STORAGE_KEYS.NOTIFICATIONS, [newNotif, ...notifications].slice(0, 20));
+        // نطلق حدث تنبيه المكونات
+        window.dispatchEvent(new CustomEvent('new_notification', { detail: newNotif }));
+    }
+
+    markAllNotificationsRead() {
+        const notifications = this.getNotifications().map(n => ({ ...n, read: true }));
+        this._set(STORAGE_KEYS.NOTIFICATIONS, notifications);
     }
 
     // Messages (Supabase Integrated)

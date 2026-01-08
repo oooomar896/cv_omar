@@ -103,18 +103,29 @@ const Home = () => {
 
             {/* Features Stats */}
             <section className="py-12 border-y border-gray-800/50 bg-black/20">
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-                    {[
-                        { num: '+50', label: 'مشروع ناجح' },
-                        { num: '+5', label: 'سنوات خبرة' },
-                        { num: '100%', label: 'رضا عملاء' },
-                        { num: '24/7', label: 'دعم فني' },
-                    ].map((stat, i) => (
-                        <div key={i} className="text-center">
-                            <h3 className="text-4xl font-black text-white mb-2">{stat.num}</h3>
-                            <p className="text-gray-500 text-sm font-bold">{stat.label}</p>
-                        </div>
-                    ))}
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                        {[
+                            { num: '+50', label: 'مشروع ناجح' },
+                            { num: '+5', label: 'سنوات خبرة' },
+                            { num: '100%', label: 'رضا عملاء' },
+                            { num: '24/7', label: 'دعم فني' },
+                        ].map((stat, i) => (
+                            <div key={i} className="text-center">
+                                <h3 className="text-4xl font-black text-white mb-2">{stat.num}</h3>
+                                <p className="text-gray-500 text-sm font-bold">{stat.label}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Social Proof / Tech Stack */}
+                    <div className="pt-8 border-t border-gray-800/50 flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 grayscale hover:grayscale-0 transition-all">
+                        <span className="text-white font-black text-xl tracking-tighter">REACT</span>
+                        <span className="text-white font-black text-xl tracking-tighter">NEXT.JS</span>
+                        <span className="text-white font-black text-xl tracking-tighter">FLUTTER</span>
+                        <span className="text-white font-black text-xl tracking-tighter">SUPABASE</span>
+                        <span className="text-white font-black text-xl tracking-tighter">TAILWIND</span>
+                    </div>
                 </div>
             </section>
 

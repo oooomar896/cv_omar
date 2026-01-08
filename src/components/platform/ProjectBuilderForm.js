@@ -7,9 +7,12 @@ import {
     ArrowLeft,
     ArrowRight,
     CheckCircle2,
-    Sparkles
+    Sparkles,
+    Palette,
+    Terminal,
+    Briefcase
 } from 'lucide-react';
-import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS } from '../../constants/platformConstants';
+import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS, AI_AGENTS } from '../../constants/platformConstants';
 import AnalysisPreview from './AnalysisPreview';
 import ProcessingStatus from './ProcessingStatus';
 import FileViewer from './FileViewer';
@@ -26,6 +29,7 @@ const ProjectBuilderForm = () => {
     const [qaReport, setQaReport] = useState(null);
     const [formData, setFormData] = useState({
         type: '',
+        agent: 'expert',
         description: '',
         specificAnswers: {},
         email: '',
@@ -33,7 +37,6 @@ const ProjectBuilderForm = () => {
 
     const handleTypeSelect = (type) => {
         setFormData({ ...formData, type, specificAnswers: {} });
-        setCurrentStep(1);
     };
 
     const handleNext = () => {
@@ -145,28 +148,74 @@ const ProjectBuilderForm = () => {
         switch (currentStep) {
             case 0: // Step: Type Selection
                 return (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <SelectionCard
-                            icon={Globe}
-                            title="موقع إلكتروني"
-                            desc="Web Applications & Landing Pages"
-                            selected={formData.type === PROJECT_TYPES.WEB}
-                            onClick={() => handleTypeSelect(PROJECT_TYPES.WEB)}
-                        />
-                        <SelectionCard
-                            icon={Smartphone}
-                            title="تطبيق جوال"
-                            desc="Android & iOS Native Apps"
-                            selected={formData.type === PROJECT_TYPES.MOBILE}
-                            onClick={() => handleTypeSelect(PROJECT_TYPES.MOBILE)}
-                        />
-                        <SelectionCard
-                            icon={Zap}
-                            title="بوت ذكاء اصطناعي"
-                            desc="AI Agents & Chatbots"
-                            selected={formData.type === PROJECT_TYPES.AI_BOT}
-                            onClick={() => handleTypeSelect(PROJECT_TYPES.AI_BOT)}
-                        />
+                    <div className="space-y-12">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <SelectionCard
+                                icon={Globe}
+                                title="موقع إلكتروني"
+                                desc="Web Applications & Landing Pages"
+                                selected={formData.type === PROJECT_TYPES.WEB}
+                                onClick={() => handleTypeSelect(PROJECT_TYPES.WEB)}
+                            />
+                            <SelectionCard
+                                icon={Smartphone}
+                                title="تطبيق جوال"
+                                desc="Android & iOS Native Apps"
+                                selected={formData.type === PROJECT_TYPES.MOBILE}
+                                onClick={() => handleTypeSelect(PROJECT_TYPES.MOBILE)}
+                            />
+                            <SelectionCard
+                                icon={Zap}
+                                title="بوت ذكاء اصطناعي"
+                                desc="AI Agents & Chatbots"
+                                selected={formData.type === PROJECT_TYPES.AI_BOT}
+                                onClick={() => handleTypeSelect(PROJECT_TYPES.AI_BOT)}
+                            />
+                        </div>
+
+                        <AnimatePresence>
+                            {formData.type && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="pt-8 border-t border-gray-800"
+                                >
+                                    <h3 className="text-xl font-bold text-white text-center mb-6 font-cairo">اختر شخصية المساعد الذكي</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {AI_AGENTS.map((agent) => {
+                                            const Icon = agent.id === 'expert' ? Terminal : agent.id === 'creative' ? Palette : Briefcase;
+                                            return (
+                                                <button
+                                                    key={agent.id}
+                                                    onClick={() => setFormData(prev => ({ ...prev, agent: agent.id }))}
+                                                    className={`p-4 rounded-2xl border-2 transition-all flex items-center gap-4 text-right ${formData.agent === agent.id
+                                                        ? 'bg-primary-500/10 border-primary-500 shadow-lg shadow-primary-500/10'
+                                                        : 'bg-dark-900 border-gray-800 hover:border-gray-700'
+                                                        }`}
+                                                >
+                                                    <div className={`p-3 rounded-xl ${formData.agent === agent.id ? 'bg-primary-500 text-white' : 'bg-dark-800 text-gray-500'}`}>
+                                                        <Icon size={20} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-white text-sm font-cairo">{agent.name}</h4>
+                                                        <p className="text-[10px] text-gray-400 font-cairo mt-1">{agent.role}</p>
+                                                    </div>
+                                                    {formData.agent === agent.id && <CheckCircle2 className="mr-auto text-primary-500" size={16} />}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    <div className="flex justify-center mt-12">
+                                        <button
+                                            onClick={() => setCurrentStep(1)}
+                                            className="bg-primary-500 hover:bg-primary-600 px-12 py-3 rounded-xl font-bold font-cairo text-white shadow-xl shadow-primary-500/20"
+                                        >
+                                            ابدأ التخصيص
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 );
 

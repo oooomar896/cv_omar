@@ -1,52 +1,70 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Menu, X, Sun, Moon, Code2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Sun, Moon, Code2, Bell } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-
 import { useNavigate, useLocation } from 'react-router-dom';
+import { dataService } from '../utils/dataService';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
+    const loadNotifs = () => {
+      setNotifications(dataService.getNotifications());
+    };
+
+    loadNotifs();
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('storage_update', loadNotifs);
+    window.addEventListener('new_notification', loadNotifs);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('storage_update', loadNotifs);
+      window.removeEventListener('new_notification', loadNotifs);
+    };
   }, []);
 
   const navItems = [
     { name: 'الرئيسية', href: '/' },
     { name: 'باني المشاريع (AI)', href: '/builder', isHighlight: true },
+    { name: 'مكتبة المكونات', href: '/uikit' },
     { name: 'طلب مشروع', href: '/request' },
     { name: 'المطور (CV)', href: '/developer' },
     { name: 'بوابة العميل', href: '/portal/login', isSecondary: true },
   ];
 
+  const handleNotifClick = () => {
+    setShowNotifs(!showNotifs);
+    if (!showNotifs) {
+      dataService.markAllNotificationsRead();
+      setNotifications(dataService.getNotifications());
+    }
+  };
+
   const scrollToSection = (href) => {
     setIsOpen(false);
-
-    // Check if it's a direct route or hash
     if (href.includes('#')) {
       const [path, hash] = href.split('#');
-
-      // If we are already on the page, just scroll
       if (location.pathname === path || (path === '/' && location.pathname === '/')) {
         const element = document.getElementById(hash);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
         }
       } else {
-        // Navigate to the page, wait for load then scroll (handled by useEffect in target page preferably, but simple navigation for now)
-        // We can just navigate to the full href, browser/router usually handles hash
         navigate(href);
-        // Fallback for SPA routing if hash doesn't scroll automatically
         setTimeout(() => {
           const element = document.getElementById(hash);
           if (element) element.scrollIntoView({ behavior: 'smooth' });
@@ -68,7 +86,7 @@ const Navbar = () => {
         }`}
     >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex items-center justify-between h-16'>
+        <div className='flex items-center justify-between h-20'>
           {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -81,21 +99,21 @@ const Navbar = () => {
                 <Code2 className="h-6 w-6 text-emerald-500" />
               </div>
             </div>
-            <span className="text-xl font-bold font-mono text-white tracking-tight">OMAR<span className="text-emerald-500">.DEV</span></span>
+            <span className="text-xl font-black font-mono text-white tracking-tight leading-none">OMAR<span className="text-emerald-500">.DEV</span></span>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:block'>
-            <div className='ml-10 flex items-baseline space-x-8 space-x-reverse'>
+          <div className='hidden lg:block'>
+            <div className='flex items-center space-x-6 space-x-reverse'>
               {navItems.map(item => (
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`nav-link px-3 py-2 text-sm font-medium transition-all ${item.isHighlight
-                    ? 'text-primary-500 border border-primary-500/30 rounded-lg bg-primary-500/5 px-4 hover:bg-primary-500 hover:text-white'
+                  className={`text-sm font-bold font-cairo transition-all py-2 ${item.isHighlight
+                    ? 'text-primary-500 border border-primary-500/30 rounded-xl bg-primary-500/5 px-4 hover:bg-primary-500 hover:text-white shadow-lg shadow-primary-500/5'
                     : item.isSecondary
-                      ? 'text-gray-400 border border-gray-700 rounded-lg px-4 hover:border-primary-500 hover:text-white'
-                      : ''
+                      ? 'text-gray-400 border border-gray-700 rounded-xl px-4 hover:border-primary-500 hover:text-white'
+                      : 'text-gray-400 hover:text-white hover:translate-y-[-1px]'
                     }`}
                 >
                   {item.name}
@@ -104,31 +122,95 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Theme Toggle & Mobile Menu Button */}
-          <div className='flex items-center space-x-4 space-x-reverse'>
+          {/* Action Buttons */}
+          <div className='flex items-center gap-3 relative'>
+            {/* Notifications */}
+            <div className="relative">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={`p-2.5 rounded-xl border transition-all relative group ${showNotifs ? 'bg-primary-500 border-primary-400 text-white' : 'bg-dark-800 border-gray-700 text-gray-400 hover:border-primary-500'}`}
+                onClick={handleNotifClick}
+              >
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 border-2 border-dark-900 rounded-full text-[10px] font-bold flex items-center justify-center text-white animate-pulse z-10">
+                    {unreadCount}
+                  </span>
+                )}
+                <Bell size={20} />
+              </motion.button>
+
+              <AnimatePresence>
+                {showNotifs && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-14 left-0 w-80 bg-dark-800 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden z-50 origin-top-left"
+                  >
+                    <div className="p-4 border-b border-gray-700 bg-black/40 flex justify-between items-center">
+                      <span className="text-xs font-bold text-white font-cairo">الإشعارات</span>
+                      <span className="text-[10px] text-gray-500 font-mono">Real-time Feed</span>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                      {notifications.length > 0 ? (
+                        notifications.map((n) => (
+                          <div key={n.id} className="p-4 hover:bg-white/5 border-b border-gray-700/50 transition-colors group relative">
+                            {!n.read && <div className="absolute right-0 top-0 bottom-0 w-1 bg-primary-500" />}
+                            <div className="flex gap-3">
+                              <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${n.read ? 'bg-gray-600' : 'bg-primary-500 animate-pulse'}`} />
+                              <div>
+                                <h4 className="text-[13px] font-bold text-white font-cairo leading-tight">{n.title}</h4>
+                                <p className="text-[11px] text-gray-400 mt-1 font-cairo line-clamp-2">{n.msg}</p>
+                                <span className="text-[9px] text-primary-500/80 mt-2 block font-mono">{n.time}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-12 text-center space-y-3">
+                          <div className="w-12 h-12 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto">
+                            <Bell className="text-gray-600" size={24} />
+                          </div>
+                          <p className="text-xs text-gray-500 font-cairo">لا توجد إشعارات حالياً</p>
+                        </div>
+                      )}
+                    </div>
+                    {notifications.length > 0 && (
+                      <button
+                        className="w-full py-3 bg-black/20 text-[10px] text-gray-500 font-bold hover:text-white transition-colors border-t border-gray-700 font-cairo"
+                        onClick={() => {
+                          setShowNotifs(false);
+                          setNotifications([]);
+                        }}
+                      >
+                        مسح جميع الإشعارات
+                      </button>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleTheme}
-              className='p-2 rounded-full bg-dark-800 border border-gray-700 hover:border-primary-500 transition-colors duration-300'
+              className='p-2.5 rounded-xl bg-dark-800 border border-gray-700 text-gray-400 hover:border-primary-500 transition-all duration-300'
             >
               {isDark ? (
-                <Sun className='h-5 w-5 text-accent-500' />
+                <Sun size={20} className='text-accent-500' />
               ) : (
-                <Moon className='h-5 w-5 text-primary-500' />
+                <Moon size={20} className='text-primary-500' />
               )}
             </motion.button>
 
-            <div className='md:hidden'>
+            <div className='lg:hidden'>
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className='p-2 rounded-md text-gray-400 hover:text-white hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500'
+                className='p-2.5 rounded-xl text-gray-400 bg-dark-800 border border-gray-700 hover:text-white hover:border-primary-500 transition-all'
               >
-                {isOpen ? (
-                  <X className='h-6 w-6' />
-                ) : (
-                  <Menu className='h-6 w-6' />
-                )}
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
@@ -136,27 +218,31 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{
-          opacity: isOpen ? 1 : 0,
-          height: isOpen ? 'auto' : 0,
-        }}
-        transition={{ duration: 0.3 }}
-        className='md:hidden overflow-hidden'
-      >
-        <div className='px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-dark-900/95 backdrop-blur-md border-t border-gray-800'>
-          {navItems.map(item => (
-            <button
-              key={item.name}
-              onClick={() => scrollToSection(item.href)}
-              className='nav-link block px-3 py-2 text-base font-medium w-full text-right'
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
-      </motion.div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className='lg:hidden overflow-hidden bg-dark-900 shadow-2xl border-t border-gray-800'
+          >
+            <div className='px-4 pt-4 pb-6 space-y-2'>
+              {navItems.map(item => (
+                <button
+                  key={item.name}
+                  onClick={() => scrollToSection(item.href)}
+                  className={`block w-full text-right px-6 py-4 rounded-2xl text-base font-bold font-cairo transition-all ${item.isHighlight
+                    ? 'bg-primary-500 text-white shadow-lg'
+                    : 'text-gray-300 hover:bg-white/5 active:bg-white/10'
+                    }`}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };

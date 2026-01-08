@@ -26,6 +26,8 @@ const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
 const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
 const UserPortal = lazy(() => import('./components/platform/UserPortal'));
+const UIKitLibrary = lazy(() => import('./components/platform/UIKitLibrary'));
+const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -124,6 +126,16 @@ const AppContent = () => {
           />
 
           <Route
+            path='/uikit'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO title="مكتبة المكونات | عمر العديني" />
+                <UIKitLibrary />
+              </Suspense>
+            }
+          />
+
+          <Route
             path='/portal/login'
             element={
               <Suspense fallback={<LoadingFallback />}>
@@ -181,6 +193,9 @@ const AppContent = () => {
         </Routes>
       </AnimatePresence>
       {!isAdminPath && <Footer />}
+      <Suspense fallback={null}>
+        <AIAssistant />
+      </Suspense>
     </div>
   );
 };
