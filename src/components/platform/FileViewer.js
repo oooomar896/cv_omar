@@ -20,11 +20,18 @@ const FileViewer = ({ files: initialFiles, onDownload, qaReport }) => {
     const [saveStatus, setSaveStatus] = useState('');
 
     useEffect(() => {
-        setFiles(initialFiles);
-        setSelectedFile(Object.keys(initialFiles)[0]);
+        const hasFiles = initialFiles && Object.keys(initialFiles).length > 0;
+        if (hasFiles) {
+            setFiles(initialFiles);
+            setSelectedFile(Object.keys(initialFiles)[0]);
+        } else {
+            setFiles({});
+            setSelectedFile(null);
+        }
     }, [initialFiles]);
 
     const handleCodeChange = (e) => {
+        if (!selectedFile) return;
         const newCode = e.target.value;
         setFiles(prev => ({
             ...prev,
@@ -148,39 +155,50 @@ const FileViewer = ({ files: initialFiles, onDownload, qaReport }) => {
 
                 {/* Code Editor Body */}
                 <div className="lg:col-span-3 bg-dark-900 border border-gray-700 rounded-2xl overflow-hidden flex flex-col shadow-2xl group">
-                    <div className="p-4 border-b border-gray-800 bg-black/40 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="flex gap-1.5">
-                                <div className="w-3 h-3 rounded-full bg-red-500/40" />
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/40" />
-                                <div className="w-3 h-3 rounded-full bg-green-500/40" />
+                    {selectedFile ? (
+                        <>
+                            <div className="p-4 border-b border-gray-800 bg-black/40 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex gap-1.5">
+                                        <div className="w-3 h-3 rounded-full bg-red-500/40" />
+                                        <div className="w-3 h-3 rounded-full bg-yellow-500/40" />
+                                        <div className="w-3 h-3 rounded-full bg-green-500/40" />
+                                    </div>
+                                    <span className="text-xs font-mono text-primary-400 ml-4 font-bold">{selectedFile}</span>
+                                    {isEdited && <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" title="يوجد تعديلات غير محفوظة" />}
+                                </div>
+                                <div className="flex items-center gap-2 text-[10px] font-mono text-gray-600">
+                                    <span>Ln {(files[selectedFile] || '').split('\n').length}, Col 1</span>
+                                    <span>•</span>
+                                    <span>{selectedFile.split('.').pop()?.toUpperCase() || 'TXT'}</span>
+                                </div>
                             </div>
-                            <span className="text-xs font-mono text-primary-400 ml-4 font-bold">{selectedFile}</span>
-                            {isEdited && <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" title="يوجد تعديلات غير محفوظة" />}
-                        </div>
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-gray-600">
-                            <span>Ln {files[selectedFile]?.split('\n').length}, Col 1</span>
-                            <span>•</span>
-                            <span>{selectedFile.split('.').pop()?.toUpperCase()}</span>
-                        </div>
-                    </div>
 
-                    <div className="flex-grow relative bg-black/20">
-                        {/* Line Numbers Simulation */}
-                        <div className="absolute left-0 top-0 bottom-0 w-12 bg-black/40 border-r border-gray-800/50 flex flex-col items-center py-6 text-gray-700 font-mono text-[12px] select-none text-right pr-3 overflow-hidden">
-                            {Array.from({ length: Math.min(files[selectedFile]?.split('\n').length || 1, 100) }).map((_, i) => (
-                                <div key={i}>{i + 1}</div>
-                            ))}
-                        </div>
+                            <div className="flex-grow relative bg-black/20">
+                                {/* Line Numbers Simulation */}
+                                <div className="absolute left-0 top-0 bottom-0 w-12 bg-black/40 border-r border-gray-800/50 flex flex-col items-center py-6 text-gray-700 font-mono text-[12px] select-none text-right pr-3 overflow-hidden">
+                                    {Array.from({ length: Math.min((files[selectedFile] || '').split('\n').length || 1, 100) }).map((_, i) => (
+                                        <div key={i}>{i + 1}</div>
+                                    ))}
+                                </div>
 
-                        <textarea
-                            value={files[selectedFile] || ''}
-                            onChange={handleCodeChange}
-                            spellCheck={false}
-                            className="absolute inset-0 w-full h-full bg-transparent text-gray-300 p-6 pl-16 font-mono text-[14px] leading-relaxed resize-none outline-none focus:ring-1 focus:ring-primary-500/30 transition-shadow custom-scrollbar"
-                            placeholder="// اكتب الكود هنا..."
-                        />
-                    </div>
+                                <textarea
+                                    value={files[selectedFile] || ''}
+                                    onChange={handleCodeChange}
+                                    spellCheck={false}
+                                    className="absolute inset-0 w-full h-full bg-transparent text-gray-300 p-6 pl-16 font-mono text-[14px] leading-relaxed resize-none outline-none focus:ring-1 focus:ring-primary-500/30 transition-shadow custom-scrollbar"
+                                    placeholder="// اكتب الكود هنا..."
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <div className="flex items-center justify-center h-full text-gray-500">
+                            <div className="text-center">
+                                <Package size={48} className="mx-auto mb-4 opacity-50" />
+                                <p>لا يوجد ملف محدد للعرض</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
