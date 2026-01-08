@@ -226,6 +226,39 @@ const ManageRequests = () => {
                                     </div>
                                 )}
 
+                                {/* Status Management */}
+                                <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6 mb-6">
+                                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                        <CheckCircle2 size={20} className="text-emerald-500" />
+                                        <span>حالة المشروع العامة</span>
+                                    </h3>
+                                    <div className="flex gap-2">
+                                        {['pending_review', 'in_progress', 'completed', 'cancelled'].map((st) => (
+                                            <button
+                                                key={st}
+                                                onClick={async () => {
+                                                    try {
+                                                        await dataService.updateGeneratedProject(selectedRequest.id, { status: st });
+                                                        setToast({ show: true, message: 'تم تحديث حالة المشروع', type: 'success' });
+                                                        setSelectedRequest(prev => ({ ...prev, status: st }));
+                                                        setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, status: st } : r));
+                                                    } catch (e) {
+                                                        setToast({ show: true, message: 'فشل التحديث', type: 'error' });
+                                                    }
+                                                }}
+                                                className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${selectedRequest.status === st
+                                                    ? 'bg-primary-500 text-white border-primary-500'
+                                                    : 'bg-dark-900 text-gray-400 border-gray-800 hover:border-gray-600'
+                                                    }`}
+                                            >
+                                                {st === 'pending_review' ? 'قيد المراجعة' :
+                                                    st === 'in_progress' ? 'قيد التنفيذ' :
+                                                        st === 'completed' ? 'مكتمل' : 'ملغي'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {/* Stage Management */}
                                 <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6">
                                     <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
