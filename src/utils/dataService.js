@@ -928,6 +928,27 @@ class DataService {
         }
     }
 
+
+    // Analytics
+    async fetchPageVisits() {
+        try {
+            // Fetch last 30 days of visits
+            const { data, error } = await supabase
+                .from('page_visits')
+                .select('path, visitor_id, visited_at')
+                .gte('visited_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+
+            if (error) {
+                console.warn("Analytics fetch error:", error.message);
+                return [];
+            }
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching page visits:', error);
+            return [];
+        }
+    }
+
     // Utility
     resetToDefaults() {
         Object.keys(STORAGE_KEYS).forEach(k => {

@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-    AreaChart, Area, PieChart, Pie, Cell
+    AreaChart, Area, PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
-import { TrendingUp, Users, Cpu, Target, MessageSquare } from 'lucide-react';
+import { TrendingUp, Users, Cpu, Target, MessageSquare, Eye, Fingerprint } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import { systemAnalytics } from '../../utils/systemAnalytics';
 import { supabase } from '../../utils/supabaseClient';
@@ -14,16 +14,17 @@ const AnalyticsDashboard = () => {
     const [stats, setStats] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
-    useEffect(() => {
-        const loadAnalyticsData = async () => {
-            await Promise.all([
-                dataService.fetchUsers(),
-                dataService.fetchMessages(),
-                dataService.fetchGeneratedProjects()
-            ]);
-            setStats(systemAnalytics.getDashboardStats());
-        };
+    const loadAnalyticsData = async () => {
+        const [, , , pageVisits] = await Promise.all([
+            dataService.fetchUsers(),
+            dataService.fetchMessages(),
+            dataService.fetchGeneratedProjects(),
+            dataService.fetchPageVisits()
+        ]);
+        setStats(systemAnalytics.getDashboardStats(pageVisits));
+    };
 
+    useEffect(() => {
         loadAnalyticsData();
 
         // Real-time Subscription
@@ -34,8 +35,7 @@ const AnalyticsDashboard = () => {
                 { event: 'INSERT', schema: 'public', table: 'messages' },
                 async () => {
                     setToast({ show: true, message: '📩 رسالة جديدة وصلت!', type: 'success' });
-                    await dataService.fetchMessages(); // Refresh Data
-                    setStats(systemAnalytics.getDashboardStats()); // Recalculate Stats
+                    await loadAnalyticsData();
                 }
             )
             .on(
@@ -43,17 +43,16 @@ const AnalyticsDashboard = () => {
                 { event: 'INSERT', schema: 'public', table: 'leads' },
                 async () => {
                     setToast({ show: true, message: '👤 مستخدم جديد سجل في المنصة!', type: 'success' });
-                    await dataService.fetchUsers();
-                    setStats(systemAnalytics.getDashboardStats());
+                    await loadAnalyticsData();
                 }
             )
             .on(
                 'postgres_changes',
-                { event: 'INSERT', schema: 'public', table: 'generated_projects' },
+                { event: 'INSERT', schema: 'public', table: 'page_visits' },
                 async () => {
-                    setToast({ show: true, message: '🤖 تم إنشاء مشروع AI جديد!', type: 'success' });
-                    await dataService.fetchGeneratedProjects();
-                    setStats(systemAnalytics.getDashboardStats());
+                    // Update silently without toast for visits to avoid spam, or maybe just a subtle indicator
+                    // For now, we just reload the data to update the counters and charts live
+                    await loadAnalyticsData();
                 }
             )
             .subscribe();
@@ -92,6 +91,13 @@ const AnalyticsDashboard = () => {
             {/* Top Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
+                    title="الزيارات (آخر شهر)"
+                    value={stats.totalVisits}
+                    icon={Eye}
+                    color="text-emerald-500"
+                    desc="إجمالي مشاهدات الصفحات"
+                />
+                <StatCard
                     title="إجمالي المسجلين"
                     value={stats.totalUsers}
                     icon={Users}
@@ -112,12 +118,23 @@ const AnalyticsDashboard = () => {
                     color="text-orange-500"
                     desc={`${stats.unreadMessages} رسائل غير مقروءة`}
                 />
+            </div>
+
+            {/* Secondary Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <StatCard
                     title="معدل التحويل"
                     value={`${stats.conversionRate}%`}
                     icon={Target}
-                    color="text-emerald-500"
+                    color="text-yellow-500"
                     desc="زوار تحولوا لمستخدمين"
+                />
+                <StatCard
+                    title="زوار فريدين"
+                    value={stats.uniqueVisitors}
+                    icon={Fingerprint}
+                    color="text-teal-400"
+                    desc="عدد الأجهزة المختلفة"
                 />
             </div>
 
@@ -133,9 +150,9 @@ const AnalyticsDashboard = () => {
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={stats.last7Days}>
                                 <defs>
-                                    <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                    <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
@@ -145,7 +162,8 @@ const AnalyticsDashboard = () => {
                                     contentStyle={{ backgroundColor: '#171717', border: '1px solid #262626', borderRadius: '12px' }}
                                     itemStyle={{ fontFamily: 'Cairo' }}
                                 />
-                                <Area type="monotone" dataKey="projects" name="المشاريع" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+                                <Area type="monotone" dataKey="visits" name="الزيارات" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorVisits)" />
+                                <Area type="monotone" dataKey="projects" name="المشاريع" stroke="#8b5cf6" strokeWidth={3} fillOpacity={0} />
                                 <Area type="monotone" dataKey="messages" name="الرسائل" stroke="#f97316" strokeWidth={3} fillOpacity={0} />
                                 <Area type="monotone" dataKey="leads" name="المسجلين" stroke="#ec4899" strokeWidth={3} fillOpacity={0} />
                             </AreaChart>
@@ -153,11 +171,44 @@ const AnalyticsDashboard = () => {
                     </div>
                 </motion.div>
 
-                {/* Pie Chart - Distribution */}
+                {/* Top Pages */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
+                    className="bg-dark-900 border border-gray-800 rounded-3xl p-8 flex flex-col items-center"
+                >
+                    <h3 className="text-lg font-bold text-white mb-8 w-full">الصفحات الأكثر زيارة</h3>
+                    <div className="h-[300px] w-full text-xs">
+                        {stats.topPages.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    layout="vertical"
+                                    data={stats.topPages}
+                                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                                >
+                                    <XAxis type="number" stroke="#6b7280" hide />
+                                    <YAxis dataKey="path" type="category" width={100} stroke="#9ca3af" tick={{ fontSize: 10 }} />
+                                    <Tooltip
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{ backgroundColor: '#171717', border: '1px solid #262626', borderRadius: '12px' }}
+                                    />
+                                    <Bar dataKey="count" fill="#8b5cf6" radius={[0, 4, 4, 0]} barSize={20} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-gray-500">لا توجد بيانات كافية</div>
+                        )}
+
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Project Types Pie Chart (Moving to bottom row) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     className="bg-dark-900 border border-gray-800 rounded-3xl p-8 flex flex-col items-center"
                 >
                     <h3 className="text-lg font-bold text-white mb-8 w-full">توزيع أنواع المشاريع</h3>
@@ -181,14 +232,11 @@ const AnalyticsDashboard = () => {
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-                    <div className="mt-4 space-y-2 w-full">
+                    <div className="mt-4 flex flex-wrap gap-4 justify-center">
                         {pieData.map((d, i) => (
-                            <div key={i} className="flex justify-between items-center">
-                                <span className="text-gray-400 text-sm flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                                    {d.name}
-                                </span>
-                                <span className="text-white font-bold">{d.value}</span>
+                            <div key={i} className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                                <span className="text-gray-400 text-sm">{d.name} <span className="text-white font-bold">({d.value})</span></span>
                             </div>
                         ))}
                     </div>
