@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, CheckCircle, Download, PenTool, AlertCircle, ChevronLeft } from 'lucide-react';
+import { FileText, CheckCircle, Download, PenTool, AlertCircle, ChevronLeft, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { dataService } from '../../utils/dataService';
 import toast from 'react-hot-toast';
@@ -118,14 +118,21 @@ const ClientContracts = () => {
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-4">
-                                            <div className="text-right">
+                                            <div className="text-right hidden md:block">
                                                 <div className="text-xs text-gray-400 mb-1">تم التوقيع في</div>
                                                 <div className="text-xs font-mono text-emerald-400">{contract.signed_at || 'Maldia Platform'}</div>
                                             </div>
-                                            <button className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-2 cursor-default">
+                                            <button className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-2 cursor-default">
                                                 <CheckCircle size={18} />
-                                                <span className="text-sm font-bold">معتمد</span>
+                                                <span className="text-sm font-bold hidden md:inline">معتمد</span>
                                             </button>
+                                            <Link
+                                                to="/portal/finance"
+                                                className="px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-500/20 flex items-center gap-2 transition-all"
+                                            >
+                                                <CreditCard size={18} />
+                                                <span className="text-sm font-bold">سداد الدفعات</span>
+                                            </Link>
                                         </div>
                                     )}
                                 </div>
