@@ -547,17 +547,31 @@ class DataService {
     async loginAdmin(email, password) {
         // Secure login via Supabase only
         try {
-            const { data, error } = await supabase
+            // First check if user exists with this email
+            const { data: user, error } = await supabase
                 .from('admins')
                 .select('*')
                 .eq('email', email)
-                .eq('password', password) // Note: In production, password should be hashed and compared securely
                 .maybeSingle();
 
-            if (error) throw error;
-            if (!data) return null; // Invalid credentials
+            if (error) {
+                console.error('Database error checking admin:', error);
+                throw error;
+            }
 
-            return data;
+            if (!user) {
+                console.warn('Admin login failed: Email not found');
+                return null;
+            }
+
+            // Compare password (Trim both to avoid whitespace issues)
+            // Note: In a real production app with hashed passwords, this comparison would be different.
+            if (user.password && user.password.trim() === password.trim()) {
+                return user;
+            } else {
+                console.warn('Admin login failed: Password mismatch for', email);
+                return null;
+            }
         } catch (error) {
             console.error('Login error details:', error);
             throw error;
