@@ -31,12 +31,19 @@ const AdminLogin = () => {
             localStorage.setItem('admin_token', 'supabase_admin_session_active');
             localStorage.setItem('admin_user', JSON.stringify({ email: admin.email, role: admin.role }));
             toast.success('تم تسجيل الدخول بنجاح!');
-            navigate('/admin', { replace: true });
+
+            // Force redirection to ensure it works even if router state is stale
+            // We use setTimeout to allow the toast to be seen briefly
+            setTimeout(() => {
+                navigate('/admin', { replace: true });
+                // Fallback if navigate doesn't trigger
+                window.location.href = '/admin';
+            }, 500);
 
         } catch (error) {
             console.error("Login failed:", error);
             console.error("Error details:", error.message, error.code);
-            toast.error('خطأ في البريد الإلكتروني أو كلمة مور (أو خطأ في الاتصال).');
+            toast.error('خطأ في البريد الإلكتروني أو كلمة المرور (أو خطأ في الاتصال).');
             setIsLoading(false);
         }
     };
