@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import { motion } from 'framer-motion';
 import {
     LayoutDashboard,
@@ -7,7 +7,6 @@ import {
     CheckCircle,
     Clock,
     UploadCloud,
-    Settings,
     Bell,
     CreditCard
 } from 'lucide-react';

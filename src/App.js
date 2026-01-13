@@ -30,7 +30,6 @@ const ManageDomains = lazy(() => import('./components/admin/ManageDomains'));
 const ManageFinance = lazy(() => import('./components/admin/ManageFinance'));
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
 const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
-const UserPortal = lazy(() => import('./components/platform/UserPortal'));
 const ClientDashboard = lazy(() => import('./components/client_portal/ClientDashboard'));
 const UIKitLibrary = lazy(() => import('./components/platform/UIKitLibrary'));
 const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
