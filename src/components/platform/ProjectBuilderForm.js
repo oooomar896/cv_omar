@@ -153,21 +153,43 @@ const ProjectBuilderForm = () => {
     }, [generatedProject, formData.description]);
 
     const handleProcessingComplete = useCallback(async () => {
-        const result = await coderAgent.generateProject(formData);
-        const report = await qaAgent.reviewProject();
+        try {
+            // 1. استدعاء المعالج الذكي (AI Edge Function)
+            const { data: result, error } = await supabase.functions.invoke('generate-project-plan', {
+                body: {
+                    type: formData.type,
+                    description: formData.description,
+                    specificAnswers: formData.specificAnswers,
+                    agent: formData.agent
+                }
+            });
 
-        dataService.saveGeneratedProject(`proj_${Date.now()}`, {
-            userEmail: formData.email,
-            userName: formData.userName,
-            projectType: formData.type,
-            description: formData.description,
-            specificAnswers: formData.specificAnswers,
-            ...result
-        });
+            if (error) throw error;
+            if (result.error) throw new Error(result.error);
 
-        setGeneratedProject(result);
-        setQaReport(report);
-        setIsProcessing(false);
+            console.log("AI Generation Result:", result);
+
+            // 2. إنشاء تقرير الجودة (يمكن أيضاً نقله للسيرفر لاحقاً)
+            const report = await qaAgent.reviewProject();
+
+            // 3. حفظ المشروع في قاعدة البيانات
+            dataService.saveGeneratedProject(`proj_${Date.now()}`, {
+                userEmail: formData.email,
+                userName: formData.userName,
+                projectType: formData.type,
+                description: formData.description,
+                specificAnswers: formData.specificAnswers,
+                ...result
+            });
+
+            setGeneratedProject(result);
+            setQaReport(report);
+        } catch (err) {
+            console.error('AI Generation Failed:', err);
+            toast.error('حدث خطأ أثناء تحليل المشروع، يرجى المحاولة مرة أخرى.');
+        } finally {
+            setIsProcessing(false);
+        }
     }, [formData]);
 
     if (generatedProject) {
