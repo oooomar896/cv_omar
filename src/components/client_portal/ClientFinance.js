@@ -1,26 +1,83 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, DollarSign, CheckCircle, Clock, ChevronLeft, ShieldCheck, Download, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { supabase } from '../../utils/supabaseClient';
 
 const ClientFinance = () => {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [processingPayment, setProcessingPayment] = useState(false);
 
-    // Mock Data for Finance
-    const [invoices, setInvoices] = useState([
-        { id: 'INV-2024-001', title: 'الدفعة المقدمة - مشروع التجارة الإلكترونية', amount: 15000, date: '2024-01-05', status: 'paid', project: 'منصة التجارة الإلكترونية AI' },
-        { id: 'INV-2024-002', title: 'الدفعة الثانية - مرحلة التطوير', amount: 15000, date: '2024-02-01', status: 'pending', project: 'منصة التجارة الإلكترونية AI' },
-        { id: 'INV-2024-003', title: 'الدفعة النهائية - التسليم', amount: 15000, date: '2024-02-15', status: 'pending', project: 'منصة التجارة الإلكترونية AI' },
-    ]);
+    const [stats, setStats] = useState({ total: 0, paid: 0, remaining: 0 });
+    const [invoices, setInvoices] = useState([]);
 
-    const stats = {
-        total: 45000,
-        paid: 15000,
-        remaining: 30000
-    };
+    useEffect(() => {
+        const fetchFinances = async () => {
+            try {
+                const email = localStorage.getItem('portal_user');
+                if (!email) return;
+
+                const { data: projects, error } = await supabase
+                    .from('generated_projects')
+                    .select(`
+                        id,
+                        name,
+                        contracts (
+                            id,
+                            budget,
+                            status,
+                            created_at
+                        )
+                    `)
+                    .eq('user_email', email)
+                    .neq('status', 'draft');
+
+                if (error) throw error;
+
+                let calculatedTotal = 0;
+                let calculatedPaid = 0;
+                const generatedInvoices = [];
+
+                if (projects) {
+                    projects.forEach(p => {
+                        if (p.contracts && p.contracts.length > 0) {
+                            const contract = p.contracts[0];
+                            // Only count if budget exists
+                            if (contract.budget) {
+                                calculatedTotal += contract.budget;
+
+                                // Create a virtual invoice for the contract
+                                // Assuming 0 paid for now as we don't have payments table yet
+                                generatedInvoices.push({
+                                    id: `INV-${contract.id.substring(0, 6)}`,
+                                    title: `مستحقات عقد: ${p.name}`,
+                                    amount: contract.budget,
+                                    date: new Date(contract.created_at).toLocaleDateString('ar-SA'),
+                                    status: 'pending', // Default to pending
+                                    project: p.name
+                                });
+                            }
+                        }
+                    });
+                }
+
+                setStats({
+                    total: calculatedTotal,
+                    paid: calculatedPaid,
+                    remaining: calculatedTotal - calculatedPaid
+                });
+                setInvoices(generatedInvoices);
+
+            } catch (err) {
+                console.error('Error fetching finances:', err);
+                toast.error('حدث خطأ أثناء جلب البيانات المالية');
+            }
+        };
+
+        fetchFinances();
+    }, []);
 
     const handlePayClick = (invoice) => {
         setSelectedInvoice(invoice);
@@ -29,13 +86,22 @@ const ClientFinance = () => {
 
     const processPayment = () => {
         setProcessingPayment(true);
+        // Simulate payment process
         setTimeout(() => {
             setInvoices(current => current.map(inv =>
                 inv.id === selectedInvoice.id ? { ...inv, status: 'paid' } : inv
             ));
+
+            // Update stats locally for immediate feedback
+            setStats(prev => ({
+                ...prev,
+                paid: prev.paid + selectedInvoice.amount,
+                remaining: prev.remaining - selectedInvoice.amount
+            }));
+
             setProcessingPayment(false);
             setIsPaymentModalOpen(false);
-            toast.success(`تم سداد الفاتورة ${selectedInvoice.id} بنجاح!`);
+            toast.success(`تم سداد الفاتورة بنجاح!`);
         }, 2000);
     };
 

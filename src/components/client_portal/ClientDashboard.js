@@ -12,9 +12,13 @@ import {
 } from 'lucide-react';
 
 import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const ClientDashboard = () => {
     const navigate = useNavigate();
+    const [activeProjects, setActiveProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [userName, setUserName] = useState('');
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
@@ -23,27 +27,66 @@ const ClientDashboard = () => {
         navigate('/portal/login');
     };
 
-    // Mock Active Projects (List View)
-    const activeProjects = [
-        {
-            id: 101,
-            name: "منصة التجارة الإلكترونية AI",
-            progress: 65,
-            status: 'نشط',
-            type: 'Web Application',
-            nextMilestone: "إطلاق النسخة التجريبية",
-            dueDate: "2024-02-15"
-        },
-        {
-            id: 102,
-            name: "تطبيق توصيل طلبات - لوحة التحكم",
-            progress: 15,
-            status: 'تحليل',
-            type: 'Dashboard',
-            nextMilestone: "اعتماد وثيقة المتطلبات",
-            dueDate: "2024-03-01"
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                // Get user from local storage
+                const email = localStorage.getItem('portal_user');
+                if (!email) {
+                    navigate('/portal/login');
+                    return;
+                }
+                setUserName(email.split('@')[0]); // Simple fallback name
+
+                // Fetch Projects that are NOT just drafts (assuming 'approved' or has contract)
+                // We'll fetch all non-draft projects to let user see progress
+                const { data: projects, error } = await supabase
+                    .from('generated_projects')
+                    .select(`
+                        *,
+                        contracts (*)
+                    `)
+                    .eq('user_email', email)
+                    .neq('status', 'draft') // Show everything except initial drafts? Or only approved?
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Transform data for UI
+                const formattedProjects = projects.map(p => {
+                    const contract = p.contracts?.[0]; // Assuming one contract per project for now
+                    return {
+                        id: p.id,
+                        name: p.name || 'مشروع بدون عنوان',
+                        progress: p.status === 'completed' ? 100 : (p.status === 'approved' ? 20 : 5), // Rough estimate
+                        status: p.status,
+                        type: p.projectType || 'Web App',
+                        nextMilestone: getNextMilestone(p.status),
+                        dueDate: contract?.delivery_date || 'غير محدد'
+                    };
+                });
+
+                setActiveProjects(formattedProjects);
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, [navigate]);
+
+    const getNextMilestone = (status) => {
+        switch (status) {
+            case 'pending': return 'مراجعة الإدارة';
+            case 'approved': return 'توقيع العقد';
+            case 'contract_signed': return 'بدء التطوير';
+            case 'development': return 'التسليم الأولي';
+            case 'completed': return 'المشروع مكتمل';
+            default: return '---';
         }
-    ];
+    };
 
     return (
         <div className="min-h-screen bg-dark-900 text-white font-cairo" dir="rtl">

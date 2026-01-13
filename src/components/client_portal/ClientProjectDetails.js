@@ -2,45 +2,89 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-    LayoutDashboard,
     CheckCircle,
     Clock,
     CreditCard,
     ArrowRight
 } from 'lucide-react';
+import { supabase } from '../../utils/supabaseClient';
+import LiveCodeEditor from '../platform/LiveCodeEditor';
 
 const ClientProjectDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-
-    // Mock Data based on ID (Later fetched)
-    const projectData = {
-        name: "منصة التجارة الإلكترونية AI",
-        phase: "development",
-        progress: 65,
-        dueDate: "2024-02-15",
-        status: 'active',
-        timeline: [
-            { id: 1, title: 'تحليل المتطلبات', status: 'completed', date: '10 يناير' },
-            { id: 2, title: 'تصميم الواجهات UI/UX', status: 'completed', date: '20 يناير' },
-            { id: 3, title: 'تطوير النظام (Backend)', status: 'active', date: 'جاري العمل' },
-            { id: 4, title: 'ربط الواجهات (Frontend)', status: 'pending', date: '1 فبراير' },
-            { id: 5, title: 'الاختبار والتسليم', status: 'pending', date: '15 فبراير' },
-        ],
-        recentUpdates: [
-            { id: 1, type: 'dev', message: 'تم الانتهاء من تطوير قاعدة البيانات وتجهيز API المنتجات.', time: 'منذ ساعتين' },
-            { id: 2, type: 'design', message: 'تم اعتماد تصميم الصفحة الرئيسية من قبل فريق التصميم.', time: 'أمس' },
-            { id: 3, type: 'system', message: 'تم استلام الدفعة الثانية من المستحقات المالية.', time: 'منذ يومين' },
-        ]
-    };
+    const [projectData, setProjectData] = useState(null);
 
     useEffect(() => {
-        // Simulate fetch
-        setTimeout(() => setLoading(false), 500);
+        const fetchDetails = async () => {
+            try {
+                const email = localStorage.getItem('portal_user');
+                if (!email) {
+                    navigate('/portal/login');
+                    return;
+                }
+
+                // Fetch Project + Contract + Security Check
+                const { data: project, error } = await supabase
+                    .from('generated_projects')
+                    .select(`
+                        *,
+                        contracts (*)
+                    `)
+                    .eq('id', id)
+                    .eq('user_email', email) // Security: Ensure ownership
+                    .single();
+
+                if (error) throw error;
+
+                if (project) {
+                    const contract = project.contracts?.[0];
+                    const totalCost = contract?.budget || 0;
+                    const paidAmount = 0; // TODO: Fetch from verified transactions
+
+                    const mappedData = {
+                        ...project,
+                        name: project.name || 'مشروع بدون عنوان',
+                        status: project.status,
+                        progress: getProgress(project.status),
+                        dueDate: contract?.delivery_date || 'غير محدد',
+                        finance: {
+                            total: totalCost,
+                            paid: paidAmount,
+                            remaining: totalCost - paidAmount
+                        },
+                        // Generate a basic timeline
+                        timeline: [
+                            { id: 1, title: 'إنشاء الطلب', status: 'completed', date: new Date(project.created_at).toLocaleDateString('ar-SA') },
+                            { id: 2, title: 'مراجعة الإدارة', status: project.status === 'approved' || project.status === 'completed' || contract ? 'completed' : 'active', date: '-' },
+                            { id: 3, title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.status === 'approved' ? 'active' : 'pending'), date: '-' },
+                            { id: 4, title: 'التطوير والتنفيذ', status: project.status === 'development' ? 'active' : (project.status === 'completed' ? 'completed' : 'pending'), date: '-' },
+                            { id: 5, title: 'التسليم النهائي', status: project.status === 'completed' ? 'completed' : 'pending', date: contract?.delivery_date || '-' },
+                        ]
+                    };
+                    setProjectData(mappedData);
+                }
+            } catch (err) {
+                console.error('Error fetching project details:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDetails();
     }, [id]);
 
-    if (loading) return <div className="text-white text-center p-20">جاري تحميل التفاصيل...</div>;
+    const getProgress = (status) => {
+        if (status === 'completed') return 100;
+        if (status === 'development') return 60;
+        if (status === 'contract_signed') return 30;
+        if (status === 'approved') return 20;
+        return 10;
+    };
+
+    if (loading) return <div className="text-white text-center p-20">جاري تحميل البيانات...</div>;
+    if (!projectData) return <div className="text-white text-center p-20">لم يتم العثور على المشروع</div>;
 
     return (
         <div className="min-h-screen bg-dark-900 text-white font-cairo p-4 md:p-8" dir="rtl">
@@ -61,7 +105,7 @@ const ClientProjectDetails = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Content Area (Timeline & Status) */}
+                    {/* Main Content Area (Timeline & IDE) */}
                     <div className="lg:col-span-2 space-y-8">
 
                         {/* Project Pulse Card */}
@@ -70,20 +114,19 @@ const ClientProjectDetails = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="glass-card p-8 rounded-3xl relative overflow-hidden border border-white/5 bg-dark-800/50"
                         >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-50"></div>
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                                 <div>
                                     <div className="flex items-center gap-3 mb-2">
                                         <h2 className="text-2xl font-bold text-white">حالة المشروع</h2>
-                                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold animate-pulse">
-                                            نشط الآن
+                                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold">
+                                            {projectData.status}
                                         </span>
                                     </div>
-                                    <p className="text-gray-400 text-sm">المرحلة الحالية: <span className="text-white font-medium">تطوير النظام (Backend Development)</span></p>
+                                    <p className="text-gray-400 text-sm">مرحلة: <span className="text-white font-medium">{projectData.timeline.find(t => t.status === 'active')?.title || 'مكتمل'}</span></p>
                                 </div>
                                 <div className="text-left md:text-right">
                                     <div className="text-3xl font-black text-white mb-1">{projectData.progress}%</div>
-                                    <div className="text-xs text-gray-500 font-mono">نسبة الإنجاز الكلية</div>
+                                    <div className="text-xs text-gray-500 font-mono">الإنجاز</div>
                                 </div>
                             </div>
 
@@ -106,7 +149,6 @@ const ClientProjectDetails = () => {
                                             </div>
                                             <div className="text-center mt-3">
                                                 <div className={`text-xs font-bold mb-1 ${item.status === 'active' ? 'text-white' : 'text-gray-500'}`}>{item.title}</div>
-                                                <div className="text-[10px] text-gray-600 font-mono">{item.date}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -114,64 +156,44 @@ const ClientProjectDetails = () => {
                             </div>
                         </motion.div>
 
-                        {/* Recent Updates Feed */}
-                        <div className="glass-panel p-6 rounded-3xl border border-white/5 bg-dark-800/50">
-                            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                                <LayoutDashboard className="text-blue-400" size={20} />
-                                آخر التحديثات
-                            </h3>
-                            <div className="space-y-6">
-                                {projectData.recentUpdates.map((update, idx) => (
-                                    <motion.div
-                                        key={idx}
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: idx * 0.1 }}
-                                        className="flex gap-4 group"
-                                    >
-                                        <div className="flex flex-col items-center">
-                                            <div className="w-2 h-2 rounded-full bg-gray-700 group-hover:bg-primary-500 transition-colors mt-2"></div>
-                                            <div className="w-0.5 h-full bg-gray-800 my-1 group-last:hidden"></div>
-                                        </div>
-                                        <div className="pb-6 w-full">
-                                            <div className="bg-dark-800/50 p-4 rounded-2xl border border-white/5 group-hover:border-primary-500/20 transition-all hover:bg-dark-800">
-                                                <p className="text-gray-300 text-sm mb-2 leading-relaxed">{update.message}</p>
-                                                <div className="flex justify-between items-center text-xs text-gray-500">
-                                                    <span className="flex items-center gap-1"><Clock size={10} /> {update.time}</span>
-                                                    <span className={`px-2 py-0.5 rounded-full bg-gray-700/50 ${update.type === 'dev' ? 'text-blue-400' : update.type === 'design' ? 'text-pink-400' : 'text-green-400'}`}>
-                                                        {update.type === 'dev' ? 'تطوير' : update.type === 'design' ? 'تصميم' : 'نظام'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
+                        {/* Development Environment (IDE) - Only if Approved/In Progress */}
+                        {(projectData.status === 'approved' || projectData.status === 'development' || projectData.status === 'contract_signed' || projectData.status === 'completed') && (
+                            <div className="glass-panel p-1 rounded-3xl border border-white/5 bg-dark-800/50 overflow-hidden">
+                                <div className="p-4 border-b border-white/5 bg-dark-900/50 flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                    <span className="mr-4 text-xs font-mono text-gray-400">بيئة التطوير المباشرة</span>
+                                </div>
+                                <div className="h-[500px]">
+                                    <LiveCodeEditor project={projectData} readOnly={true} />
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Sidebar Area (Contract & Finance) */}
                     <div className="space-y-6">
 
-                        {/* Project Details */}
+                        {/* Financial Details */}
                         <div className="glass-panel p-6 rounded-3xl relative overflow-hidden border border-white/5 bg-dark-800/50">
-                            <h3 className="text-lg font-bold text-white mb-4">تفاصيل العقد</h3>
+                            <h3 className="text-lg font-bold text-white mb-4">تفاصيل العقد والمالية</h3>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center py-3 border-b border-white/5">
-                                    <span className="text-sm text-gray-500">تاريخ التسليم المتوقع</span>
+                                    <span className="text-sm text-gray-500">تاريخ التسليم</span>
                                     <span className="text-sm font-mono text-white bg-dark-800 px-2 py-1 rounded-lg border border-white/5">{projectData.dueDate}</span>
                                 </div>
                                 <div className="flex justify-between items-center py-3 border-b border-white/5">
                                     <span className="text-sm text-gray-500">التكلفة الإجمالية</span>
-                                    <span className="text-sm font-bold text-white">45,000 ر.س</span>
+                                    <span className="text-sm font-bold text-white">{projectData.finance.total.toLocaleString()} ر.س</span>
                                 </div>
                                 <div className="flex justify-between items-center py-3 border-b border-white/5">
                                     <span className="text-sm text-gray-500">المدفوع</span>
-                                    <span className="text-sm font-bold text-green-400">15,000 ر.س</span>
+                                    <span className="text-sm font-bold text-green-400">{projectData.finance.paid.toLocaleString()} ر.س</span>
                                 </div>
                                 <div className="flex justify-between items-center py-3">
                                     <span className="text-sm text-gray-500">المتبقي</span>
-                                    <span className="text-sm font-bold text-gray-300">30,000 ر.س</span>
+                                    <span className="text-sm font-bold text-gray-300">{projectData.finance.remaining.toLocaleString()} ر.س</span>
                                 </div>
                             </div>
                             <div className="mt-6">
