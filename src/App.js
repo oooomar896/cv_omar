@@ -32,6 +32,7 @@ const ManageContracts = lazy(() => import('./components/admin/ManageContracts'))
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
 const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
 const ClientDashboard = lazy(() => import('./components/client_portal/ClientDashboard'));
+const ClientProjectDetails = lazy(() => import('./components/client_portal/ClientProjectDetails'));
 const ClientContracts = lazy(() => import('./components/client_portal/ClientContracts'));
 const ClientRequests = lazy(() => import('./components/client_portal/ClientRequests'));
 const ClientFinance = lazy(() => import('./components/client_portal/ClientFinance'));
@@ -197,6 +198,18 @@ const AppContent = () => {
                 <SEO title="لوحة التحكم - بوابة العميل" />
                 <ProtectedRoute>
                   <ClientDashboard />
+                </ProtectedRoute>
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/portal/projects/:id'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO title="تفاصيل المشروع - بوابة العميل" />
+                <ProtectedRoute>
+                  <ClientProjectDetails />
                 </ProtectedRoute>
               </Suspense>
             }

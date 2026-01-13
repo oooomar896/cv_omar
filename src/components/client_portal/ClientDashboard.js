@@ -3,16 +3,17 @@ import { motion } from 'framer-motion';
 import { supabase } from '../../utils/supabaseClient';
 import {
     LayoutDashboard,
-    FileText,
     MessageSquare,
-    CheckCircle,
-    Clock,
     Bell,
     CreditCard,
-    LogOut
+    LogOut,
+    Briefcase,
+    ArrowRight,
+    Activity
 } from 'lucide-react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const ClientDashboard = () => {
     const navigate = useNavigate();
@@ -24,27 +25,26 @@ const ClientDashboard = () => {
         navigate('/portal/login');
     };
 
-    // Mock Data for Client Project
-    const projectStatus = {
-        name: "منصة التجارة الإلكترونية AI",
-        phase: "development", // planning, design, development, testing, delivery
-        progress: 65,
-        nextMilestone: "إطلاق النسخة التجريبية (Beta)",
-        dueDate: "2024-02-15"
-    };
-
-    const timeline = [
-        { id: 1, title: 'تحليل المتطلبات', status: 'completed', date: '10 يناير' },
-        { id: 2, title: 'تصميم الواجهات UI/UX', status: 'completed', date: '20 يناير' },
-        { id: 3, title: 'تطوير النظام (Backend)', status: 'active', date: 'جاري العمل' },
-        { id: 4, title: 'ربط الواجهات (Frontend)', status: 'pending', date: '1 فبراير' },
-        { id: 5, title: 'الاختبار والتسليم', status: 'pending', date: '15 فبراير' },
-    ];
-
-    const recentUpdates = [
-        { id: 1, type: 'dev', message: 'تم الانتهاء من تطوير قاعدة البيانات وتجهيز API المنتجات.', time: 'منذ ساعتين' },
-        { id: 2, type: 'design', message: 'تم اعتماد تصميم الصفحة الرئيسية من قبل فريق التصميم.', time: 'أمس' },
-        { id: 3, type: 'system', message: 'تم استلام الدفعة الثانية من المستحقات المالية.', time: 'منذ يومين' },
+    // Mock Active Projects (List View)
+    const activeProjects = [
+        {
+            id: 101,
+            name: "منصة التجارة الإلكترونية AI",
+            progress: 65,
+            status: 'نشط',
+            type: 'Web Application',
+            nextMilestone: "إطلاق النسخة التجريبية",
+            dueDate: "2024-02-15"
+        },
+        {
+            id: 102,
+            name: "تطبيق توصيل طلبات - لوحة التحكم",
+            progress: 15,
+            status: 'تحليل',
+            type: 'Dashboard',
+            nextMilestone: "اعتماد وثيقة المتطلبات",
+            dueDate: "2024-03-01"
+        }
     ];
 
     return (
@@ -82,126 +82,79 @@ const ClientDashboard = () => {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Welcome Section */}
-                <div className="mb-8 relative">
+                <div className="mb-10 relative">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
                     <h1 className="text-3xl font-bold mb-2">مرحباً، أحمد 👋</h1>
-                    <p className="text-gray-400">إليك نظرة عامة على سير العمل في مشروعك &quot;<span className="text-primary-400">{projectStatus.name}</span>&quot;.</p>
+                    <p className="text-gray-400">تابع تقدم مشاريعك الحالية والسابقة من هنا.</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Content Area (Timeline & Status) */}
-                    <div className="lg:col-span-2 space-y-8">
-
-                        {/* Project Pulse Card */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="glass-card p-8 rounded-3xl relative overflow-hidden"
-                        >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-50"></div>
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <h2 className="text-2xl font-bold text-white">حالة المشروع</h2>
-                                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold animate-pulse">
-                                            نشط الآن
-                                        </span>
-                                    </div>
-                                    <p className="text-gray-400 text-sm">المرحلة الحالية: <span className="text-white font-medium">تطوير النظام (Backend Development)</span></p>
-                                </div>
-                                <div className="text-left md:text-right">
-                                    <div className="text-3xl font-black text-white mb-1">{projectStatus.progress}%</div>
-                                    <div className="text-xs text-gray-500 font-mono">نسبة الإنجاز الكلية</div>
-                                </div>
-                            </div>
-
-                            {/* Timeline Visualization */}
-                            <div className="relative">
-                                {/* Connector Line */}
-                                <div className="absolute top-4 right-0 left-0 h-0.5 bg-gray-800 -z-10 rounded-full"></div>
-                                <div className="absolute top-4 right-0 left-0 h-0.5 bg-primary-500 -z-10 rounded-full" style={{ width: '40%' }}></div> {/* Dynamic width based on progress */}
-
-                                <div className="flex justify-between items-start w-full overflow-x-auto pb-4 gap-4 no-scrollbar">
-                                    {timeline.map((item, index) => (
-                                        <div key={item.id} className="flex flex-col items-center min-w-[100px] group cursor-default">
-                                            <div className={`w-9 h-9 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${item.status === 'completed' ? 'bg-primary-500 border-primary-900 text-white' :
-                                                item.status === 'active' ? 'bg-dark-900 border-primary-500 text-primary-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
-                                                    'bg-dark-800 border-gray-700 text-gray-600'
-                                                }`}>
-                                                {item.status === 'completed' ? <CheckCircle size={16} /> :
-                                                    item.status === 'active' ? <Clock size={16} className="animate-spin-slow" /> :
-                                                        <span className="text-xs font-mono">{index + 1}</span>}
-                                            </div>
-                                            <div className="text-center mt-3">
-                                                <div className={`text-xs font-bold mb-1 ${item.status === 'active' ? 'text-white' : 'text-gray-500'}`}>{item.title}</div>
-                                                <div className="text-[10px] text-gray-600 font-mono">{item.date}</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Recent Updates Feed */}
-                        <div className="glass-panel p-6 rounded-3xl">
-                            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                                <LayoutDashboard className="text-blue-400" size={20} />
-                                آخر التحديثات
-                            </h3>
-                            <div className="space-y-6">
-                                {recentUpdates.map((update, idx) => (
-                                    <motion.div
-                                        key={idx}
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: idx * 0.1 }}
-                                        className="flex gap-4 group"
-                                    >
-                                        <div className="flex flex-col items-center">
-                                            <div className="w-2 h-2 rounded-full bg-gray-700 group-hover:bg-primary-500 transition-colors mt-2"></div>
-                                            <div className="w-0.5 h-full bg-gray-800 my-1 group-last:hidden"></div>
-                                        </div>
-                                        <div className="pb-6 w-full">
-                                            <div className="bg-dark-800/50 p-4 rounded-2xl border border-white/5 group-hover:border-primary-500/20 transition-all hover:bg-dark-800">
-                                                <p className="text-gray-300 text-sm mb-2 leading-relaxed">{update.message}</p>
-                                                <div className="flex justify-between items-center text-xs text-gray-500">
-                                                    <span className="flex items-center gap-1"><Clock size={10} /> {update.time}</span>
-                                                    <span className={`px-2 py-0.5 rounded-full bg-gray-700/50 ${update.type === 'dev' ? 'text-blue-400' : update.type === 'design' ? 'text-pink-400' : 'text-green-400'}`}>
-                                                        {update.type === 'dev' ? 'تطوير' : update.type === 'design' ? 'تصميم' : 'نظام'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
+                    {/* Projects List */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="flex justify-between items-center mb-2">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                <Activity className="text-primary-500" /> المشاريع النشطة
+                            </h2>
                         </div>
+
+                        {activeProjects.map((project) => (
+                            <motion.div
+                                key={project.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-primary-500/30 transition-all group relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 left-0 w-1 h-full bg-primary-500"></div>
+                                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <h3 className="text-lg font-bold text-white group-hover:text-primary-400 transition-colors">
+                                                {project.name}
+                                            </h3>
+                                            <span className="px-2 py-0.5 bg-white/5 rounded text-xs text-gray-400 border border-white/10">{project.type}</span>
+                                        </div>
+                                        <div className="flex items-center gap-4 text-sm text-gray-400">
+                                            <span>الهدف القادم: <span className="text-gray-300">{project.nextMilestone}</span></span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-6 w-full md:w-auto">
+                                        <div className="text-center">
+                                            <div className="text-xs text-gray-500 mb-1">الإنجاز</div>
+                                            <div className="font-bold text-lg text-white font-mono">{project.progress}%</div>
+                                        </div>
+                                        <Link
+                                            to={`/portal/projects/${project.id}`}
+                                            className="px-6 py-3 bg-white/5 hover:bg-primary-500 hover:text-white rounded-xl text-sm font-bold transition-all flex items-center gap-2"
+                                        >
+                                            <span>عرض التفاصيل</span>
+                                            <ArrowRight size={16} />
+                                        </Link>
+                                    </div>
+                                </div>
+                                {/* Progress Bar Background */}
+                                <div className="absolute bottom-0 left-0 h-1 bg-white/5 w-full">
+                                    <div className="h-full bg-primary-500" style={{ width: `${project.progress}%` }}></div>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
 
-                    {/* Sidebar Area (Quick Actions & Files) */}
+                    {/* Quick Actions Sidebar */}
                     <div className="space-y-6">
-
-                        {/* Quick Actions */}
                         <div className="glass-panel p-6 rounded-3xl">
-                            <h3 className="text-lg font-bold text-white mb-4">إجراءات سريعة</h3>
+                            <h3 className="text-lg font-bold text-white mb-4">وصول سريع</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     onClick={() => navigate('/portal/requests')}
                                     className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all flex flex-col items-center gap-2 text-center group"
                                 >
-                                    <LayoutDashboard className="text-gray-400 group-hover:text-blue-400 transition-colors" size={24} />
-                                    <span className="text-xs font-medium text-gray-300">طلباتي</span>
+                                    <Briefcase className="text-gray-400 group-hover:text-blue-400 transition-colors" size={24} />
+                                    <span className="text-xs font-medium text-gray-300">طلبات جديدة</span>
                                 </button>
                                 <button className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-purple-500/10 hover:border-purple-500/30 transition-all flex flex-col items-center gap-2 text-center group">
                                     <MessageSquare className="text-gray-400 group-hover:text-purple-400 transition-colors" size={24} />
                                     <span className="text-xs font-medium text-gray-300">الدعم الفني</span>
-                                </button>
-                                <button
-                                    onClick={() => navigate('/portal/contracts')}
-                                    className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-red-500/10 hover:border-red-500/30 transition-all flex flex-col items-center gap-2 text-center group"
-                                >
-                                    <FileText className="text-gray-400 group-hover:text-red-400 transition-colors" size={24} />
-                                    <span className="text-xs font-medium text-gray-300">العقود</span>
                                 </button>
                                 <button
                                     onClick={() => navigate('/portal/finance')}
@@ -212,38 +165,6 @@ const ClientDashboard = () => {
                                 </button>
                             </div>
                         </div>
-
-                        {/* Project Details */}
-                        <div className="glass-panel p-6 rounded-3xl relative overflow-hidden">
-                            <h3 className="text-lg font-bold text-white mb-4">تفاصيل العقد</h3>
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center py-3 border-b border-white/5">
-                                    <span className="text-sm text-gray-500">تاريخ التسليم المتوقع</span>
-                                    <span className="text-sm font-mono text-white bg-dark-800 px-2 py-1 rounded-lg border border-white/5">{projectStatus.dueDate}</span>
-                                </div>
-                                <div className="flex justify-between items-center py-3 border-b border-white/5">
-                                    <span className="text-sm text-gray-500">التكلفة الإجمالية</span>
-                                    <span className="text-sm font-bold text-white">45,000 ر.س</span>
-                                </div>
-                                <div className="flex justify-between items-center py-3 border-b border-white/5">
-                                    <span className="text-sm text-gray-500">المدفوع</span>
-                                    <span className="text-sm font-bold text-green-400">15,000 ر.س</span>
-                                </div>
-                                <div className="flex justify-between items-center py-3">
-                                    <span className="text-sm text-gray-500">المتبقي</span>
-                                    <span className="text-sm font-bold text-gray-300">30,000 ر.س</span>
-                                </div>
-                            </div>
-                            <div className="mt-6">
-                                <button
-                                    onClick={() => navigate('/portal/finance')}
-                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-dark-900 font-bold text-sm shadow-lg shadow-primary-500/20 transition-all transform hover:scale-[1.02]"
-                                >
-                                    سداد دفعة مستحقة 💳
-                                </button>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </main>
