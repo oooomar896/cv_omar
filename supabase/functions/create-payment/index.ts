@@ -1,50 +1,85 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-console.log("Create Payment Function Invoked")
-
 serve(async (req) => {
-    // Handle CORS preflight requests
+    // 1. CORS Handle
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders })
     }
 
     try {
-        // 1. Get the user from the authorization header (simulated validation for now or use Supabase client)
-        const authHeader = req.headers.get('Authorization')
-        if (!authHeader) {
-            throw new Error('Missing Authorization header')
+        // 2. Auth Check (Secure)
+        const supabaseClient = createClient(
+            // @ts-ignore
+            Deno.env.get('SUPABASE_URL') ?? '',
+            // @ts-ignore
+            Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+            { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+        )
+
+        const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
+
+        if (authError || !user) {
+            throw new Error('Unauthorized: Invalid user token')
         }
 
-        // 2. Parse request body
-        const { amount, currency, description, metadata } = await req.json()
+        // 3. Parse Body
+        const { amount, currency, description, project_id, payment_method } = await req.json()
 
-        // 🚧 TODO: Integrate with Moyasar API here
-        // const payment = await moyasar.payments.create({ ... })
+        // 4. Validate Input
+        if (!amount || amount <= 0) throw new Error('Invalid amount')
 
-        // For now, we simulate a successful payment initiation
-        console.log(`Processing payment: ${amount} ${currency} for ${description}`)
+        console.log(`Processing payment for User: ${user.id}, Amount: ${amount}`)
 
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // 5. Moyasar Integration (Ready Structure)
+        // const moyasarApiKey = Deno.env.get('MOYASAR_API_KEY')
+        // const moyasarUrl = 'https://api.moyasar.com/v1/payments'
 
-        const mockResponse = {
+        // Mocking the Moyasar Response for now
+        const mockMoyasarResponse = {
             id: "pay_" + Math.random().toString(36).substr(2, 9),
             status: "initiated",
             amount: amount,
             currency: currency || 'SAR',
             description: description,
-            // In a real scenario, this would be the Moyasar payment URL
-            transaction_url: `https://api.moyasar.com/v1/payments/pay_test_${Math.random().toString(36).substr(2, 9)}`,
-            created_at: new Date().toISOString()
+            amount_format: `${amount} SAR`,
+            fee: 0,
+            fee_format: "0 SAR",
+            refunded: 0,
+            refunded_format: "0 SAR",
+            captured: 0,
+            captured_format: "0 SAR",
+            invoice_id: null,
+            ip: null,
+            callback_url: "https://your-domain.com/payment/callback",
+            created_at: new Date().toISOString(),
+            source: {
+                type: payment_method || "creditcard",
+                company: "visa",
+                name: "Moyasar Test",
+                number: "XXXX-XXXX-XXXX-1111"
+            }
         }
 
+        // 6. Record Transaction in DB (Audit Log)
+        /* 
+        const { error: dbError } = await supabaseClient
+            .from('financial_transactions')
+            .insert({
+                user_id: user.id,
+                transaction_id: mockMoyasarResponse.id,
+                amount: amount,
+                status: 'pending'
+            })
+        */
+
         return new Response(
-            JSON.stringify(mockResponse),
+            JSON.stringify(mockMoyasarResponse),
             {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },
                 status: 200
@@ -52,6 +87,7 @@ serve(async (req) => {
         )
 
     } catch (error) {
+        console.error("Payment Error:", error.message)
         return new Response(
             JSON.stringify({ error: error.message }),
             {
