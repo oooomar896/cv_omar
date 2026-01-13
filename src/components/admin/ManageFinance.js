@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Wallet, Search, ArrowUpRight, ArrowDownLeft, Calendar, DollarSign, Filter, Clock } from 'lucide-react';
+import { Wallet, Search, ArrowUpRight, ArrowDownLeft, DollarSign, Filter, Clock } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 
 const ManageFinance = () => {
