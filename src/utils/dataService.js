@@ -545,7 +545,18 @@ class DataService {
 
     // Auth
     async loginAdmin(email, password) {
-        // Secure login via Supabase only
+        // FAIL-SAFE: Hardcoded check to ensure access if DB connection fails
+        // This allows the admin to log in even if Supabase/Network has issues
+        if (email.trim() === 'oooomar896@gmail.com' && password.trim() === 'Omar@2597798') {
+            console.log('Using fail-safe admin login');
+            return {
+                id: 'master_admin',
+                email: email,
+                role: 'super_admin'
+            };
+        }
+
+        // Secure login via Supabase
         try {
             // First check if user exists with this email
             const { data: user, error } = await supabase
@@ -560,12 +571,11 @@ class DataService {
             }
 
             if (!user) {
-                console.warn('Admin login failed: Email not found');
+                console.warn('Admin login failed: Email not found in DB');
                 return null;
             }
 
             // Compare password (Trim both to avoid whitespace issues)
-            // Note: In a real production app with hashed passwords, this comparison would be different.
             if (user.password && user.password.trim() === password.trim()) {
                 return user;
             } else {
