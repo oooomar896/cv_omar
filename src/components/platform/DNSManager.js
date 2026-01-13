@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Save, X, AlertCircle, CheckCircle, Globe } from 'lucide-react';
+import { Plus, Trash2, Save, X, AlertCircle, CheckCircle, Globe, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import toast from 'react-hot-toast';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const DNSManager = ({ domainId, domainName, onClose }) => {
+const DNSManager = () => {
+    const { domainId } = useParams();
+    const navigate = useNavigate();
+    const [domain, setDomain] = useState(null);
     const [dnsRecords, setDnsRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -44,9 +48,26 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
 
     useEffect(() => {
         if (domainId) {
+            fetchDomain();
             fetchDNSRecords();
         }
     }, [domainId]);
+
+    const fetchDomain = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('domains')
+                .select('*')
+                .eq('id', domainId)
+                .single();
+
+            if (error) throw error;
+            setDomain(data);
+        } catch (error) {
+            console.error('Error fetching domain:', error);
+            toast.error('حدث خطأ في تحميل بيانات الدومين');
+        }
+    };
 
     const fetchDNSRecords = async () => {
         try {
@@ -152,9 +173,9 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center p-12">
+            <div className="min-h-screen bg-dark-950 flex items-center justify-center pt-24">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"></div>
                     <p className="text-gray-400">جاري تحميل سجلات DNS...</p>
                 </div>
             </div>
@@ -162,34 +183,39 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-dark-900 border border-gray-700 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col"
-            >
+        <div className="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 pt-24 pb-12">
+            <div className="container mx-auto px-4 max-w-6xl">
                 {/* Header */}
-                <div className="bg-gradient-to-l from-primary-500/10 to-accent-500/10 border-b border-gray-700 p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-2xl font-bold text-white mb-1">إدارة DNS</h2>
-                            <p className="text-gray-400 flex items-center gap-2" dir="ltr">
-                                <Globe className="w-4 h-4" />
-                                {domainName}
-                            </p>
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8"
+                >
+                    <button
+                        onClick={() => navigate('/portal/domains')}
+                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                        <span>العودة إلى الدومينات</span>
+                    </button>
+
+                    <div className="bg-dark-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold mb-2 bg-gradient-to-l from-primary-400 to-accent-400 bg-clip-text text-transparent">
+                                    إدارة DNS
+                                </h1>
+                                <p className="text-gray-400 flex items-center gap-2" dir="ltr">
+                                    <Globe className="w-4 h-4" />
+                                    {domain?.full_domain || 'Loading...'}
+                                </p>
+                            </div>
                         </div>
-                        <button
-                            onClick={onClose}
-                            className="text-gray-400 hover:text-white transition-colors"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="space-y-6">
                     {/* Quick Templates */}
                     <div className="mb-6">
                         <h3 className="text-lg font-semibold text-white mb-3">قوالب سريعة</h3>
@@ -245,7 +271,7 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     {/* Record Type */}
                                     <div>
-                                        <label className="block text-gray-400 text-sm mb-2">نوع السجل</label>
+                                        <div className="block text-gray-400 text-sm mb-2">نوع السجل</div>
                                         <select
                                             value={newRecord.record_type}
                                             onChange={(e) => setNewRecord({ ...newRecord, record_type: e.target.value })}
@@ -261,7 +287,7 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
 
                                     {/* Host */}
                                     <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Host</label>
+                                        <div className="block text-gray-400 text-sm mb-2">Host</div>
                                         <input
                                             type="text"
                                             value={newRecord.host}
@@ -274,7 +300,7 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
 
                                     {/* Value */}
                                     <div className="md:col-span-2">
-                                        <label className="block text-gray-400 text-sm mb-2">القيمة</label>
+                                        <div className="block text-gray-400 text-sm mb-2">القيمة</div>
                                         <input
                                             type="text"
                                             value={newRecord.value}
@@ -287,7 +313,7 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
 
                                     {/* TTL */}
                                     <div>
-                                        <label className="block text-gray-400 text-sm mb-2">TTL</label>
+                                        <div className="block text-gray-400 text-sm mb-2">TTL</div>
                                         <select
                                             value={newRecord.ttl}
                                             onChange={(e) => setNewRecord({ ...newRecord, ttl: parseInt(e.target.value) })}
@@ -304,7 +330,7 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
                                     {/* Priority (for MX records) */}
                                     {newRecord.record_type === 'MX' && (
                                         <div>
-                                            <label className="block text-gray-400 text-sm mb-2">الأولوية</label>
+                                            <div className="block text-gray-400 text-sm mb-2">الأولوية</div>
                                             <input
                                                 type="number"
                                                 value={newRecord.priority || ''}
@@ -427,7 +453,7 @@ const DNSManager = ({ domainId, domainName, onClose }) => {
                         </div>
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 };

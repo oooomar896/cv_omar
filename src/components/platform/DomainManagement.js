@@ -12,12 +12,14 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const DomainManagement = () => {
     const [domains, setDomains] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // all, active, expiring, expired
     const [websites, setWebsites] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchDomains();
@@ -380,6 +382,7 @@ const DomainManagement = () => {
                                                 </button>
 
                                                 <button
+                                                    onClick={() => navigate(`/domains/dns/${domain.id}`)}
                                                     className="bg-dark-700/50 hover:bg-dark-600/50 text-gray-300 px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 border border-gray-600/30"
                                                 >
                                                     <Settings className="w-4 h-4" />

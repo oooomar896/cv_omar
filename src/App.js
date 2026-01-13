@@ -34,6 +34,7 @@ const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
 const DomainSearch = lazy(() => import('./components/platform/DomainSearch'));
 const DomainManagement = lazy(() => import('./components/platform/DomainManagement'));
 const DomainCheckout = lazy(() => import('./components/platform/DomainCheckout'));
+const DNSManager = lazy(() => import('./components/platform/DNSManager'));
 const ProtectedRoute = lazy(() => import('./components/common/ProtectedRoute'));
 
 // Loading component
@@ -198,6 +199,21 @@ const AppContent = () => {
                   description="أكمل عملية شراء الدومينات الخاصة بك"
                 />
                 <DomainCheckout />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/domains/dns/:domainId'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO
+                  title="إدارة DNS | باكورة أعمال"
+                  description="إدارة سجلات DNS للدومين الخاص بك"
+                />
+                <ProtectedRoute>
+                  <DNSManager />
+                </ProtectedRoute>
               </Suspense>
             }
           />
