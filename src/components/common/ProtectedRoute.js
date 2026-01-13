@@ -1,25 +1,45 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';
 
 const ProtectedRoute = ({ children }) => {
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const location = useLocation(); // We need to switch logic based on path
 
     useEffect(() => {
-        checkUser();
-    }, []);
+        const checkAuth = async () => {
+            // 1. Check if it's an Admin Route
+            if (location.pathname.startsWith('/admin')) {
+                const adminToken = localStorage.getItem('admin_token');
+                // Simple verify for now (could be enhanced)
+                if (adminToken === 'supabase_admin_session_active') {
+                    setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
+                }
+                setLoading(false);
+                return;
+            }
 
-    const checkUser = async () => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            setUser(user);
-        } catch (error) {
-            console.error('Error checking user:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            // 2. Otherwise, check Supabase User (Client Portal)
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
+                }
+            } catch (error) {
+                console.error('Error checking user:', error);
+                setIsAuthenticated(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, [location.pathname]);
 
     if (loading) {
         return (
@@ -32,8 +52,13 @@ const ProtectedRoute = ({ children }) => {
         );
     }
 
-    if (!user) {
-        return <Navigate to="/portal/login" replace />;
+    if (!isAuthenticated) {
+        // Redirect based on intended destination
+        if (location.pathname.startsWith('/admin')) {
+            return <Navigate to="/admin/login" replace />;
+        } else {
+            return <Navigate to="/portal/login" replace />;
+        }
     }
 
     return children;
