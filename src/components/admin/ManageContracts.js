@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Search, Filter, CheckCircle, Clock } from 'lucide-react';
+import { FileText, Search, CheckCircle, Clock } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import toast from 'react-hot-toast';
 
@@ -108,8 +108,8 @@ const ManageContracts = () => {
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${filter === f
-                                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
-                                    : 'bg-dark-950 text-gray-400 hover:text-white border border-gray-800'
+                                ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                                : 'bg-dark-950 text-gray-400 hover:text-white border border-gray-800'
                                 }`}
                         >
                             {f === 'all' ? 'الكل' : f === 'signed' ? 'موقعة' : 'معلقة'}

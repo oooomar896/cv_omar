@@ -6,7 +6,6 @@ import {
     MessageSquare,
     CheckCircle,
     Clock,
-    UploadCloud,
     Bell,
     CreditCard
 } from 'lucide-react';

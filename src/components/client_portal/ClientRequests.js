@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutList, Plus, Search, ChevronLeft, Clock, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { LayoutList, Plus, Search, ChevronLeft, Clock, CheckCircle, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { dataService } from '../../utils/dataService';
 
@@ -33,32 +33,33 @@ const ClientRequests = () => {
     ];
 
     useEffect(() => {
-        loadRequests();
-    }, []);
+        const fetchRequests = async () => {
+            setLoading(true);
+            // Try to get logged in user email
+            const userEmail = localStorage.getItem('portal_user');
 
-    const loadRequests = async () => {
-        setLoading(true);
-        // Try to get logged in user email
-        const userEmail = localStorage.getItem('portal_user');
-
-        if (userEmail) {
-            try {
-                const realData = await dataService.fetchUserProjects(userEmail);
-                if (realData && realData.length > 0) {
-                    setRequests(realData);
-                } else {
-                    // Use Mock if empty for demo feeling
+            if (userEmail) {
+                try {
+                    const realData = await dataService.fetchUserProjects(userEmail);
+                    if (realData && realData.length > 0) {
+                        setRequests(realData);
+                    } else {
+                        // Use Mock if empty for demo feeling
+                        setRequests(MOCK_DATA);
+                    }
+                } catch (err) {
+                    console.error("Failed to load requests", err);
                     setRequests(MOCK_DATA);
                 }
-            } catch (err) {
-                console.error("Failed to load requests", err);
+            } else {
                 setRequests(MOCK_DATA);
             }
-        } else {
-            setRequests(MOCK_DATA);
-        }
-        setLoading(false);
-    };
+            setLoading(false);
+        };
+
+        fetchRequests();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const getStatusBadge = (status) => {
         switch (status) {
