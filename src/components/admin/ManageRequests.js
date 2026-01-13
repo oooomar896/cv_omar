@@ -74,19 +74,6 @@ const ManageRequests = () => {
         return match ? match[1].trim() : null;
     };
 
-    const updateStage = async (newStage) => {
-        if (!selectedRequest) return;
-        try {
-            await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: newStage });
-            toast.success('تم تحديث مرحلة المشروع بنجاح');
-
-            // Update local state
-            setSelectedRequest(prev => ({ ...prev, project_stage: newStage }));
-            setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, project_stage: newStage } : r));
-        } catch (error) {
-            toast.error('فشل تحديث المرحلة');
-        }
-    };
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -301,7 +288,19 @@ const ManageRequests = () => {
                                                         onClick={async () => {
                                                             try {
                                                                 await dataService.updateGeneratedProject(selectedRequest.id, { status: st });
-                                                                toast.success('تم تحديث حالة المتشروع');
+
+                                                                // Send Notification to Client
+                                                                await dataService.sendNotification({
+                                                                    user_email: selectedRequest.user_email,
+                                                                    title: 'تحديث حالة المشروع 📢',
+                                                                    message: `تم تحديث حالة مشروعك (${selectedRequest.project_name}) إلى: ${st === 'pending_review' ? 'قيد المراجعة' :
+                                                                        st === 'in_progress' ? 'قيد التنفيذ' :
+                                                                            st === 'completed' ? 'مكتمل' : 'ملغي'
+                                                                        }`,
+                                                                    type: st === 'completed' ? 'success' : 'info'
+                                                                });
+
+                                                                toast.success('تم تحديث حالة المتشروع وإشعار العميل');
                                                                 setSelectedRequest(prev => ({ ...prev, status: st }));
                                                                 setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, status: st } : r));
                                                             } catch (e) {
@@ -322,30 +321,65 @@ const ManageRequests = () => {
                                         </div>
 
                                         <div className="bg-dark-800 border border-gray-700 rounded-2xl p-5">
-                                            <h3 className="text-sm font-bold text-white mb-4">العقود</h3>
-                                            <button
-                                                onClick={async () => {
-                                                    if (!window.confirm('هل أنت متأكد من إصدار عقد لهذا المشروع؟')) return;
-                                                    try {
-                                                        await dataService.createContract({
-                                                            user_email: selectedRequest.user_email,
-                                                            project_id: selectedRequest.id,
-                                                            title: `عقد تنفيذ مشروع: ${selectedRequest.project_name}`,
-                                                            project: selectedRequest.project_name,
-                                                            amount: '50,000 SAR',
-                                                            date: new Date().toISOString().split('T')[0]
-                                                        });
-                                                        toast.success('تم إصدار العقد وربطه بحساب العميل');
-                                                    } catch (e) {
-                                                        console.error(e);
-                                                        toast.error('حدث خطأ أثناء إصدار العقد');
-                                                    }
-                                                }}
-                                                className="w-full py-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center gap-2 transition-all font-bold text-sm"
-                                            >
-                                                <FileText size={16} />
-                                                <span>إصدار عقد جديد</span>
-                                            </button>
+                                            <h3 className="text-sm font-bold text-white mb-4">العقود والمالية</h3>
+                                            <div className="space-y-3">
+                                                <button
+                                                    onClick={async () => {
+                                                        const amount = window.prompt('أدخل قيمة العقد (مثلاً: 5,000 SAR):', '5,000 SAR');
+                                                        if (!amount) return;
+                                                        try {
+                                                            await dataService.createContract({
+                                                                user_email: selectedRequest.user_email,
+                                                                project_id: selectedRequest.id,
+                                                                title: `عقد تنفيذ مشروع: ${selectedRequest.project_name}`,
+                                                                project: selectedRequest.project_name,
+                                                                amount: amount,
+                                                                body: `هذا العقد ملزم لتنفيذ مشروع ${selectedRequest.project_name} المتفق عليه...`
+                                                            });
+
+                                                            // Notify User
+                                                            await dataService.sendNotification({
+                                                                user_email: selectedRequest.user_email,
+                                                                title: 'عقد جديد في انتظارك 📄',
+                                                                message: `تم إصدار عقد لمشروعك بقيمة ${amount}. يرجى المراجعة والتوقيع.`,
+                                                                type: 'warning',
+                                                                link: '/portal/contracts'
+                                                            });
+
+                                                            toast.success('تم إصدار العقد وإشعار العميل');
+                                                        } catch (e) {
+                                                            console.error(e);
+                                                            toast.error('حدث خطأ أثناء إصدار العقد');
+                                                        }
+                                                    }}
+                                                    className="w-full py-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center gap-2 transition-all font-bold text-xs"
+                                                >
+                                                    <FileText size={16} />
+                                                    <span>إصدار عقد جديد</span>
+                                                </button>
+
+                                                <button
+                                                    onClick={async () => {
+                                                        const amount = window.prompt('أدخل قيمة الفاتورة (أرقام فقط):', '1000');
+                                                        if (!amount) return;
+                                                        try {
+                                                            await dataService.createInvoice({
+                                                                project_id: selectedRequest.id,
+                                                                user_email: selectedRequest.user_email,
+                                                                amount: parseFloat(amount),
+                                                                due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+                                                            });
+                                                            toast.success('تم إصدار الفاتورة وإشعار العميل بنجاح');
+                                                        } catch (e) {
+                                                            toast.error('فشل إصدار الفاتورة');
+                                                        }
+                                                    }}
+                                                    className="w-full py-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-2 transition-all font-bold text-xs"
+                                                >
+                                                    <Smartphone size={16} />
+                                                    <span>إصدار فاتورة دفع</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -358,7 +392,26 @@ const ManageRequests = () => {
                                                 return (
                                                     <button
                                                         key={stage.id}
-                                                        onClick={() => updateStage(stage.id)}
+                                                        onClick={async () => {
+                                                            try {
+                                                                await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: stage.id });
+
+                                                                // Notify Client
+                                                                await dataService.sendNotification({
+                                                                    user_email: selectedRequest.user_email,
+                                                                    title: 'تقدم في المشروع! 🚀',
+                                                                    message: `انتقل مشروعك (${selectedRequest.project_name}) إلى مرحلة: ${stage.label}`,
+                                                                    type: 'success',
+                                                                    link: `/portal/project/${selectedRequest.id}`
+                                                                });
+
+                                                                toast.success(`تم التحديث لمرحلة ${stage.label}`);
+                                                                setSelectedRequest(prev => ({ ...prev, project_stage: stage.id }));
+                                                                setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, project_stage: stage.id } : r));
+                                                            } catch (e) {
+                                                                toast.error('فشل تحديث المرحلة');
+                                                            }
+                                                        }}
                                                         className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between group ${isCurrent
                                                             ? 'bg-primary-500/10 border-primary-500 text-primary-400'
                                                             : 'bg-dark-900 border-gray-800 text-gray-500 hover:border-gray-600'

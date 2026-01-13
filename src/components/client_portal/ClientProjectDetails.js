@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import LiveCodeEditor from '../platform/LiveCodeEditor';
+import ProjectChat from '../platform/ProjectChat';
 
 const ClientProjectDetails = () => {
     const { id } = useParams();
@@ -164,7 +165,7 @@ const ClientProjectDetails = () => {
                                         className="flex items-start gap-6 relative"
                                     >
                                         <div className={`mt-1 w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 transition-colors shadow-lg ${item.status === 'completed' ? 'bg-emerald-500 text-dark-900' :
-                                                item.status === 'active' ? 'bg-primary-500 text-dark-900 animate-pulse' : 'bg-dark-900 border border-white/10 text-gray-600'
+                                            item.status === 'active' ? 'bg-primary-500 text-dark-900 animate-pulse' : 'bg-dark-900 border border-white/10 text-gray-600'
                                             }`}>
                                             {item.status === 'completed' ? <CheckCircle size={18} /> : (idx + 1)}
                                         </div>
@@ -242,29 +243,37 @@ const ClientProjectDetails = () => {
 
                 {/* Live Editor Section */}
                 {(projectData.status === 'approved' || projectData.status === 'development' || projectData.status === 'contract_signed' || projectData.status === 'completed') && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="glass-panel rounded-[3rem] border border-white/5 bg-dark-800/40 overflow-hidden shadow-2xl relative mb-12"
-                    >
-                        <div className="p-6 border-b border-white/5 bg-dark-900/50 flex items-center justify-between">
-                            <div className="flex items-center gap-6">
-                                <div className="flex gap-1.5">
-                                    <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                                    <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                                    <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                        {/* Chat Section */}
+                        <div className="lg:col-span-1 h-[600px]">
+                            <ProjectChat project={projectData} userRole="client" />
+                        </div>
+
+                        {/* Code Editor Section */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="lg:col-span-2 glass-panel rounded-[3rem] border border-white/5 bg-dark-800/40 overflow-hidden shadow-2xl relative"
+                        >
+                            <div className="p-6 border-b border-white/5 bg-dark-900/50 flex items-center justify-between">
+                                <div className="flex items-center gap-6">
+                                    <div className="flex gap-1.5">
+                                        <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                        <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                        <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                                    </div>
+                                    <div className="h-4 w-[1px] bg-white/10"></div>
+                                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Live Development Environment</span>
                                 </div>
-                                <div className="h-4 w-[1px] bg-white/10"></div>
-                                <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Live Development Environment v2.0</span>
+                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-[10px] font-bold text-primary-400 font-mono uppercase">
+                                    Real-time View
+                                </div>
                             </div>
-                            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-[10px] font-bold text-primary-400 font-mono uppercase">
-                                Read-Only
+                            <div className="h-[calc(100%-80px)] relative group">
+                                <LiveCodeEditor project={projectData} readOnly={true} />
                             </div>
-                        </div>
-                        <div className="h-[600px] relative group">
-                            <LiveCodeEditor project={projectData} readOnly={true} />
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    </div>
                 )}
             </div>
         </div>

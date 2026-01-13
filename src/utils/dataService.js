@@ -690,9 +690,16 @@ class DataService {
 
     async sendProjectMessage(messageData) {
         try {
+            const payload = {
+                project_id: messageData.project_id,
+                sender_email: messageData.sender_email,
+                sender_role: messageData.sender_role,
+                text: messageData.text
+            };
+
             const { data, error } = await supabase
                 .from('project_messages')
-                .insert([messageData])
+                .insert([payload])
                 .select()
                 .single();
 
@@ -1147,6 +1154,14 @@ class DataService {
 
     async signContract(id) {
         try {
+            const { data: contract, error: fetchError } = await supabase
+                .from('contracts')
+                .select('project_id, user_email, title')
+                .eq('id', id)
+                .single();
+
+            if (fetchError) throw fetchError;
+
             const { error } = await supabase
                 .from('contracts')
                 .update({
@@ -1156,17 +1171,138 @@ class DataService {
                 .eq('id', id);
 
             if (error) throw error;
+
+            // If contract is linked to a project, update project stage
+            if (contract.project_id) {
+                await this.updateGeneratedProject(contract.project_id, {
+                    project_stage: 'dev',
+                    status: 'in_progress'
+                });
+            }
+
+            // Real-time Notification for Admin
+            await this.sendNotification({
+                user_email: 'oooomar896@gmail.com',
+                title: 'توقيع عقد جديد ✍️',
+                message: `قام العميل بتوقيع العقد: ${contract.title}`,
+                type: 'success'
+            });
+
             this.logActivity('update', `تم توقيع العقد #${id}`);
             return true;
         } catch (err) {
             console.error('Error signing contract:', err);
-            // Fallback Mock
-            const contracts = this._get('omar_contracts', []);
-            const updated = contracts.map(c =>
-                c.id === id ? { ...c, status: 'signed', signed_at: new Date().toISOString() } : c
-            );
-            this._set('omar_contracts', updated);
-            return true;
+            return false;
+        }
+    }
+
+    // --- Invoices & Finance (Real Database) ---
+    async fetchInvoices(email) {
+        try {
+            let query = supabase
+                .from('invoices')
+                .select('*, generated_projects(project_name)')
+                .order('created_at', { ascending: false });
+
+            if (email) {
+                query = query.eq('user_email', email);
+            }
+
+            const { data, error } = await query;
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+            return [];
+        }
+    }
+
+    async createInvoice(invoiceData) {
+        try {
+            const { data, error } = await supabase
+                .from('invoices')
+                .insert([{
+                    project_id: invoiceData.project_id,
+                    user_email: invoiceData.user_email,
+                    amount: invoiceData.amount,
+                    currency: invoiceData.currency || 'SAR',
+                    status: 'unpaid',
+                    due_date: invoiceData.due_date
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // Notify Client
+            await this.sendNotification({
+                user_email: invoiceData.user_email,
+                title: 'فاتورة جديدة 🧾',
+                message: `تم إصدار فاتورة جديدة بقيمة ${invoiceData.amount} SAR لمشروعك.`,
+                type: 'warning',
+                link: '/portal/finance'
+            });
+
+            return data;
+        } catch (error) {
+            console.error('Error creating invoice:', error);
+            throw error;
+        }
+    }
+
+    // --- Real-time Notifications (Supabase) ---
+    async fetchNotifications(email) {
+        try {
+            const { data, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('user_email', email)
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            return [];
+        }
+    }
+
+    async sendNotification(notif) {
+        try {
+            const { data, error } = await supabase
+                .from('notifications')
+                .insert([{
+                    user_email: notif.user_email,
+                    title: notif.title,
+                    message: notif.message,
+                    type: notif.type || 'info',
+                    link: notif.link,
+                    read: false
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // Still dispatch local event for immediate UI update if user is current
+            window.dispatchEvent(new CustomEvent('new_notification', { detail: data }));
+            return data;
+        } catch (error) {
+            console.error('Error sending notification:', error);
+            // Fallback to local
+            this.addNotification(notif);
+        }
+    }
+
+    async markNotificationRead(id) {
+        try {
+            await supabase
+                .from('notifications')
+                .update({ read: true })
+                .eq('id', id);
+        } catch (error) {
+            console.error('Error marking notification read:', error);
         }
     }
 

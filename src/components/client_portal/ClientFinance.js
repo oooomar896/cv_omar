@@ -4,6 +4,7 @@ import { CreditCard, DollarSign, CheckCircle, Clock, ChevronLeft, ShieldCheck, D
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { supabase } from '../../utils/supabaseClient';
+import { dataService } from '../../utils/dataService';
 
 const ClientFinance = () => {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -13,70 +14,45 @@ const ClientFinance = () => {
     const [stats, setStats] = useState({ total: 0, paid: 0, remaining: 0 });
     const [invoices, setInvoices] = useState([]);
 
+    const loadFinanceData = async () => {
+        try {
+            const email = localStorage.getItem('portal_user');
+            if (!email) return;
+
+            // Fetch Real Invoices from DB
+            const dbInvoices = await dataService.fetchInvoices(email);
+
+            // Normalize for UI
+            const formattedInvoices = dbInvoices.map(inv => ({
+                id: inv.id,
+                displayId: `INV-${inv.id.substring(0, 6)}`,
+                title: inv.generated_projects?.project_name ? `فاتورة مشروع: ${inv.generated_projects.project_name}` : 'فاتورة خدمات عامة',
+                amount: parseFloat(inv.amount),
+                date: new Date(inv.created_at).toLocaleDateString('ar-SA'),
+                status: inv.status,
+                project: inv.generated_projects?.project_name || 'عام'
+            }));
+
+            setInvoices(formattedInvoices);
+
+            // Calculate Stats
+            const total = formattedInvoices.reduce((acc, curr) => acc + curr.amount, 0);
+            const paid = formattedInvoices.filter(i => i.status === 'paid').reduce((acc, curr) => acc + curr.amount, 0);
+
+            setStats({
+                total,
+                paid,
+                remaining: total - paid
+            });
+
+        } catch (err) {
+            console.error('Error fetching finances:', err);
+            toast.error('حدث خطأ أثناء جلب البيانات المالية');
+        }
+    };
+
     useEffect(() => {
-        const fetchFinances = async () => {
-            try {
-                const email = localStorage.getItem('portal_user');
-                if (!email) return;
-
-                const { data: projects, error } = await supabase
-                    .from('generated_projects')
-                    .select(`
-                        id,
-                        name,
-                        contracts (
-                            id,
-                            budget,
-                            status,
-                            created_at
-                        )
-                    `)
-                    .eq('user_email', email)
-                    .neq('status', 'draft');
-
-                if (error) throw error;
-
-                let calculatedTotal = 0;
-                const calculatedPaid = 0; // Fix: Use const as it's not reassigned yet
-                const generatedInvoices = [];
-
-                if (projects) {
-                    projects.forEach(p => {
-                        if (p.contracts && p.contracts.length > 0) {
-                            const contract = p.contracts[0];
-                            // Only count if budget exists
-                            if (contract.budget) {
-                                calculatedTotal += contract.budget;
-
-                                // Create a virtual invoice for the contract
-                                // Assuming 0 paid for now as we don't have payments table yet
-                                generatedInvoices.push({
-                                    id: `INV-${contract.id.substring(0, 6)}`,
-                                    title: `مستحقات عقد: ${p.name}`,
-                                    amount: contract.budget,
-                                    date: new Date(contract.created_at).toLocaleDateString('ar-SA'),
-                                    status: 'pending', // Default to pending
-                                    project: p.name
-                                });
-                            }
-                        }
-                    });
-                }
-
-                setStats({
-                    total: calculatedTotal,
-                    paid: calculatedPaid,
-                    remaining: calculatedTotal - calculatedPaid
-                });
-                setInvoices(generatedInvoices);
-
-            } catch (err) {
-                console.error('Error fetching finances:', err);
-                toast.error('حدث خطأ أثناء جلب البيانات المالية');
-            }
-        };
-
-        fetchFinances();
+        loadFinanceData();
     }, []);
 
     const handlePayClick = (invoice) => {
@@ -84,25 +60,37 @@ const ClientFinance = () => {
         setIsPaymentModalOpen(true);
     };
 
-    const processPayment = () => {
+    const processPayment = async () => {
         setProcessingPayment(true);
-        // Simulate payment process
-        setTimeout(() => {
-            setInvoices(current => current.map(inv =>
-                inv.id === selectedInvoice.id ? { ...inv, status: 'paid' } : inv
-            ));
+        try {
+            // Update invoice in Supabase
+            const { error } = await supabase
+                .from('invoices')
+                .update({
+                    status: 'paid',
+                    paid_at: new Date().toISOString()
+                })
+                .eq('id', selectedInvoice.id);
 
-            // Update stats locally for immediate feedback
-            setStats(prev => ({
-                ...prev,
-                paid: prev.paid + selectedInvoice.amount,
-                remaining: prev.remaining - selectedInvoice.amount
-            }));
+            if (error) throw error;
 
-            setProcessingPayment(false);
-            setIsPaymentModalOpen(false);
+            // Notify Admin
+            await dataService.sendNotification({
+                user_email: 'oooomar896@gmail.com',
+                title: 'تم استلام دفعة جديدة 💰',
+                message: `قام العميل بسداد فاتورة بقيمة ${selectedInvoice.amount} SAR.`,
+                type: 'success'
+            });
+
             toast.success(`تم سداد الفاتورة بنجاح!`);
-        }, 2000);
+            await loadFinanceData();
+            setIsPaymentModalOpen(false);
+        } catch (error) {
+            console.error(error);
+            toast.error('فشل معالجة الدفع');
+        } finally {
+            setProcessingPayment(false);
+        }
     };
 
     return (
