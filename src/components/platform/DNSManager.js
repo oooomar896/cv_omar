@@ -27,7 +27,9 @@ const DNSManager = () => {
         { value: 'CNAME', label: 'CNAME', description: 'Canonical Name' },
         { value: 'MX', label: 'MX', description: 'Mail Exchange' },
         { value: 'TXT', label: 'TXT', description: 'Text Record' },
-        { value: 'NS', label: 'NS', description: 'Name Server' }
+        { value: 'NS', label: 'NS', description: 'Name Server' },
+        { value: 'SRV', label: 'SRV', description: 'Service Record' },
+        { value: 'CAA', label: 'CAA', description: 'Certificate Authority' }
     ];
 
 
@@ -194,14 +196,15 @@ const DNSManager = () => {
                         <span>العودة إلى الدومينات</span>
                     </button>
 
-                    <div className="bg-dark-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6">
-                        <div className="flex items-center justify-between">
+                    <div className="glass-panel rounded-2xl p-6 border-white/5 shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                        <div className="flex items-center justify-between relative z-10">
                             <div>
-                                <h1 className="text-3xl font-bold mb-2 bg-gradient-to-l from-primary-400 to-accent-400 bg-clip-text text-transparent">
+                                <h1 className="text-4xl font-extrabold mb-2 bg-gradient-to-l from-primary-400 to-accent-400 bg-clip-text text-transparent drop-shadow-lg">
                                     إدارة DNS
                                 </h1>
-                                <p className="text-gray-400 flex items-center gap-2" dir="ltr">
-                                    <Globe className="w-4 h-4" />
+                                <p className="text-gray-300 flex items-center gap-2 font-mono bg-white/5 px-3 py-1 rounded-lg border border-white/10 w-fit" dir="ltr">
+                                    <Globe className="w-4 h-4 text-primary-400" />
                                     {domain?.full_domain || 'Loading...'}
                                 </p>
                             </div>
@@ -217,26 +220,29 @@ const DNSManager = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <button
                                 onClick={() => applyTemplate('website')}
-                                className="bg-dark-800/50 hover:bg-dark-700/50 border border-gray-700/50 hover:border-primary-500/50 rounded-lg p-4 text-right transition-all duration-300"
+                                className="glass-card p-6 rounded-2xl text-right group relative overflow-hidden"
                             >
-                                <h4 className="text-white font-semibold mb-1">موقع ويب</h4>
-                                <p className="text-gray-400 text-sm">A Records للموقع الرئيسي</p>
+                                <div className="absolute inset-0 bg-primary-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                                <h4 className="text-white font-bold mb-2 group-hover:text-primary-400 transition-colors relative z-10">موقع ويب</h4>
+                                <p className="text-gray-400 text-sm relative z-10">إعدادات A Records تلقائية للموقع</p>
                             </button>
 
                             <button
                                 onClick={() => applyTemplate('email')}
-                                className="bg-dark-800/50 hover:bg-dark-700/50 border border-gray-700/50 hover:border-primary-500/50 rounded-lg p-4 text-right transition-all duration-300"
+                                className="glass-card p-6 rounded-2xl text-right group relative overflow-hidden"
                             >
-                                <h4 className="text-white font-semibold mb-1">بريد إلكتروني</h4>
-                                <p className="text-gray-400 text-sm">MX و SPF Records</p>
+                                <div className="absolute inset-0 bg-secondary-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                                <h4 className="text-white font-bold mb-2 group-hover:text-secondary-400 transition-colors relative z-10">بريد إلكتروني</h4>
+                                <p className="text-gray-400 text-sm relative z-10">إعدادات MX و SPF للبريد</p>
                             </button>
 
                             <button
                                 onClick={() => applyTemplate('cloudflare')}
-                                className="bg-dark-800/50 hover:bg-dark-700/50 border border-gray-700/50 hover:border-primary-500/50 rounded-lg p-4 text-right transition-all duration-300"
+                                className="glass-card p-6 rounded-2xl text-right group relative overflow-hidden"
                             >
-                                <h4 className="text-white font-semibold mb-1">Cloudflare</h4>
-                                <p className="text-gray-400 text-sm">إعدادات Cloudflare</p>
+                                <div className="absolute inset-0 bg-orange-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                                <h4 className="text-white font-bold mb-2 group-hover:text-orange-400 transition-colors relative z-10">Cloudflare</h4>
+                                <p className="text-gray-400 text-sm relative z-10">ربط سريع مع شبكة Cloudflare</p>
                             </button>
                         </div>
                     </div>
@@ -449,7 +455,7 @@ const DNSManager = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
