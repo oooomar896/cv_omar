@@ -5,7 +5,6 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
-import ProtectedRoute from './components/admin/ProtectedRoute';
 
 import SEO from './components/common/SEO';
 import usePageTracking from './hooks/usePageTracking';

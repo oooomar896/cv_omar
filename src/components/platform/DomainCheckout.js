@@ -81,7 +81,7 @@ const DomainCheckout = () => {
             // For MVP, we'll simulate successful payment
 
             // Create domain records
-            const domains = cart.map((item, index) => {
+            const domains = cart.map((item) => {
                 const expiryDate = new Date();
                 expiryDate.setFullYear(expiryDate.getFullYear() + item.years);
 
