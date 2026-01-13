@@ -11,7 +11,10 @@ import {
     CreditCard
 } from 'lucide-react';
 
+import { useNavigate } from 'react-router-dom';
+
 const ClientDashboard = () => {
+    const navigate = useNavigate();
     // Mock Data for Client Project
     const projectStatus = {
         name: "منصة التجارة الإلكترونية AI",
@@ -166,21 +169,30 @@ const ClientDashboard = () => {
                         <div className="glass-panel p-6 rounded-3xl">
                             <h3 className="text-lg font-bold text-white mb-4">إجراءات سريعة</h3>
                             <div className="grid grid-cols-2 gap-3">
-                                <button className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-primary-500/10 hover:border-primary-500/30 transition-all flex flex-col items-center gap-2 text-center group">
-                                    <MessageSquare className="text-gray-400 group-hover:text-primary-400 transition-colors" size={24} />
-                                    <span className="text-xs font-medium text-gray-300">مراسلة الفريق</span>
-                                </button>
-                                <button className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all flex flex-col items-center gap-2 text-center group">
-                                    <UploadCloud className="text-gray-400 group-hover:text-blue-400 transition-colors" size={24} />
-                                    <span className="text-xs font-medium text-gray-300">رفع ملفات</span>
+                                <button
+                                    onClick={() => navigate('/portal/requests')}
+                                    className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all flex flex-col items-center gap-2 text-center group"
+                                >
+                                    <LayoutDashboard className="text-gray-400 group-hover:text-blue-400 transition-colors" size={24} />
+                                    <span className="text-xs font-medium text-gray-300">طلباتي</span>
                                 </button>
                                 <button className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-purple-500/10 hover:border-purple-500/30 transition-all flex flex-col items-center gap-2 text-center group">
-                                    <FileText className="text-gray-400 group-hover:text-purple-400 transition-colors" size={24} />
+                                    <MessageSquare className="text-gray-400 group-hover:text-purple-400 transition-colors" size={24} />
+                                    <span className="text-xs font-medium text-gray-300">الدعم الفني</span>
+                                </button>
+                                <button
+                                    onClick={() => navigate('/portal/contracts')}
+                                    className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-red-500/10 hover:border-red-500/30 transition-all flex flex-col items-center gap-2 text-center group"
+                                >
+                                    <FileText className="text-gray-400 group-hover:text-red-400 transition-colors" size={24} />
                                     <span className="text-xs font-medium text-gray-300">العقود</span>
                                 </button>
-                                <button className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-orange-500/10 hover:border-orange-500/30 transition-all flex flex-col items-center gap-2 text-center group">
-                                    <CreditCard className="text-gray-400 group-hover:text-orange-400 transition-colors" size={24} />
-                                    <span className="text-xs font-medium text-gray-300">المدفوعات</span>
+                                <button
+                                    onClick={() => navigate('/portal/finance')}
+                                    className="p-4 rounded-2xl bg-dark-800 border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all flex flex-col items-center gap-2 text-center group"
+                                >
+                                    <CreditCard className="text-gray-400 group-hover:text-emerald-400 transition-colors" size={24} />
+                                    <span className="text-xs font-medium text-gray-300">المالية</span>
                                 </button>
                             </div>
                         </div>
@@ -207,7 +219,10 @@ const ClientDashboard = () => {
                                 </div>
                             </div>
                             <div className="mt-6">
-                                <button className="w-full py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-dark-900 font-bold text-sm shadow-lg shadow-primary-500/20 transition-all transform hover:scale-[1.02]">
+                                <button
+                                    onClick={() => navigate('/portal/finance')}
+                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-dark-900 font-bold text-sm shadow-lg shadow-primary-500/20 transition-all transform hover:scale-[1.02]"
+                                >
                                     سداد دفعة مستحقة 💳
                                 </button>
                             </div>

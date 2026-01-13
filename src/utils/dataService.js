@@ -1080,6 +1080,96 @@ class DataService {
     }
 
 
+
+    // --- Contract Management (Supabase) ---
+    async getContracts(userEmail) {
+        try {
+            let query = supabase.from('contracts').select('*, generated_projects(project_name)').order('created_at', { ascending: false });
+
+            if (userEmail) {
+                query = query.eq('user_email', userEmail);
+            }
+
+            const { data, error } = await query;
+            if (error) throw error;
+
+            return data.map(c => ({
+                id: c.id,
+                title: c.title,
+                project: c.generated_projects?.project_name || 'مشروع عام',
+                date: new Date(c.created_at).toISOString().split('T')[0],
+                status: c.status,
+                signed_at: c.signed_at ? new Date(c.signed_at).toLocaleString('en-US') : null,
+                amount: c.amount,
+                user_email: c.user_email
+            }));
+        } catch (err) {
+            console.error('Error fetching contracts:', err);
+            return this._get('omar_contracts', []);
+        }
+    }
+
+    async createContract(contractData) {
+        try {
+            const dbContract = {
+                user_email: contractData.user_email,
+                project_id: contractData.project_id || null, // Ensure UUID or null
+                title: contractData.title,
+                amount: contractData.amount,
+                status: 'pending',
+                body: contractData.body || ''
+            };
+
+            const { data, error } = await supabase
+                .from('contracts')
+                .insert([dbContract])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            this.logActivity('create', `تم إنشاء عقد جديد: ${contractData.title}`);
+            return data;
+        } catch (err) {
+            console.error('Error creating contract:', err);
+            // Fallback Mock
+            const contracts = this._get('omar_contracts', []);
+            const newContract = {
+                id: Date.now(),
+                status: 'pending',
+                created_at: new Date().toISOString(),
+                ...contractData
+            };
+            this._set('omar_contracts', [...contracts, newContract]);
+            return newContract;
+        }
+    }
+
+    async signContract(id) {
+        try {
+            const { error } = await supabase
+                .from('contracts')
+                .update({
+                    status: 'signed',
+                    signed_at: new Date().toISOString()
+                })
+                .eq('id', id);
+
+            if (error) throw error;
+            this.logActivity('update', `تم توقيع العقد #${id}`);
+            return true;
+        } catch (err) {
+            console.error('Error signing contract:', err);
+            // Fallback Mock
+            const contracts = this._get('omar_contracts', []);
+            const updated = contracts.map(c =>
+                c.id === id ? { ...c, status: 'signed', signed_at: new Date().toISOString() } : c
+            );
+            this._set('omar_contracts', updated);
+            return true;
+        }
+    }
+
     // Analytics
     async fetchPageVisits() {
         try {

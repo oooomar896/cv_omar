@@ -6,7 +6,8 @@ import {
     Smartphone,
     Mail,
     Layout,
-    CheckCircle2
+    CheckCircle2,
+    FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -277,6 +278,34 @@ const ManageRequests = () => {
                                                         st === 'completed' ? 'مكتمل' : 'ملغي'}
                                             </button>
                                         ))}
+                                    </div>
+
+                                    {/* Admin Actions */}
+                                    <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6 mb-6">
+                                        <h3 className="text-lg font-bold text-white mb-4">إجراءات إدارية</h3>
+                                        <button
+                                            onClick={async () => {
+                                                if (!window.confirm('هل أنت متأكد من إصدار عقد لهذا المشروع؟')) return;
+                                                try {
+                                                    await dataService.createContract({
+                                                        user_email: selectedRequest.user_email,
+                                                        project_id: selectedRequest.id,
+                                                        title: `عقد تنفيذ مشروع: ${selectedRequest.project_name}`,
+                                                        project: selectedRequest.project_name, // Optional, for local context
+                                                        amount: '50,000 SAR', // Default for demo
+                                                        date: new Date().toISOString().split('T')[0]
+                                                    });
+                                                    toast.success('تم إصدار العقد وربطه بحساب العميل');
+                                                } catch (e) {
+                                                    console.error(e);
+                                                    toast.error('حدث خطأ أثناء إصدار العقد');
+                                                }
+                                            }}
+                                            className="w-full py-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center gap-2 transition-all font-bold"
+                                        >
+                                            <FileText size={18} />
+                                            <span>إصدار عقد إلكتروني للمشروع</span>
+                                        </button>
                                     </div>
                                 </div>
 

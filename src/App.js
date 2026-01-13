@@ -28,9 +28,13 @@ const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
 const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
 const ManageDomains = lazy(() => import('./components/admin/ManageDomains'));
 const ManageFinance = lazy(() => import('./components/admin/ManageFinance'));
+const ManageContracts = lazy(() => import('./components/admin/ManageContracts'));
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
 const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
 const ClientDashboard = lazy(() => import('./components/client_portal/ClientDashboard'));
+const ClientContracts = lazy(() => import('./components/client_portal/ClientContracts'));
+const ClientRequests = lazy(() => import('./components/client_portal/ClientRequests'));
+const ClientFinance = lazy(() => import('./components/client_portal/ClientFinance'));
 const UIKitLibrary = lazy(() => import('./components/platform/UIKitLibrary'));
 const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
 const DomainSearch = lazy(() => import('./components/platform/DomainSearch'));
@@ -198,6 +202,42 @@ const AppContent = () => {
             }
           />
 
+          <Route
+            path='/portal/contracts'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO title="العقود - بوابة العميل" />
+                <ProtectedRoute>
+                  <ClientContracts />
+                </ProtectedRoute>
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/portal/requests'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO title="طلباتي - بوابة العميل" />
+                <ProtectedRoute>
+                  <ClientRequests />
+                </ProtectedRoute>
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/portal/finance'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO title="المالية - بوابة العميل" />
+                <ProtectedRoute>
+                  <ClientFinance />
+                </ProtectedRoute>
+              </Suspense>
+            }
+          />
+
           {/* Domain Routes */}
           <Route
             path='/domains/search'
@@ -278,6 +318,7 @@ const AppContent = () => {
                       <Route path="news" element={<ManageNews />} />
                       <Route path="requests" element={<ManageRequests />} />
                       <Route path="messages" element={<ManageMessages />} />
+                      <Route path="contracts" element={<ManageContracts />} />
                       <Route path="domains" element={<ManageDomains />} />
                       <Route path="finance" element={<ManageFinance />} />
                       <Route path="users" element={<ManageUsers />} />
