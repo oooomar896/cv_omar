@@ -32,6 +32,8 @@ const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
 const UserPortal = lazy(() => import('./components/platform/UserPortal'));
 const UIKitLibrary = lazy(() => import('./components/platform/UIKitLibrary'));
 const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
+const DomainSearch = lazy(() => import('./components/platform/DomainSearch'));
+const DomainManagement = lazy(() => import('./components/platform/DomainManagement'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -156,6 +158,30 @@ const AppContent = () => {
               <Suspense fallback={<LoadingFallback />}>
                 <SEO title="لوحة التحكم - بوابة العميل" />
                 <UserPortal />
+              </Suspense>
+            }
+          />
+
+          {/* Domain Routes */}
+          <Route
+            path='/domains/search'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO
+                  title="البحث عن دومين | باكورة أعمال"
+                  description="ابحث عن الدومين المثالي لمشروعك واحجزه بأفضل الأسعار"
+                />
+                <DomainSearch />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/portal/domains'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO title="إدارة الدومينات - بوابة العميل" />
+                <DomainManagement />
               </Suspense>
             }
           />

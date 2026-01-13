@@ -41,8 +41,9 @@ const Navbar = () => {
     { name: 'الرئيسية', href: '/' },
     { name: 'باني المشاريع (AI)', href: '/builder', isHighlight: true },
     { name: 'مكتبة المكونات', href: '/uikit' },
+    { name: 'الدومينات', href: '/domains/search' },
     { name: 'طلب مشروع', href: '/request' },
-    { name: 'المطور (CV)', href: '/developer' },
+    { name: 'المطور', href: '/developer' },
     { name: 'بوابة العميل', href: '/portal/login', isSecondary: true },
   ];
 
