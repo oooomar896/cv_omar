@@ -26,6 +26,8 @@ const ManageMessages = lazy(() => import('./components/admin/ManageMessages'));
 const ManageRequests = lazy(() => import('./components/admin/ManageRequests'));
 const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
 const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
+const ManageDomains = lazy(() => import('./components/admin/ManageDomains'));
+const ManageFinance = lazy(() => import('./components/admin/ManageFinance'));
 const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
 const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
 const UserPortal = lazy(() => import('./components/platform/UserPortal'));
@@ -274,6 +276,8 @@ const AppContent = () => {
                       <Route path="news" element={<ManageNews />} />
                       <Route path="requests" element={<ManageRequests />} />
                       <Route path="messages" element={<ManageMessages />} />
+                      <Route path="domains" element={<ManageDomains />} />
+                      <Route path="finance" element={<ManageFinance />} />
                       <Route path="users" element={<ManageUsers />} />
                       <Route path="analytics" element={<AnalyticsDashboard />} />
                       <Route path="settings" element={<ManageSettings />} />

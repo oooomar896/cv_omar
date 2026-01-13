@@ -114,7 +114,7 @@ const DEFAULT_DATA = {
         },
         {
             id: 'n7',
-            title: 'شهادة البحث والتطوير - Maldia Global',
+            title: 'شهادة البرمجة والتطوير - Maldia Global',
             content: 'الحصول على شهادة R&D Certificate من شركة Maldia Global International Technology كمطور Flutter بعد إتمام المهام البرمجية والوحدات المطلوبة بنجاح وتسليمها.',
             date: '2022-06-15',
             image: '/images/cert/maldia_cert.jpg', // Placeholder enabling fallback icon until image is added
@@ -807,41 +807,64 @@ class DataService {
             };
 
             await supabase.from('activities').insert([newActivity]);
+            // Also notify UI
+            window.dispatchEvent(new Event('storage_update'));
+        } catch (error) {
+            console.error('Error logging activity:', error);
+        }
+    }
 
-            // Sync local
-            const activities = this.getActivities();
-            const localActivity = {
-                ...newActivity,
-                id: Date.now(),
-                timestamp: new Date().toISOString()
-            };
-            this._set(STORAGE_KEYS.ACTIVITIES, [localActivity, ...activities].slice(0, 50));
+    // --- Admin Domain & Finance Functions ---
 
-            // Also create a notification for modern feel
-            this.addNotification({
-                title: type === 'create' ? 'إضافة جديدة' : 'تحديث في المنصة',
-                msg: message,
-                type: type
-            });
+    async fetchAllDomains() {
+        try {
+            const { data, error } = await supabase
+                .from('domains')
+                .select(`
+                    *,
+                    leads:user_id (name, email)
+                `)
+                .order('created_at', { ascending: false });
 
-        } catch (err) {
-            console.error('Error logging activity:', err);
-            // Fallback
-            const activities = this.getActivities();
-            const newActivity = {
-                id: Date.now(),
-                type,
-                message,
-                timestamp: new Date().toISOString()
-            };
-            const updatedActivities = [newActivity, ...activities].slice(0, 50);
-            this._set(STORAGE_KEYS.ACTIVITIES, updatedActivities);
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching all domains:', error);
+            return [];
+        }
+    }
 
-            this.addNotification({
-                title: 'تنبيه نظام',
-                msg: message,
-                type: type
-            });
+    async updateDomainStatus(id, status) {
+        try {
+            const { error } = await supabase
+                .from('domains')
+                .update({ status })
+                .eq('id', id);
+
+            if (error) throw error;
+            this.logActivity('update', `تم تحديث حالة الدومين #${id} إلى ${status}`);
+            return true;
+        } catch (error) {
+            console.error('Error updating domain status:', error);
+            return false;
+        }
+    }
+
+    async fetchAllTransactions() {
+        try {
+            const { data, error } = await supabase
+                .from('domain_transactions')
+                .select(`
+                    *,
+                    leads:user_id (name, email)
+                `)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+            return [];
         }
     }
 
@@ -945,6 +968,7 @@ class DataService {
             return localMsg;
         }
     }
+
     async deleteMessage(id) {
         try {
             const { error } = await supabase
@@ -967,6 +991,7 @@ class DataService {
             this._set(STORAGE_KEYS.MESSAGES, filtered);
         }
     }
+
     async markMessageRead(id) {
         try {
             const { error } = await supabase
@@ -985,6 +1010,7 @@ class DataService {
             this._set(STORAGE_KEYS.MESSAGES, messages);
         }
     }
+
     async sendReply(messageId, replyContent) {
         try {
             const messages = this.getMessages();

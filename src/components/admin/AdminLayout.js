@@ -11,7 +11,9 @@ import {
     Layers,
     MessageSquare,
     TrendingUp,
-    Newspaper
+    Newspaper,
+    Globe,
+    Wallet
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AdminNotificationsManager from './AdminNotificationsManager';
@@ -49,6 +51,8 @@ const AdminLayout = ({ children }) => {
         { id: 'requests', label: 'طلبات المشاريع', icon: Briefcase, path: '/admin/requests' },
         { id: 'messages', label: 'الرسائل الواردة', icon: MessageSquare, path: '/admin/messages' },
         { id: 'projects', label: 'إدارة المشاريع', icon: Briefcase, path: '/admin/projects' },
+        { id: 'domains', label: 'إدارة الدومينات', icon: Globe, path: '/admin/domains' },
+        { id: 'finance', label: 'المحفظة والمالية', icon: Wallet, path: '/admin/finance' },
         { id: 'skills', label: 'إدارة المهارات', icon: Layers, path: '/admin/skills' },
         { id: 'news', label: 'الأخبار والنشاطات', icon: Newspaper, path: '/admin/news' },
         { id: 'users', label: 'المستخدمين', icon: Users, path: '/admin/users' },
