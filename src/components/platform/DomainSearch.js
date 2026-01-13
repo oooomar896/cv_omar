@@ -321,7 +321,7 @@ const DomainSearch = () => {
                     transition={{ delay: 0.3 }}
                     className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
-                    {pricing.filter(p => p.is_available).slice(0, 3).map((price, index) => (
+                    {pricing.filter(p => p.is_available).slice(0, 3).map((price) => (
                         <div
                             key={price.extension}
                             className="bg-dark-800/30 backdrop-blur-sm border border-gray-700/30 rounded-xl p-6 text-center hover:border-primary-500/50 transition-all duration-300"

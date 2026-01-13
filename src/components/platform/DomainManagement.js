@@ -2,15 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Globe,
-    Calendar,
     RefreshCw,
     Settings,
-    Link as LinkIcon,
     AlertCircle,
     CheckCircle,
     XCircle,
-    Trash2,
-    ExternalLink,
     Shield,
     Clock
 } from 'lucide-react';
@@ -21,8 +17,6 @@ const DomainManagement = () => {
     const [domains, setDomains] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // all, active, expiring, expired
-    const [selectedDomain, setSelectedDomain] = useState(null);
-    const [showDNSModal, setShowDNSModal] = useState(false);
     const [websites, setWebsites] = useState([]);
 
     useEffect(() => {
@@ -107,7 +101,7 @@ const DomainManagement = () => {
         return true;
     });
 
-    const handleRenewDomain = async (domainId) => {
+    const handleRenewDomain = async () => {
         // This would integrate with payment gateway
         toast.success('سيتم توجيهك لصفحة الدفع قريباً');
         // TODO: Implement renewal flow
@@ -248,8 +242,8 @@ const DomainManagement = () => {
                             key={value}
                             onClick={() => setFilter(value)}
                             className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap ${filter === value
-                                    ? 'bg-primary-500 text-white'
-                                    : 'bg-dark-800/50 text-gray-400 hover:bg-dark-700/50'
+                                ? 'bg-primary-500 text-white'
+                                : 'bg-dark-800/50 text-gray-400 hover:bg-dark-700/50'
                                 }`}
                         >
                             {label}
@@ -297,8 +291,8 @@ const DomainManagement = () => {
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ delay: index * 0.05 }}
                                         className={`bg-dark-800/50 backdrop-blur-sm border rounded-xl p-6 hover:border-primary-500/50 transition-all duration-300 ${statusInfo.color === 'green' ? 'border-green-500/20' :
-                                                statusInfo.color === 'yellow' ? 'border-yellow-500/20' :
-                                                    'border-red-500/20'
+                                            statusInfo.color === 'yellow' ? 'border-yellow-500/20' :
+                                                'border-red-500/20'
                                             }`}
                                     >
                                         <div className="flex flex-col lg:flex-row gap-6">
@@ -312,8 +306,8 @@ const DomainManagement = () => {
                                                         </h3>
                                                         <div className="flex flex-wrap items-center gap-3 text-sm">
                                                             <span className={`flex items-center gap-1 ${statusInfo.color === 'green' ? 'text-green-400' :
-                                                                    statusInfo.color === 'yellow' ? 'text-yellow-400' :
-                                                                        'text-red-400'
+                                                                statusInfo.color === 'yellow' ? 'text-yellow-400' :
+                                                                    'text-red-400'
                                                                 }`}>
                                                                 <StatusIcon className="w-4 h-4" />
                                                                 {statusInfo.label}
@@ -377,8 +371,8 @@ const DomainManagement = () => {
                                                 <button
                                                     onClick={() => handleToggleAutoRenew(domain.id, domain.auto_renew)}
                                                     className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${domain.auto_renew
-                                                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                                                            : 'bg-dark-700/50 text-gray-400 border border-gray-600/30 hover:border-blue-500/50'
+                                                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                                        : 'bg-dark-700/50 text-gray-400 border border-gray-600/30 hover:border-blue-500/50'
                                                         }`}
                                                 >
                                                     <RefreshCw className="w-4 h-4" />
