@@ -34,6 +34,7 @@ const UIKitLibrary = lazy(() => import('./components/platform/UIKitLibrary'));
 const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
 const DomainSearch = lazy(() => import('./components/platform/DomainSearch'));
 const DomainManagement = lazy(() => import('./components/platform/DomainManagement'));
+const DomainCheckout = lazy(() => import('./components/platform/DomainCheckout'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -182,6 +183,19 @@ const AppContent = () => {
               <Suspense fallback={<LoadingFallback />}>
                 <SEO title="إدارة الدومينات - بوابة العميل" />
                 <DomainManagement />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path='/domains/checkout'
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                <SEO
+                  title="إتمام الطلب | باكورة أعمال"
+                  description="أكمل عملية شراء الدومينات الخاصة بك"
+                />
+                <DomainCheckout />
               </Suspense>
             }
           />

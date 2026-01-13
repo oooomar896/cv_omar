@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Globe, CheckCircle, XCircle, Loader, TrendingUp } from 'lucide-react';
+import { Search, Globe, CheckCircle, XCircle, Loader, TrendingUp, ShoppingCart } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const DomainSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -11,6 +12,8 @@ const DomainSearch = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [pricing, setPricing] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
+    const [cartCount, setCartCount] = useState(0);
+    const navigate = useNavigate();
 
     // Available extensions
     const availableExtensions = [
@@ -26,7 +29,13 @@ const DomainSearch = () => {
     // Fetch pricing on component mount
     useEffect(() => {
         fetchPricing();
+        updateCartCount();
     }, []);
+
+    const updateCartCount = () => {
+        const cart = JSON.parse(localStorage.getItem('domainCart') || '[]');
+        setCartCount(cart.length);
+    };
 
     const fetchPricing = async () => {
         try {
@@ -141,6 +150,7 @@ const DomainSearch = () => {
         });
 
         localStorage.setItem('domainCart', JSON.stringify(cart));
+        updateCartCount();
         toast.success('تمت إضافة الدومين إلى السلة');
     };
 
@@ -151,19 +161,36 @@ const DomainSearch = () => {
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-12"
+                    className="mb-12"
                 >
-                    <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-6 py-2 mb-6">
-                        <Globe className="w-5 h-5 text-primary-400" />
-                        <span className="text-primary-400 font-semibold">ابحث عن دومينك المثالي</span>
+                    <div className="flex justify-between items-center mb-6">
+                        <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-6 py-2">
+                            <Globe className="w-5 h-5 text-primary-400" />
+                            <span className="text-primary-400 font-semibold">ابحث عن دومينك المثالي</span>
+                        </div>
+
+                        {cartCount > 0 && (
+                            <button
+                                onClick={() => navigate('/domains/checkout')}
+                                className="relative bg-gradient-to-l from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2"
+                            >
+                                <ShoppingCart className="w-5 h-5" />
+                                <span>السلة</span>
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                                    {cartCount}
+                                </span>
+                            </button>
+                        )}
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-l from-primary-400 to-accent-400 bg-clip-text text-transparent">
-                        سجل دومينك الآن
-                    </h1>
-                    <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                        ابحث عن الدومين المناسب لمشروعك واحجزه بأفضل الأسعار
-                    </p>
+                    <div className="text-center">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-l from-primary-400 to-accent-400 bg-clip-text text-transparent">
+                            سجل دومينك الآن
+                        </h1>
+                        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                            ابحث عن الدومين المناسب لمشروعك واحجزه بأفضل الأسعار
+                        </p>
+                    </div>
                 </motion.div>
 
                 {/* Search Box */}
