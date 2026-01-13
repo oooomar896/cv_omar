@@ -384,6 +384,15 @@ const ManageRequests = () => {
                                         </div>
                                     </div>
                                 )}
+
+                                <div className="pt-6 border-t border-gray-800">
+                                    <h3 className="text-sm font-bold text-white mb-4">بيئة التطوير (IDE)</h3>
+                                    <LiveCodeEditor project={selectedRequest} userRole="admin" />
+                                </div>
+
+                                <div className="pt-6 border-t border-gray-800">
+                                    <ProjectChat project={selectedRequest} userRole="admin" />
+                                </div>
                             </div>
                         </motion.div>
                     </div>

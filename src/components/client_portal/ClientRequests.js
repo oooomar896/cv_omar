@@ -8,6 +8,8 @@ const ClientRequests = () => {
     const navigate = useNavigate();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedRequest, setSelectedRequest] = useState(null); // Added state for modal
+
     // Mock for demo if no real data found
     const MOCK_DATA = [
         {
@@ -18,7 +20,8 @@ const ClientRequests = () => {
             created_at: '2023-12-01',
             status: 'completed',
             budget: '35,000 SAR',
-            project_type: 'Mobile App'
+            project_type: 'Mobile App',
+            description: 'تطبيق متكامل لتوصيل الطلبات يشمل تطبيق العميل، تطبيق السائق، ولوحة تحكم للمطاعم.'
         },
         {
             id: 'REQ-2024-008',
@@ -28,14 +31,14 @@ const ClientRequests = () => {
             created_at: '2024-01-02',
             status: 'in_progress',
             budget: '45,000 SAR',
-            project_type: 'Web'
+            project_type: 'Web',
+            description: 'منصة تجارة إلكترونية ذكية تستخدم الذكاء الاصطناعي لترشيح المنتجات وتحليل سلوك المستخدمين.'
         }
     ];
 
     useEffect(() => {
         const fetchRequests = async () => {
             setLoading(true);
-            // Try to get logged in user email
             const userEmail = localStorage.getItem('portal_user');
 
             if (userEmail) {
@@ -44,7 +47,6 @@ const ClientRequests = () => {
                     if (realData && realData.length > 0) {
                         setRequests(realData);
                     } else {
-                        // Use Mock if empty for demo feeling
                         setRequests(MOCK_DATA);
                     }
                 } catch (err) {
@@ -64,7 +66,7 @@ const ClientRequests = () => {
     const getStatusBadge = (status) => {
         switch (status) {
             case 'completed': return <span className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg text-xs border border-emerald-500/20"><CheckCircle size={12} /> مكتمل</span>;
-            case 'in_progress': return <span className="flex items-center gap-1 text-blue-400 bg-blue-500/10 px-2 py-1 rounded-lg text-xs border border-blue-500/20"><Clock size={12} className="animate-spin-slow" /> جاري العمل</span>;
+            case 'in_progress': return <span className="flex items-center gap-1 text-blue-400 bg-blue-500/10 px-2 py-1 rounded-lg text-xs border border-blue-500/20"><Clock size={12} className="animate-spin-slow" /> قيد التنفيذ</span>;
             case 'pending':
             case 'pending_review': return <span className="flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2 py-1 rounded-lg text-xs border border-amber-500/20"><Clock size={12} /> قيد المراجعة</span>;
             default: return <span className="text-gray-400 text-xs">غير معروف</span>;
@@ -145,7 +147,10 @@ const ClientRequests = () => {
                                     <div>
                                         {getStatusBadge(req.status)}
                                     </div>
-                                    <button className="px-4 py-2 bg-white/5 rounded-lg text-sm text-white hover:bg-white/10 transition-colors">
+                                    <button
+                                        onClick={() => setSelectedRequest(req)}
+                                        className="px-4 py-2 bg-white/5 rounded-lg text-sm text-white hover:bg-white/10 transition-colors"
+                                    >
                                         التفاصيل
                                     </button>
                                 </div>
@@ -160,6 +165,71 @@ const ClientRequests = () => {
                     )}
                 </div>
             </div>
+
+            {/* Request Details Modal */}
+            <AnimatePresence>
+                {selectedRequest && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 isolate">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedRequest(null)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-2xl p-0 relative z-10 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+                        >
+                            <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-dark-900 sticky top-0 z-20">
+                                <h2 className="text-xl font-bold text-white">تفاصيل الطلب</h2>
+                                <button onClick={() => setSelectedRequest(null)} className="p-2 hover:bg-white/10 rounded-full text-gray-400">✕</button>
+                            </div>
+
+                            <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-400 mb-2">اسم المشروع</h3>
+                                    <p className="text-lg font-bold text-white">{selectedRequest.project_name || selectedRequest.title}</p>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-dark-800 p-4 rounded-xl">
+                                        <span className="text-xs text-gray-500 block mb-1">نوع المشروع</span>
+                                        <span className="text-white font-medium">{selectedRequest.project_type || selectedRequest.type}</span>
+                                    </div>
+                                    <div className="bg-dark-800 p-4 rounded-xl">
+                                        <span className="text-xs text-gray-500 block mb-1">تاريخ الطلب</span>
+                                        <span className="text-white font-medium font-mono">{new Date(selectedRequest.created_at || Date.now()).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-400 mb-3">وصف المشروع</h3>
+                                    <div className="bg-dark-950 p-4 rounded-xl text-gray-300 text-sm leading-relaxed whitespace-pre-wrap border border-gray-800">
+                                        {selectedRequest.description || 'لا يوجد وصف متاح.'}
+                                    </div>
+                                </div>
+
+                                {selectedRequest.specificAnswers && Object.keys(selectedRequest.specificAnswers).length > 0 && (
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-400 mb-3">تفاصيل إضافية</h3>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {Object.entries(selectedRequest.specificAnswers).map(([key, value]) => (
+                                                <div key={key} className="flex justify-between items-center p-3 bg-white/5 rounded-lg border border-white/5">
+                                                    <span className="text-xs text-gray-400">{key}</span>
+                                                    <span className="text-sm font-bold text-white">{String(value)}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
