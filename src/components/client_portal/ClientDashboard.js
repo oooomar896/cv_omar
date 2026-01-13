@@ -2,7 +2,6 @@
 import { motion } from 'framer-motion';
 import { supabase } from '../../utils/supabaseClient';
 import {
-    LayoutDashboard,
     MessageSquare,
     Bell,
     CreditCard,
