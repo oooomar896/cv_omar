@@ -11,7 +11,10 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
-import Toast from '../../components/common/Toast';
+import { dataService } from '../../utils/dataService';
+import { downloadProjectBlueprint } from '../../utils/fileUtils';
+import toast from 'react-hot-toast';
+import Skeleton from '../../components/common/Skeleton';
 import FileViewer from '../platform/FileViewer';
 import ProjectChat from '../platform/ProjectChat';
 import LiveCodeEditor from '../platform/LiveCodeEditor';
@@ -30,7 +33,7 @@ const ManageRequests = () => {
     const [filter, setFilter] = useState('all'); // all, pending, completed
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRequest, setSelectedRequest] = useState(null);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         loadRequests();
@@ -59,8 +62,10 @@ const ManageRequests = () => {
     }, [requests, filter, searchTerm]);
 
     const loadRequests = async () => {
+        setLoading(true);
         const data = await dataService.fetchGeneratedProjects();
         setRequests(data);
+        setLoading(false);
     };
 
     const extractPhone = (desc) => {
@@ -73,13 +78,13 @@ const ManageRequests = () => {
         if (!selectedRequest) return;
         try {
             await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: newStage });
-            setToast({ show: true, message: 'تم تحديث مرحلة المشروع بنجاح', type: 'success' });
+            toast.success('تم تحديث مرحلة المشروع بنجاح');
 
             // Update local state
             setSelectedRequest(prev => ({ ...prev, project_stage: newStage }));
             setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, project_stage: newStage } : r));
         } catch (error) {
-            setToast({ show: true, message: 'فشل تحديث المرحلة', type: 'error' });
+            toast.error('فشل تحديث المرحلة');
         }
     };
 
@@ -93,7 +98,6 @@ const ManageRequests = () => {
 
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
-            {toast.show && <Toast message={toast.message} type={toast.type} onClose={() => setToast({ ...toast, show: false })} />}
 
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
@@ -123,55 +127,73 @@ const ManageRequests = () => {
 
             {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredRequests.map((req) => {
-                    const phone = extractPhone(req.description);
-                    return (
-                        <motion.div
-                            layout
-                            key={req.id}
-                            className="bg-dark-900 border border-gray-800 rounded-2xl p-6 hover:border-primary-500/50 transition-all group"
-                        >
+                {loading ? (
+                    Array(6).fill(0).map((_, i) => (
+                        <div key={i} className="bg-dark-900 border border-gray-800 rounded-2xl p-6">
                             <div className="flex justify-between items-start mb-4">
-                                <div className={`px-3 py-1 rounded-lg text-xs font-bold ${getStatusColor(req.status)}`}>
-                                    {req.status === 'completed' ? 'مكتمل' : 'قيد المراجعة'}
+                                <Skeleton className="w-20 h-6 rounded-lg" />
+                                <Skeleton className="w-24 h-4 rounded-md" />
+                            </div>
+                            <Skeleton className="w-3/4 h-6 rounded-md mb-2" />
+                            <Skeleton className="w-1/2 h-4 rounded-md mb-4" />
+                            <Skeleton className="w-full h-20 rounded-xl mb-6" />
+                            <div className="flex gap-2">
+                                <Skeleton className="flex-1 h-10 rounded-xl" />
+                                <Skeleton className="w-12 h-10 rounded-xl" />
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    filteredRequests.map((req) => {
+                        const phone = extractPhone(req.description);
+                        return (
+                            <motion.div
+                                layout
+                                key={req.id}
+                                className="bg-dark-900 border border-gray-800 rounded-2xl p-6 hover:border-primary-500/50 transition-all group"
+                            >
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className={`px-3 py-1 rounded-lg text-xs font-bold ${getStatusColor(req.status)}`}>
+                                        {req.status === 'completed' ? 'مكتمل' : 'قيد المراجعة'}
+                                    </div>
+                                    <span className="text-xs text-gray-500 font-mono">
+                                        {new Date(req.created_at || req.timestamp).toLocaleDateString()}
+                                    </span>
                                 </div>
-                                <span className="text-xs text-gray-500 font-mono">
-                                    {new Date(req.created_at || req.timestamp).toLocaleDateString()}
-                                </span>
-                            </div>
 
-                            <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{req.project_name}</h3>
-                            <div className="flex items-center gap-2 text-primary-400 text-xs font-mono mb-4 bg-primary-500/5 p-2 rounded-lg w-fit">
-                                <Mail size={12} />
-                                {req.user_email}
-                            </div>
+                                <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{req.project_name}</h3>
+                                <div className="flex items-center gap-2 text-primary-400 text-xs font-mono mb-4 bg-primary-500/5 p-2 rounded-lg w-fit">
+                                    <Mail size={12} />
+                                    {req.user_email}
+                                </div>
 
-                            <div className="text-gray-400 text-sm mb-6 line-clamp-3 h-[4.5em] bg-dark-950/50 p-3 rounded-xl">
-                                {req.description}
-                            </div>
+                                <div className="text-gray-400 text-sm mb-6 line-clamp-3 h-[4.5em] bg-dark-950/50 p-3 rounded-xl">
+                                    {req.description}
+                                </div>
 
-                            <div className="flex gap-2 relative z-10">
-                                {phone && (
-                                    <a
-                                        href={`https://wa.me/${phone.replace(/\+/g, '').replace(/\s/g, '')}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm font-bold"
+                                <div className="flex gap-2 relative z-10">
+                                    {phone && (
+                                        <a
+                                            href={`https://wa.me/${phone.replace(/\+/g, '').replace(/\s/g, '')}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white py-2 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm font-bold"
+                                        >
+                                            <MessageSquare size={16} />
+                                            <span>واتساب</span>
+                                        </a>
+                                    )}
+                                    <button
+                                        onClick={() => setSelectedRequest(req)}
+                                        className="px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 rounded-xl transition-colors"
                                     >
-                                        <MessageSquare size={16} />
-                                        <span>واتساب</span>
-                                    </a>
-                                )}
-                                <button
-                                    onClick={() => setSelectedRequest(req)}
-                                    className="px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 rounded-xl transition-colors"
-                                >
-                                    <Eye size={18} />
-                                </button>
-                            </div>
-                        </motion.div>
-                    );
-                })}
+                                        <Eye size={18} />
+                                    </button>
+                                </div>
+                            </motion.div>
+                        );
+                    })
+                )}
             </div>
 
             {/* Modal */}
@@ -239,11 +261,11 @@ const ManageRequests = () => {
                                                 onClick={async () => {
                                                     try {
                                                         await dataService.updateGeneratedProject(selectedRequest.id, { status: st });
-                                                        setToast({ show: true, message: 'تم تحديث حالة المشروع', type: 'success' });
+                                                        toast.success('تم تحديث حالة المشروع');
                                                         setSelectedRequest(prev => ({ ...prev, status: st }));
                                                         setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, status: st } : r));
                                                     } catch (e) {
-                                                        setToast({ show: true, message: 'فشل التحديث', type: 'error' });
+                                                        toast.error('فشل التحديث');
                                                     }
                                                 }}
                                                 className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${selectedRequest.status === st

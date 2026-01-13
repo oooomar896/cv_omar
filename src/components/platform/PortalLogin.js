@@ -3,20 +3,18 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Mail, ShieldCheck, Sparkles, Lock, UserPlus, LogIn } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
-import Toast from '../common/Toast';
+import toast from 'react-hot-toast';
 
 const PortalLogin = () => {
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const navigate = useNavigate();
 
     const handleAuth = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setToast({ show: false, message: '', type: '' });
 
         try {
             if (isSignUp) {
@@ -26,7 +24,7 @@ const PortalLogin = () => {
                 });
                 if (error) throw error;
                 if (data.user) {
-                    setToast({ show: true, message: 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.', type: 'success' });
+                    toast.success('تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني.');
                     setIsSignUp(false); // Switch to login view
                 }
             } else {
@@ -41,19 +39,16 @@ const PortalLogin = () => {
                     localStorage.setItem('portal_user', data.user.email);
                     localStorage.setItem('portal_token', data.session.access_token);
 
-                    setToast({ show: true, message: 'تم تسجيل الدخول بنجاح', type: 'success' });
+                    toast.success('تم تسجيل الدخول بنجاح');
                     setTimeout(() => navigate('/portal/dashboard'), 1000);
                 }
             }
         } catch (error) {
             console.error('Auth error:', error);
-            setToast({
-                show: true,
-                message: error.message === 'Invalid login credentials'
-                    ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
-                    : error.message,
-                type: 'error'
-            });
+            const msg = error.message === 'Invalid login credentials'
+                ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+                : error.message;
+            toast.error(msg);
         } finally {
             setIsLoading(false);
         }
@@ -61,13 +56,6 @@ const PortalLogin = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 font-cairo" dir="rtl">
-            {toast.show && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ ...toast, show: false })}
-                />
-            )}
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}

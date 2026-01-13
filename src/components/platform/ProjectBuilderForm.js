@@ -23,6 +23,7 @@ import { qaAgent } from '../../utils/qaAgentLogic';
 import { dataService } from '../../utils/dataService';
 import { supabase } from '../../utils/supabaseClient';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
+import toast from 'react-hot-toast';
 
 const ProjectBuilderForm = () => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -43,7 +44,7 @@ const ProjectBuilderForm = () => {
 
     const toggleVoiceInput = () => {
         if (!('webkitSpeechRecognition' in window)) {
-            alert('خاصية التحدث غير مدعومة في هذا المتصفح. يرجى استخدام متصفح Chrome أو Edge.');
+            toast.error('خاصية التحدث غير مدعومة في هذا المتصفح. يرجى استخدام متصفح Chrome أو Edge.');
             return;
         }
 
@@ -104,7 +105,7 @@ const ProjectBuilderForm = () => {
         if (currentStep === 3) {
             // التحقق من صحة البيانات قبل الانتقال للتحليل
             if (!formData.userName || !formData.email) {
-                alert('يرجى إكمال بياناتك (الاسم والبريد الإلكتروني) للمتابعة');
+                toast.error('يرجى إكمال بياناتك (الاسم والبريد الإلكتروني) للمتابعة');
                 return;
             }
             setShowAnalysis(true);
@@ -112,13 +113,13 @@ const ProjectBuilderForm = () => {
             // التحقق من إجابة الأسئلة المخصصة
             const questions = DYNAMIC_QUESTIONS[formData.type] || [];
             if (Object.keys(formData.specificAnswers).length < questions.length) {
-                alert('يرجى الإجابة على جميع الأسئلة للمتابعة');
+                toast.error('يرجى الإجابة على جميع الأسئلة للمتابعة');
                 return;
             }
             setCurrentStep(currentStep + 1);
         } else if (currentStep === 2) {
             if (!formData.description || formData.description.length < 10) {
-                alert('يرجى كتابة وصف أطول لفكرتك لضمان جودة التحليل');
+                toast.error('يرجى كتابة وصف أطول لفكرتك لضمان جودة التحليل');
                 return;
             }
             setCurrentStep(currentStep + 1);

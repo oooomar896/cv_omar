@@ -2,26 +2,23 @@ import { Settings, Shield, Bell, Database, Save, User, Laptop, Upload, DownloadC
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
-import Toast from '../../components/common/Toast';
+import { dataService } from '../../utils/dataService';
+import toast from 'react-hot-toast';
 
 const ManageSettings = () => {
     const [settings, setSettings] = useState(dataService.getSettings());
     const [isSaving, setIsSaving] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
-    const showToast = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-    };
 
     const validateSettings = () => {
         if (!settings.siteName.trim()) {
-            showToast('يجب إدخال اسم الموقع', 'error');
+            toast.error('يجب إدخال اسم الموقع');
             return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!settings.adminEmail.trim() || !emailRegex.test(settings.adminEmail)) {
-            showToast('الرجاء إدخال بريد إلكتروني صحيح', 'error');
+            toast.error('الرجاء إدخال بريد إلكتروني صحيح');
             return false;
         }
 
@@ -37,23 +34,17 @@ const ManageSettings = () => {
             try {
                 dataService.saveSettings(settings);
                 setIsSaving(false);
-                showToast('تم حفظ الإعدادات بنجاح!', 'success');
+                toast.success('تم حفظ الإعدادات بنجاح!');
             } catch (error) {
                 setIsSaving(false);
-                showToast('حدث خطأ أثناء الحفظ، حاول مرة أخرى', 'error');
+                toast.error('حدث خطأ أثناء الحفظ، حاول مرة أخرى');
             }
         }, 800);
     };
 
     return (
         <div className="space-y-6 font-cairo text-right relative" dir="rtl">
-            {toast.show && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ ...toast, show: false })}
-                />
-            )}
+
 
             <div className="flex items-center gap-3 mb-8">
                 <div className="p-3 bg-primary-500/10 text-primary-500 rounded-2xl">
@@ -169,7 +160,7 @@ const ManageSettings = () => {
                                     document.body.appendChild(downloadAnchorNode);
                                     downloadAnchorNode.click();
                                     downloadAnchorNode.remove();
-                                    showToast('تم تحميل النسخة الاحتياطية', 'success');
+                                    toast.success('تم تحميل النسخة الاحتياطية');
                                 }}
                                 className="bg-blue-500/10 hover:bg-blue-500 text-blue-500 hover:text-white border border-blue-500/20 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
                             >
@@ -192,10 +183,10 @@ const ManageSettings = () => {
                                                 Object.keys(json).forEach(key => {
                                                     localStorage.setItem(key, json[key]);
                                                 });
-                                                showToast('تمت استعادة البيانات بنجاح! سيتم تحديث الصفحة...', 'success');
+                                                toast.success('تمت استعادة البيانات بنجاح! سيتم تحديث الصفحة...');
                                                 setTimeout(() => window.location.reload(), 1500);
                                             } catch (err) {
-                                                showToast('ملف البيانات غير صالح', 'error');
+                                                toast.error('ملف البيانات غير صالح');
                                             }
                                         };
                                     }}
@@ -218,7 +209,7 @@ const ManageSettings = () => {
                             onClick={() => {
                                 if (window.confirm('هل أنت متأكد من حذف كافة بياناتك واستعادة البيانات الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.')) {
                                     dataService.resetToDefaults();
-                                    showToast('تمت استعادة البيانات الافتراضية بنجاح', 'success');
+                                    toast.success('تمت استعادة البيانات الافتراضية بنجاح');
                                 }
                             }}
                             className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 px-8 py-3 rounded-xl font-bold transition-all whitespace-nowrap"

@@ -2,25 +2,25 @@ import { MessageSquare, Trash2, Mail, Clock, Search, Send, Reply, Sparkles } fro
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
-import Toast from '../../components/common/Toast';
+import { dataService } from '../../utils/dataService';
+import toast from 'react-hot-toast';
+import Skeleton from '../../components/common/Skeleton';
 
 const ManageMessages = () => {
     const [messages, setMessages] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
 
     useEffect(() => {
         const loadMessages = async () => {
+            setLoading(true);
             await dataService.fetchMessages();
             setMessages(dataService.getMessages().reverse());
+            setLoading(false);
         };
         loadMessages();
     }, []);
-
-    const showToast = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-    };
 
     const handleDelete = (e, id) => {
         e.stopPropagation();
@@ -28,7 +28,7 @@ const ManageMessages = () => {
             dataService.deleteMessage(id);
             setMessages(dataService.getMessages().reverse());
             if (selectedMessage?.id === id) setSelectedMessage(null);
-            showToast('تم حذف الرسالة بنجاح');
+            toast.success('تم حذف الرسالة بنجاح');
         }
     };
 
@@ -65,7 +65,7 @@ const ManageMessages = () => {
         // Pick a random template based on message length (simple logic for demo)
         const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
         setReplyText(randomTemplate);
-        showToast('✨ تم توليد الرد الذكي بنجاح!');
+        toast.success('✨ تم توليد الرد الذكي بنجاح!');
     };
 
     const handleSendReply = () => {
@@ -82,18 +82,11 @@ const ManageMessages = () => {
         setSelectedMessage(updatedMessage);
         setMessages(messages.map(m => m.id === selectedMessage.id ? updatedMessage : m));
         setReplyText('');
-        showToast('تم إرسال الرد بنجاح');
+        toast.success('تم إرسال الرد بنجاح');
     };
 
     return (
         <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6 font-cairo" dir="rtl">
-            {toast.show && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ ...toast, show: false })}
-                />
-            )}
 
             {/* Messages List */}
             <div className={`w-full md:w-1/3 bg-dark-900/50 border border-gray-800 rounded-3xl flex flex-col overflow-hidden ${selectedMessage ? 'hidden md:flex' : 'flex'}`}>
@@ -116,41 +109,54 @@ const ManageMessages = () => {
                 </div>
 
                 <div className="flex-grow overflow-y-auto custom-scrollbar p-2 space-y-2">
-                    {filteredMessages.length === 0 ? (
-                        <div className="text-center text-gray-500 py-10">لا توجد رسائل</div>
-                    ) : (
-                        filteredMessages.map(msg => (
-                            <motion.div
-                                key={msg.id}
-                                layout
-                                onClick={() => handleSelectMessage(msg)}
-                                className={`p-4 rounded-xl cursor-pointer border transition-all relative group ${selectedMessage?.id === msg.id
-                                    ? 'bg-primary-500/10 border-primary-500'
-                                    : 'bg-dark-900 border-gray-800 hover:border-gray-600'
-                                    } ${!msg.read ? 'border-r-4 border-r-primary-500' : ''}`}
-                            >
-                                <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <a
-                                        href={`mailto:${msg.email}`}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="p-1.5 bg-dark-800 hover:bg-primary-500 text-gray-400 hover:text-white rounded-lg flex items-center justify-center transition-colors"
-                                        title="رد سريع"
-                                    >
-                                        <Reply size={14} />
-                                    </a>
+                    {loading ? (
+                        Array(5).fill(0).map((_, i) => (
+                            <div key={i} className="p-4 rounded-xl border border-gray-800 bg-dark-900">
+                                <div className="flex justify-between items-start mb-2">
+                                    <Skeleton className="w-24 h-4 rounded-md" />
+                                    <Skeleton className="w-16 h-3 rounded-md" />
                                 </div>
-
-                                <div className="flex justify-between items-start mb-1">
-                                    <h3 className={`font-bold ${!msg.read ? 'text-white' : 'text-gray-400'}`}>{msg.name}</h3>
-                                    <span className="text-[10px] text-gray-500 flex items-center gap-1 pl-6">
-                                        <Clock size={10} />
-                                        {formatTime(msg.date).split(',')[0]}
-                                    </span>
-                                </div>
-                                <p className="text-sm text-gray-300 truncate mb-1">{msg.subject}</p>
-                                <p className="text-xs text-gray-500 truncate">{msg.message}</p>
-                            </motion.div>
+                                <Skeleton className="w-3/4 h-3 rounded-md mb-2" />
+                                <Skeleton className="w-full h-3 rounded-md" />
+                            </div>
                         ))
+                    ) : (
+                        filteredMessages.length === 0 ? (
+                            <div className="text-center text-gray-500 py-10">لا توجد رسائل</div>
+                        ) : (
+                            filteredMessages.map(msg => (
+                                <motion.div
+                                    key={msg.id}
+                                    layout
+                                    onClick={() => handleSelectMessage(msg)}
+                                    className={`p-4 rounded-xl cursor-pointer border transition-all relative group ${selectedMessage?.id === msg.id
+                                        ? 'bg-primary-500/10 border-primary-500'
+                                        : 'bg-dark-900 border-gray-800 hover:border-gray-600'
+                                        } ${!msg.read ? 'border-r-4 border-r-primary-500' : ''}`}
+                                >
+                                    <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <a
+                                            href={`mailto:${msg.email}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="p-1.5 bg-dark-800 hover:bg-primary-500 text-gray-400 hover:text-white rounded-lg flex items-center justify-center transition-colors"
+                                            title="رد سريع"
+                                        >
+                                            <Reply size={14} />
+                                        </a>
+                                    </div>
+
+                                    <div className="flex justify-between items-start mb-1">
+                                        <h3 className={`font-bold ${!msg.read ? 'text-white' : 'text-gray-400'}`}>{msg.name}</h3>
+                                        <span className="text-[10px] text-gray-500 flex items-center gap-1 pl-6">
+                                            <Clock size={10} />
+                                            {formatTime(msg.date).split(',')[0]}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-gray-300 truncate mb-1">{msg.subject}</p>
+                                    <p className="text-xs text-gray-500 truncate">{msg.message}</p>
+                                </motion.div>
+                            ))
+                        )
                     )}
                 </div>
             </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { Save, FileCode, CheckCircle, RefreshCw, Trash2, Plus, ChevronDown, ChevronRight, Folder, Play, Code2 } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
+import toast from 'react-hot-toast';
 
 const getLanguageFromExt = (filename) => {
     const ext = filename.split('.').pop();
@@ -232,7 +233,7 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
         e.preventDefault();
         if (!newFileName.trim()) return;
         const fileName = newFileName.trim().replace(/^\/+/, '');
-        if (files[fileName]) { alert('File exists!'); return; }
+        if (files[fileName]) { toast.error('File exists!'); return; }
         const newFiles = { ...files, [fileName]: fileName.endsWith('.html') ? '<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello</h1>\n</body>\n</html>' : '' };
         await persistChanges(newFiles);
         setNewFileName('');
@@ -269,14 +270,14 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
 
     const handleGitCommit = async () => {
         if (!gitMessage.trim()) {
-            alert('Please enter a commit message');
+            toast.error('Please enter a commit message');
             return;
         }
         setSaving(true);
         // Simulate commit by just saving current state with a "commit" status
         await persistChanges(files);
         setGitMessage('');
-        alert('Changes committed successfully!');
+        toast.success('Changes committed successfully!');
         setSaving(false);
     };
 

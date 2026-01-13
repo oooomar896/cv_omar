@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Download, Mail, Linkedin, Github, ArrowDown } from 'lucide-react';
+import OptimizedImage from './common/OptimizedImage';
 
 const Hero = () => {
   const scrollToAbout = () => {
@@ -158,14 +159,11 @@ const Hero = () => {
               >
                 <div className='w-80 h-80 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 p-1'>
                   <div className='w-full h-full rounded-full overflow-hidden bg-dark-900'>
-                    <img
+                    <OptimizedImage
                       src='/my_image.jpg'
                       alt='عمر حميد العديني'
                       className='w-full h-full object-cover'
-                      onError={e => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
+                      priority={true}
                     />
                     <div
                       className='w-full h-full hidden items-center justify-center text-6xl font-bold text-primary-500 bg-dark-800'

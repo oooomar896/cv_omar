@@ -15,6 +15,7 @@ import { dataService } from '../../utils/dataService';
 import { supabase } from '../../utils/supabaseClient';
 import ServicesGallery from './ServicesGallery';
 import { COUNTRY_CODES } from '../../constants/platformConstants';
+import toast from 'react-hot-toast';
 
 const RequestService = () => {
     const [step, setStep] = useState(1);
@@ -83,12 +84,13 @@ const RequestService = () => {
                 setIsLoading(false);
                 setIsSuccess(true);
                 setStep(3);
+                toast.success('تم إرسال الطلب بنجاح');
             }, 1000);
 
         } catch (error) {
             console.error(error);
             setIsLoading(false);
-            alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
+            toast.error('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
         }
     };
 
@@ -112,7 +114,6 @@ ${formData.description.substring(0, 500)}...
         if (isSuccess) {
             const url = `https://wa.me/${waNumber}?text=${waMessage}`;
 
-            // 使用 Flash Message أو Toast لإخبار المستخدم
             // Use window.location.href to avoid popup blockers and ensure mobile app opens directly
             const timer = setTimeout(() => {
                 window.location.href = url;
@@ -276,7 +277,7 @@ ${formData.description.substring(0, 500)}...
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                if (!formData.serviceType) return alert('يرجى اختيار نوع الخدمة');
+                                                if (!formData.serviceType) return toast.error('يرجى اختيار نوع الخدمة');
                                                 setStep(2);
                                             }}
                                             className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 transition-all"

@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, Trophy, MessageCircle, Calendar } from 'lucide-react';
 import { dataService } from '../utils/dataService';
+import OptimizedImage from './common/OptimizedImage';
+import { convertGoogleDriveLink } from '../utils/imageUtils';
 
 const ROTATION_INTERVAL = 7000;
 
@@ -247,13 +249,12 @@ const NewsSection = () => {
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.3 }}
-                      className='relative overflow-hidden rounded-2xl'
+                      className='relative overflow-hidden rounded-2xl h-80'
                     >
-                      <img
-                        src={activeNews.image.src}
+                      <OptimizedImage
+                        src={convertGoogleDriveLink(activeNews.image.src)}
                         alt={activeNews.image.alt}
-                        className={`w-full h-80 ${activeNews.image.className || 'object-cover'
-                          }`}
+                        className={`w-full h-full ${activeNews.image.className || 'object-cover'}`}
                       />
                       <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent' />
                       <div className='absolute bottom-4 left-4 right-4'>
@@ -284,11 +285,11 @@ const NewsSection = () => {
                       whileHover={{ scale: 1.05 }}
                     >
                       {feature.type === 'image' ? (
-                        <div className='relative overflow-hidden rounded-xl group cursor-pointer'>
-                          <img
-                            src={feature.src}
+                        <div className='relative overflow-hidden rounded-xl group cursor-pointer h-64'>
+                          <OptimizedImage
+                            src={convertGoogleDriveLink(feature.src)}
                             alt={feature.alt}
-                            className='w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300'
+                            className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
                           />
                           <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
                           <div className='absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>

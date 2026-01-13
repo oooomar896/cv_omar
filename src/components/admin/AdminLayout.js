@@ -15,19 +15,18 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AdminNotificationsManager from './AdminNotificationsManager';
-import Toast from '../common/Toast';
+import toast from 'react-hot-toast';
+import OptimizedImage from '../common/OptimizedImage';
 
 const AdminLayout = ({ children }) => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
     const handleNotification = (notif) => {
-        setToast({
-            show: true,
-            message: notif.message,
-            type: 'info' // or custom style for notification
+        toast(notif.message, {
+            icon: 'ℹ️',
+            style: { border: '1px solid #3b82f6', color: '#fff', background: '#1e293b' }
         });
     };
 
@@ -138,7 +137,7 @@ const AdminLayout = ({ children }) => {
                             <p className="text-xs text-primary-500 text-center">Super Admin</p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-dark-800 border border-gray-700 overflow-hidden">
-                            <img src="/my_image.jpg" alt="Admin" className="w-full h-full object-cover" />
+                            <OptimizedImage src="/my_image.jpg" alt="Admin" className="w-full h-full object-cover" />
                         </div>
                     </div>
                 </header>
@@ -160,16 +159,7 @@ const AdminLayout = ({ children }) => {
             {/* Notification Manager */}
             <AdminNotificationsManager onNotification={handleNotification} />
 
-            {/* Global Admin Toast */}
-            {toast.show && (
-                <div className="fixed top-4 left-4 z-[100]">
-                    <Toast
-                        message={toast.message}
-                        type={toast.type}
-                        onClose={() => setToast({ ...toast, show: false })}
-                    />
-                </div>
-            )}
+
         </div>
     );
 };

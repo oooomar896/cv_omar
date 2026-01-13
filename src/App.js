@@ -9,6 +9,8 @@ import ProtectedRoute from './components/admin/ProtectedRoute';
 
 import SEO from './components/common/SEO';
 import usePageTracking from './hooks/usePageTracking';
+import { Toaster } from 'react-hot-toast';
+import SEOStructuredData from './components/common/SEOStructuredData';
 
 // Lazy load components for better performance
 const Home = lazy(() => import('./components/Home'));
@@ -208,6 +210,18 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <Router>
+          <SEOStructuredData />
+          <Toaster
+            position="bottom-left"
+            toastOptions={{
+              className: 'font-cairo',
+              style: {
+                background: '#1e293b',
+                color: '#fff',
+                border: '1px solid #374151',
+              },
+            }}
+          />
           <AppContent />
         </Router>
       </ThemeProvider>

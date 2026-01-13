@@ -2,22 +2,19 @@ import { Layers, Plus, Edit2, Trash2, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
-import Toast from '../../components/common/Toast';
+
+import toast from 'react-hot-toast';
 
 const ManageSkills = () => {
     const [skills, setSkills] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
     const [currentSkill, setCurrentSkill] = useState({
         name: '',
         category: 'web',
         level: 80
     });
-
-    const showToast = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-    };
 
     useEffect(() => {
         const loadSkills = async () => {
@@ -32,16 +29,16 @@ const ManageSkills = () => {
         try {
             if (editMode) {
                 dataService.updateSkill(currentSkill.id, currentSkill);
-                showToast('تم تحديث المهارة بنجاح', 'success');
+                toast.success('تم تحديث المهارة بنجاح');
             } else {
                 dataService.addSkill(currentSkill);
-                showToast('تمت إضافة المهارة بنجاح', 'success');
+                toast.success('تمت إضافة المهارة بنجاح');
             }
             setSkills(dataService.getSkills());
             setIsModalOpen(false);
             resetForm();
         } catch (error) {
-            showToast('حدث خطأ أثناء الحفظ', 'error');
+            toast.error('حدث خطأ أثناء الحفظ');
         }
     };
 
@@ -61,22 +58,16 @@ const ManageSkills = () => {
             try {
                 dataService.deleteSkill(id);
                 setSkills(dataService.getSkills());
-                showToast('تم حذف المهارة بنجاح', 'success');
+                toast.success('تم حذف المهارة بنجاح');
             } catch (error) {
-                showToast('فشل حذف المهارة', 'error');
+                toast.error('فشل حذف المهارة');
             }
         }
     };
 
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
-            {toast.show && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ ...toast, show: false })}
-                />
-            )}
+
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold flex items-center gap-2 text-white">
                     <Layers className="text-primary-500" />

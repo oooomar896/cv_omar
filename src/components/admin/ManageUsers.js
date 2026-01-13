@@ -2,6 +2,7 @@ import { Mail, Calendar, Search, Phone, Trash2, UserPlus, Shield, Eye, FileText,
 import { useState, useEffect } from 'react';
 import { dataService } from '../../utils/dataService';
 import { motion, AnimatePresence } from 'framer-motion';
+import Skeleton from '../../components/common/Skeleton';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
@@ -9,12 +10,15 @@ const ManageUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [userProject, setUserProject] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadUsers = async () => {
+            setLoading(true);
             await dataService.fetchUsers();
             setUsers(dataService.getUsers());
             setProjects(dataService.getGeneratedProjects());
+            setLoading(false);
         };
         loadUsers();
     }, []);
@@ -68,77 +72,99 @@ const ManageUsers = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <AnimatePresence>
-                            {filteredUsers.map(user => (
-                                <motion.div
-                                    key={user.id}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    className="bg-dark-800 border border-gray-700 p-6 rounded-3xl hover:border-primary-500/50 transition-all relative group"
-                                >
-                                    <div className="absolute top-4 left-4 flex gap-2">
-                                        <button
-                                            onClick={() => handleViewDetails(user)}
-                                            className="p-2 bg-blue-500/10 text-blue-500 rounded-xl hover:bg-blue-500 hover:text-white transition-all"
-                                            title="عرض التفاصيل"
-                                        >
-                                            <Eye size={16} />
-                                        </button>
-                                        <a
-                                            href={`mailto:${user.email}`}
-                                            className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center"
-                                            title="إرسال بريد إلكتروني"
-                                        >
-                                            <Mail size={16} />
-                                        </a>
-                                        <button
-                                            onClick={() => handleDelete(user.id)}
-                                            className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
-                                            title="حذف"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-
+                        {loading ? (
+                            Array(6).fill(0).map((_, i) => (
+                                <div key={i} className="bg-dark-800 border border-gray-700 p-6 rounded-3xl">
                                     <div className="flex items-center gap-4 mb-6">
-                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-primary-500/20">
-                                            {user.name.charAt(0)}
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <h3 className="font-bold text-white text-lg truncate w-3/4">{user.name}</h3>
-                                            <div className="bg-primary-500/10 text-primary-400 px-2 py-0.5 rounded-lg text-[10px] inline-block font-mono mt-1">
-                                                {user.projectType || 'MEMBER'}
-                                            </div>
+                                        <Skeleton className="w-14 h-14 rounded-2xl" />
+                                        <div className="flex-1">
+                                            <Skeleton className="w-3/4 h-6 rounded-md mb-2" />
+                                            <Skeleton className="w-1/2 h-4 rounded-md" />
                                         </div>
                                     </div>
-
                                     <div className="space-y-3 pt-4 border-t border-gray-700/50">
-                                        <div className="flex items-center gap-3 text-sm text-gray-400">
-                                            <Mail size={16} className="text-gray-500" />
-                                            <span className="truncate">{user.email}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-sm text-gray-400">
-                                            <Phone size={16} className="text-gray-500" />
-                                            <span>{user.phone}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between pt-2">
-                                            <div className="flex items-center gap-2 text-[10px] text-gray-500">
-                                                <Calendar size={12} />
-                                                <span>{user.date}</span>
-                                            </div>
-                                            {projects.find(p => p.userEmail === user.email) && (
-                                                <div className="flex items-center gap-1 text-[10px] text-emerald-500">
-                                                    <CheckCircle size={12} />
-                                                    <span>مشروع جاهز</span>
-                                                </div>
-                                            )}
+                                        <Skeleton className="w-full h-4 rounded-md" />
+                                        <Skeleton className="w-2/3 h-4 rounded-md" />
+                                        <div className="flex justify-between pt-2">
+                                            <Skeleton className="w-20 h-3 rounded-md" />
+                                            <Skeleton className="w-16 h-3 rounded-md" />
                                         </div>
                                     </div>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                                </div>
+                            ))
+                        ) : (
+                            <AnimatePresence>
+                                {filteredUsers.map(user => (
+                                    <motion.div
+                                        key={user.id}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        className="bg-dark-800 border border-gray-700 p-6 rounded-3xl hover:border-primary-500/50 transition-all relative group"
+                                    >
+                                        <div className="absolute top-4 left-4 flex gap-2">
+                                            <button
+                                                onClick={() => handleViewDetails(user)}
+                                                className="p-2 bg-blue-500/10 text-blue-500 rounded-xl hover:bg-blue-500 hover:text-white transition-all"
+                                                title="عرض التفاصيل"
+                                            >
+                                                <Eye size={16} />
+                                            </button>
+                                            <a
+                                                href={`mailto:${user.email}`}
+                                                className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center"
+                                                title="إرسال بريد إلكتروني"
+                                            >
+                                                <Mail size={16} />
+                                            </a>
+                                            <button
+                                                onClick={() => handleDelete(user.id)}
+                                                className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                                                title="حذف"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-primary-500/20">
+                                                {user.name.charAt(0)}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <h3 className="font-bold text-white text-lg truncate w-3/4">{user.name}</h3>
+                                                <div className="bg-primary-500/10 text-primary-400 px-2 py-0.5 rounded-lg text-[10px] inline-block font-mono mt-1">
+                                                    {user.projectType || 'MEMBER'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3 pt-4 border-t border-gray-700/50">
+                                            <div className="flex items-center gap-3 text-sm text-gray-400">
+                                                <Mail size={16} className="text-gray-500" />
+                                                <span className="truncate">{user.email}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-sm text-gray-400">
+                                                <Phone size={16} className="text-gray-500" />
+                                                <span>{user.phone}</span>
+                                            </div>
+                                            <div className="flex items-center justify-between pt-2">
+                                                <div className="flex items-center gap-2 text-[10px] text-gray-500">
+                                                    <Calendar size={12} />
+                                                    <span>{user.date}</span>
+                                                </div>
+                                                {projects.find(p => p.userEmail === user.email) && (
+                                                    <div className="flex items-center gap-1 text-[10px] text-emerald-500">
+                                                        <CheckCircle size={12} />
+                                                        <span>مشروع جاهز</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        )}
                     </div>
                 )}
             </div>
@@ -249,7 +275,7 @@ const ManageUsers = () => {
                     </div>
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 };
 

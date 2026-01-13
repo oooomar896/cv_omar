@@ -19,14 +19,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { dataService } from '../../utils/dataService';
 import { supabase } from '../../utils/supabaseClient';
-import Toast from '../../components/common/Toast';
+import toast from 'react-hot-toast';
+import OptimizedImage from '../common/OptimizedImage';
+import { convertGoogleDriveLink } from '../../utils/imageUtils';
+import Skeleton from '../common/Skeleton';
 
 const ManageProjects = () => {
     const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [imageInputType, setImageInputType] = useState('url');
     const [uploading, setUploading] = useState(false);
     const [currentProject, setCurrentProject] = useState({
@@ -38,14 +41,12 @@ const ManageProjects = () => {
         status: 'published'
     });
 
-    const showToast = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-    };
-
     useEffect(() => {
         const loadProjects = async () => {
+            setLoading(true);
             await dataService.fetchProjects();
             setProjects(dataService.getProjects());
+            setLoading(false);
         };
         loadProjects();
     }, []);
@@ -55,16 +56,16 @@ const ManageProjects = () => {
         try {
             if (editMode) {
                 dataService.updateProject(currentProject.id, currentProject);
-                showToast('تم تحديث المشروع بنجاح', 'success');
+                toast.success('تم تحديث المشروع بنجاح');
             } else {
                 dataService.addProject(currentProject);
-                showToast('تمت إضافة المشروع بنجاح', 'success');
+                toast.success('تمت إضافة المشروع بنجاح');
             }
             setProjects(dataService.getProjects());
             setIsModalOpen(false);
             resetForm();
         } catch (error) {
-            showToast('حدث خطأ أثناء الحفظ', 'error');
+            toast.error('حدث خطأ أثناء الحفظ');
         }
     };
 
@@ -85,9 +86,9 @@ const ManageProjects = () => {
             try {
                 dataService.deleteProject(id);
                 setProjects(dataService.getProjects());
-                showToast('تم حذف المشروع بنجاح', 'success');
+                toast.success('تم حذف المشروع بنجاح');
             } catch (error) {
-                showToast('فشل حذف المشروع', 'error');
+                toast.error('فشل حذف المشروع');
             }
         }
     };
@@ -113,37 +114,16 @@ const ManageProjects = () => {
                 .getPublicUrl(filePath);
 
             setCurrentProject({ ...currentProject, image: data.publicUrl });
-            showToast('تم رفع الصورة بنجاح', 'success');
+            toast.success('تم رفع الصورة بنجاح');
         } catch (error) {
             console.error('Error uploading image:', error);
-            showToast('فشل رفع الصورة', 'error');
+            toast.error('فشل رفع الصورة');
         } finally {
             setUploading(false);
         }
     };
 
-    const convertGoogleDriveLink = (url) => {
-        if (!url) return url;
-        try {
-            if (url.includes('drive.google.com') || url.includes('share.google')) {
-                let id = '';
-                const match1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-                const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                const match3 = url.match(/share\.google\/([a-zA-Z0-9_-]+)/);
 
-                if (match1) id = match1[1];
-                else if (match2) id = match2[1];
-                else if (match3) id = match3[1];
-
-                if (id) {
-                    return `https://drive.google.com/uc?export=view&id=${id}`;
-                }
-            }
-        } catch (e) {
-            console.error('Error converting Google Drive link:', e);
-        }
-        return url;
-    };
 
     const categories = {
         web: { icon: Globe, color: 'text-blue-500', bg: 'bg-blue-500/10', label: 'موقع ويب' },
@@ -159,13 +139,6 @@ const ManageProjects = () => {
 
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
-            {toast.show && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ ...toast, show: false })}
-                />
-            )}
             {/* Header Actions */}
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
                 <div className="relative w-full md:w-96">
@@ -193,60 +166,84 @@ const ManageProjects = () => {
             <div className="bg-dark-900/50 border border-gray-800 rounded-3xl overflow-hidden">
                 {/* Mobile View (Cards) */}
                 <div className="md:hidden space-y-4 p-4">
-                    {filteredProjects.map((project) => {
-                        const CatInfo = categories[project.category] || categories.web;
-                        const Icon = CatInfo.icon;
-                        return (
-                            <motion.div
-                                key={project.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-dark-800 rounded-2xl p-5 border border-gray-700/50 shadow-sm relative overflow-hidden group"
-                            >
-                                <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-
+                    {loading ? (
+                        Array(3).fill(0).map((_, i) => (
+                            <div key={i} className="bg-dark-800 rounded-2xl p-5 border border-gray-700/50">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className={`p-2.5 rounded-xl ${CatInfo.bg} ${CatInfo.color}`}>
-                                            <Icon size={20} />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-200 text-lg">{project.name}</h3>
-                                            <span className={`text-xs px-2 py-0.5 rounded-md ${CatInfo.bg} ${CatInfo.color} bg-opacity-20`}>
-                                                {CatInfo.label}
-                                            </span>
+                                        <Skeleton className="w-10 h-10 rounded-xl" />
+                                        <div className="space-y-2">
+                                            <Skeleton className="w-32 h-4 rounded-md" />
+                                            <Skeleton className="w-16 h-3 rounded-md" />
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button
-                                            onClick={() => handleEditClick(project)}
-                                            className="p-2 bg-dark-700/50 rounded-lg text-gray-400 hover:text-primary-400 transition-colors border border-gray-700 hover:border-primary-500/50"
-                                        >
-                                            <Edit2 size={18} />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(project.id)}
-                                            className="p-2 bg-dark-700/50 rounded-lg text-gray-400 hover:text-red-400 transition-colors border border-gray-700 hover:border-red-500/50"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
+                                        <Skeleton className="w-8 h-8 rounded-lg" />
+                                        <Skeleton className="w-8 h-8 rounded-lg" />
                                     </div>
                                 </div>
+                                <div className="mt-4 pt-4 border-t border-gray-700/50 flex justify-between">
+                                    <Skeleton className="w-20 h-3 rounded-md" />
+                                    <Skeleton className="w-16 h-3 rounded-md" />
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        filteredProjects.map((project) => {
+                            const CatInfo = categories[project.category] || categories.web;
+                            const Icon = CatInfo.icon;
+                            return (
+                                <motion.div
+                                    key={project.id}
+                                    layout
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-dark-800 rounded-2xl p-5 border border-gray-700/50 shadow-sm relative overflow-hidden group"
+                                >
+                                    <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                <div className="flex justify-between items-center text-sm text-gray-500 mt-4 pt-4 border-t border-gray-700/50">
-                                    <span className="font-mono">{project.date}</span>
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
-                                        <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
-                                            {project.status === 'published' ? 'منشور' : 'مسودة'}
-                                        </span>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2.5 rounded-xl ${CatInfo.bg} ${CatInfo.color}`}>
+                                                <Icon size={20} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-gray-200 text-lg">{project.name}</h3>
+                                                <span className={`text-xs px-2 py-0.5 rounded-md ${CatInfo.bg} ${CatInfo.color} bg-opacity-20`}>
+                                                    {CatInfo.label}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleEditClick(project)}
+                                                className="p-2 bg-dark-700/50 rounded-lg text-gray-400 hover:text-primary-400 transition-colors border border-gray-700 hover:border-primary-500/50"
+                                            >
+                                                <Edit2 size={18} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(project.id)}
+                                                className="p-2 bg-dark-700/50 rounded-lg text-gray-400 hover:text-red-400 transition-colors border border-gray-700 hover:border-red-500/50"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                    {filteredProjects.length === 0 && (
+
+                                    <div className="flex justify-between items-center text-sm text-gray-500 mt-4 pt-4 border-t border-gray-700/50">
+                                        <span className="font-mono">{project.date}</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
+                                            <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
+                                                {project.status === 'published' ? 'منشور' : 'مسودة'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            );
+                        })
+                    )}
+                    {!loading && filteredProjects.length === 0 && (
                         <div className="text-center py-8 text-gray-500">
                             لا توجد مشاريع مطابقة للبحث
                         </div>
@@ -266,57 +263,79 @@ const ManageProjects = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-800 text-sm">
-                            {filteredProjects.map((project) => {
-                                const CatInfo = categories[project.category] || categories.web;
-                                const Icon = CatInfo.icon;
-
-                                return (
-                                    <motion.tr
-                                        key={project.id}
-                                        layout
-                                        className="hover:bg-white/5 transition-colors group"
-                                    >
+                            {loading ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <tr key={i} className="hover:bg-white/5 transition-colors">
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={`p-2 rounded-lg ${CatInfo.bg} ${CatInfo.color}`}>
-                                                    <Icon size={20} />
+                                                <Skeleton className="w-10 h-10 rounded-lg" />
+                                                <Skeleton className="w-32 h-4 rounded-md" />
+                                            </div>
+                                        </td>
+                                        <td className="p-4"><Skeleton className="w-20 h-6 rounded-lg" /></td>
+                                        <td className="p-4"><Skeleton className="w-24 h-4 rounded-md" /></td>
+                                        <td className="p-4"><Skeleton className="w-16 h-6 rounded-full" /></td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-2">
+                                                <Skeleton className="w-8 h-8 rounded-lg" />
+                                                <Skeleton className="w-8 h-8 rounded-lg" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                filteredProjects.map((project) => {
+                                    const CatInfo = categories[project.category] || categories.web;
+                                    const Icon = CatInfo.icon;
+
+                                    return (
+                                        <motion.tr
+                                            key={project.id}
+                                            layout
+                                            className="hover:bg-white/5 transition-colors group"
+                                        >
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`p-2 rounded-lg ${CatInfo.bg} ${CatInfo.color}`}>
+                                                        <Icon size={20} />
+                                                    </div>
+                                                    <span className="font-bold text-gray-200">{project.name}</span>
                                                 </div>
-                                                <span className="font-bold text-gray-200">{project.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${CatInfo.bg} ${CatInfo.color}`}>
-                                                {CatInfo.label}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-gray-400 font-mono text-xs">{project.date}</td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
-                                                <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
-                                                    {project.status === 'published' ? 'منشور' : 'مسودة'}
+                                            </td>
+                                            <td className="p-4">
+                                                <span className={`px-3 py-1 rounded-lg text-[10px] font-bold ${CatInfo.bg} ${CatInfo.color}`}>
+                                                    {CatInfo.label}
                                                 </span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                <button
-                                                    onClick={() => handleEditClick(project)}
-                                                    className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500"
-                                                >
-                                                    <Edit2 size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(project.id)}
-                                                    className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-all text-gray-500"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </motion.tr>
-                                );
-                            })}
+                                            </td>
+                                            <td className="p-4 text-gray-400 font-mono text-xs">{project.date}</td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`w-2 h-2 rounded-full ${project.status === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-600'}`} />
+                                                    <span className={project.status === 'published' ? 'text-emerald-500' : 'text-gray-500'}>
+                                                        {project.status === 'published' ? 'منشور' : 'مسودة'}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => handleEditClick(project)}
+                                                        className="p-2 hover:bg-primary-500/10 hover:text-primary-500 rounded-lg transition-all text-gray-500"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(project.id)}
+                                                        className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-all text-gray-500"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </motion.tr>
+                                    );
+                                })
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -456,7 +475,7 @@ const ManageProjects = () => {
                                     )}
                                     {currentProject.image && (
                                         <div className="mt-2 relative w-full h-40 rounded-xl overflow-hidden border border-gray-800">
-                                            <img
+                                            <OptimizedImage
                                                 src={currentProject.image}
                                                 alt="Preview"
                                                 className="w-full h-full object-cover"

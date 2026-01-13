@@ -2,22 +2,19 @@ import { Newspaper, Plus, Trash2, Calendar, MessageSquare, X, Edit2 } from 'luci
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
-import Toast from '../../components/common/Toast';
+import toast from 'react-hot-toast';
+import OptimizedImage from '../../components/common/OptimizedImage';
+import { convertGoogleDriveLink } from '../../utils/imageUtils';
 
 const ManageNews = () => {
     const [news, setNews] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [currentItem, setCurrentItem] = useState({
         title: '',
         content: '',
         image: ''
     });
-
-    const showToast = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-    };
 
     useEffect(() => {
         const loadNews = async () => {
@@ -32,16 +29,16 @@ const ManageNews = () => {
         try {
             if (editMode) {
                 dataService.updateNews(currentItem.id, currentItem);
-                showToast('تم تحديث الخبر بنجاح', 'success');
+                toast.success('تم تحديث الخبر بنجاح');
             } else {
                 dataService.addNews(currentItem);
-                showToast('تمت إضافة الخبر بنجاح', 'success');
+                toast.success('تمت إضافة الخبر بنجاح');
             }
             setNews(dataService.getNews());
             setIsModalOpen(false);
             resetForm();
         } catch (error) {
-            showToast('حدث خطأ أثناء الحفظ', 'error');
+            toast.error('حدث خطأ أثناء الحفظ');
         }
     };
 
@@ -61,22 +58,16 @@ const ManageNews = () => {
             try {
                 dataService.deleteNews(id);
                 setNews(dataService.getNews());
-                showToast('تم حذف الخبر بنجاح', 'success');
+                toast.success('تم حذف الخبر بنجاح');
             } catch (error) {
-                showToast('فشل حذف الخبر', 'error');
+                toast.error('فشل حذف الخبر');
             }
         }
     };
 
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
-            {toast.show && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ ...toast, show: false })}
-                />
-            )}
+
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold flex items-center gap-2 text-white">
                     <Newspaper className="text-primary-500" />
@@ -102,7 +93,11 @@ const ManageNews = () => {
                         <div className="flex items-start gap-4 flex-grow">
                             {item.image && (
                                 <div className="w-20 h-20 rounded-xl overflow-hidden hidden md:block border border-gray-800">
-                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                    <OptimizedImage
+                                        src={convertGoogleDriveLink(item.image)}
+                                        alt={item.title}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
                             )}
                             <div className="space-y-2">
