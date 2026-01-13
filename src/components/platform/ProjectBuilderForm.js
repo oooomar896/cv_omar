@@ -18,7 +18,6 @@ import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS, AI_AGENTS, COUNTRY_CODES 
 import AnalysisPreview from './AnalysisPreview';
 import ProcessingStatus from './ProcessingStatus';
 import FileViewer from './FileViewer';
-import { coderAgent } from '../../utils/coderAgentLogic';
 import { qaAgent } from '../../utils/qaAgentLogic';
 import { dataService } from '../../utils/dataService';
 import { supabase } from '../../utils/supabaseClient';

@@ -96,10 +96,9 @@ const DomainCheckout = () => {
                 notes: `Domain: ${item.domain} | Ref: ${paymentResult.id}`
             }));
 
-            const { data: transactionData, error: transactionError } = await supabase
+            const { error: transactionError } = await supabase
                 .from('domain_transactions')
-                .insert(transactions)
-                .select();
+                .insert(transactions);
 
             if (transactionError) throw transactionError;
 
