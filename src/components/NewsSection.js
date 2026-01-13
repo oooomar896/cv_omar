@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Trophy, MessageCircle, Calendar } from 'lucide-react';
+import { ExternalLink, Trophy, MessageCircle, Calendar, Award, FileText, Layout } from 'lucide-react';
 import { dataService } from '../utils/dataService';
 import OptimizedImage from './common/OptimizedImage';
 import { convertGoogleDriveLink } from '../utils/imageUtils';
@@ -49,6 +49,7 @@ const NewsSection = () => {
           ? 'object-contain bg-white/5 p-8'
           : 'object-cover'
       },
+      fallbackIcon: item.fallbackIcon,
       featuresTitle: 'تفاصيل الخبر',
       features: [{ type: 'text', title: 'المحتوى', description: item.content }],
       stats: [{ value: 'جديد', label: 'تحديث لحظي', color: 'primary' }]
@@ -255,6 +256,7 @@ const NewsSection = () => {
                         src={convertGoogleDriveLink(activeNews.image.src)}
                         alt={activeNews.image.alt}
                         className={`w-full h-full ${activeNews.image.className || 'object-cover'}`}
+                        FallbackIcon={activeNews.fallbackIcon === 'Award' ? Award : activeNews.fallbackIcon === 'FileText' ? FileText : Layout}
                       />
                       <div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent' />
                       <div className='absolute bottom-4 left-4 right-4'>

@@ -38,8 +38,12 @@ const OptimizedImage = ({
             />
 
             {hasError && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500 text-xs text-center p-2">
-                    فشل تحميل الصورة
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
+                    {props.FallbackIcon ? (
+                        <props.FallbackIcon className="w-1/3 h-1/3 opacity-20" />
+                    ) : (
+                        <span className="text-xs text-center p-2">فشل تحميل الصورة</span>
+                    )}
                 </div>
             )}
         </div>
