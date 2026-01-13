@@ -35,8 +35,15 @@ const AdminLayout = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('admin_token');
+        const clientUser = localStorage.getItem('portal_user');
+
         if (!token) {
-            navigate('/admin/login');
+            if (clientUser) {
+                toast.error('غير مصرح لك بالدخول هنا. تم توجيهك للوحة العميل.');
+                navigate('/portal/dashboard');
+            } else {
+                navigate('/admin/login');
+            }
         }
     }, [navigate]);
 
