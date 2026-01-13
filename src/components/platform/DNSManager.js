@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Save, X, AlertCircle, CheckCircle, Globe, ArrowLeft } from 'lucide-react';
+import { Plus, Trash2, Save, AlertCircle, Globe, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import toast from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -30,13 +30,7 @@ const DNSManager = () => {
         { value: 'NS', label: 'NS', description: 'Name Server' }
     ];
 
-    const commonHosts = [
-        { value: '@', label: '@', description: 'Root domain' },
-        { value: 'www', label: 'www', description: 'www subdomain' },
-        { value: 'mail', label: 'mail', description: 'Mail server' },
-        { value: 'ftp', label: 'ftp', description: 'FTP server' },
-        { value: '*', label: '*', description: 'Wildcard' }
-    ];
+
 
     const ttlOptions = [
         { value: 300, label: '5 دقائق' },
@@ -51,6 +45,7 @@ const DNSManager = () => {
             fetchDomain();
             fetchDNSRecords();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [domainId]);
 
     const fetchDomain = async () => {
