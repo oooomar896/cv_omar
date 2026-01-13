@@ -124,7 +124,7 @@ const DEFAULT_DATA = {
     ],
     SETTINGS: {
         siteName: 'عمر التقني - Portfolio',
-        adminEmail: 'oooomar123450@gmail.com',
+        adminEmail: '',
         enableAIBuilder: true,
         maintenanceMode: false,
         notifications: true,
@@ -545,21 +545,13 @@ class DataService {
 
     // Auth
     async loginAdmin(email, password) {
-        // Hardcoded backdoor for the provided credentials to ensure access
-        if (email === 'oooomar123450@gmail.com' && password === 'Omar@2597798') {
-            return {
-                id: 'master_admin',
-                email: email,
-                role: 'super_admin'
-            };
-        }
-
+        // Secure login via Supabase only
         try {
             const { data, error } = await supabase
                 .from('admins')
                 .select('*')
                 .eq('email', email)
-                .eq('password', password)
+                .eq('password', password) // Note: In production, password should be hashed and compared securely
                 .maybeSingle();
 
             if (error) throw error;
@@ -800,10 +792,19 @@ class DataService {
 
     async logActivity(type, message) {
         try {
+            // Try to get admin email from local storage if available
+            let adminEmail = 'system';
+            try {
+                const adminUser = JSON.parse(localStorage.getItem('admin_user'));
+                if (adminUser && adminUser.email) adminEmail = adminUser.email;
+            } catch (e) {
+                // Ignore parsing error
+            }
+
             const newActivity = {
                 type,
                 message,
-                admin_email: 'oooomar123450@gmail.com' // Could be dynamic
+                admin_email: adminEmail
             };
 
             await supabase.from('activities').insert([newActivity]);

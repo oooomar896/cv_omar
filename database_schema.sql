@@ -71,7 +71,7 @@ create table if not exists admins (
 
 -- Insert initial admin (Safe insert)
 insert into admins (email, role)
-values ('oooomar123450@gmail.com', 'super_admin')
+values ('oooomar896@gmail.com', 'super_admin')
 on conflict (email) do nothing;
 
 alter table admins enable row level security;
