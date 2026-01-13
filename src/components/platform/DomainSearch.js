@@ -208,15 +208,15 @@ const DomainSearch = () => {
 
                     {/* Extension Selection */}
                     <div>
-                        <label className="block text-gray-400 mb-3 text-sm">اختر الامتدادات:</label>
+                        <div className="block text-gray-400 mb-3 text-sm">اختر الامتدادات:</div>
                         <div className="flex flex-wrap gap-2">
                             {availableExtensions.map(({ ext, label, popular }) => (
                                 <button
                                     key={ext}
                                     onClick={() => toggleExtension(ext)}
                                     className={`px-4 py-2 rounded-lg border transition-all duration-300 ${selectedExtensions.includes(ext)
-                                            ? 'bg-primary-500 border-primary-500 text-white'
-                                            : 'bg-dark-900/50 border-gray-600/50 text-gray-400 hover:border-primary-500/50'
+                                        ? 'bg-primary-500 border-primary-500 text-white'
+                                        : 'bg-dark-900/50 border-gray-600/50 text-gray-400 hover:border-primary-500/50'
                                         } ${popular ? 'ring-2 ring-accent-500/20' : ''}`}
                                 >
                                     {label}
@@ -244,8 +244,8 @@ const DomainSearch = () => {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
                                 className={`bg-dark-800/50 backdrop-blur-sm border rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 ${result.available
-                                        ? 'border-green-500/30 hover:border-green-500/50'
-                                        : 'border-gray-700/50 opacity-75'
+                                    ? 'border-green-500/30 hover:border-green-500/50'
+                                    : 'border-gray-700/50 opacity-75'
                                     }`}
                             >
                                 <div className="flex items-center gap-4 flex-1">
