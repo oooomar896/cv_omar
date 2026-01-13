@@ -2,7 +2,7 @@ import { MessageSquare, Trash2, Mail, Clock, Search, Send, Reply, Sparkles } fro
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
-import { dataService } from '../../utils/dataService';
+
 import toast from 'react-hot-toast';
 import Skeleton from '../../components/common/Skeleton';
 
