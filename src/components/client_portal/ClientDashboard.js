@@ -1,5 +1,6 @@
 
 import { motion } from 'framer-motion';
+import { supabase } from '../../utils/supabaseClient';
 import {
     LayoutDashboard,
     FileText,
@@ -7,13 +8,22 @@ import {
     CheckCircle,
     Clock,
     Bell,
-    CreditCard
+    CreditCard,
+    LogOut
 } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
 
 const ClientDashboard = () => {
     const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        localStorage.removeItem('portal_user');
+        localStorage.removeItem('portal_token');
+        navigate('/portal/login');
+    };
+
     // Mock Data for Client Project
     const projectStatus = {
         name: "منصة التجارة الإلكترونية AI",
@@ -54,10 +64,17 @@ const ClientDashboard = () => {
                                 <Bell size={20} className="text-gray-400" />
                                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-dark-900"></span>
                             </button>
-                            <div className="flex items-center gap-3 pr-4 border-r border-white/10">
-                                <span className="text-sm text-gray-300">أحمد محمد</span>
+                            <div className="flex items-center gap-3 pr-4 border-r border-white/10 pl-4">
+                                <span className="text-sm text-gray-300 hidden md:block">حسابي</span>
                                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 border border-white/10"></div>
                             </div>
+                            <button
+                                onClick={handleLogout}
+                                className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/10 transition-colors"
+                                title="تسجيل الخروج"
+                            >
+                                <LogOut size={20} />
+                            </button>
                         </div>
                     </div>
                 </div>
