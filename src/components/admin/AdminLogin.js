@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Mail, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,13 @@ const AdminLogin = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const adminToken = localStorage.getItem('admin_token');
+        if (adminToken) {
+            navigate('/admin', { replace: true });
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();

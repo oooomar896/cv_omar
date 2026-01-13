@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Mail, ShieldCheck, Sparkles, Lock, UserPlus, LogIn } from 'lucide-react';
@@ -11,6 +11,26 @@ const PortalLogin = () => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    // Ensure local storage is synced
+                    if (!localStorage.getItem('portal_user')) {
+                        localStorage.setItem('portal_user', session.user.email);
+                        localStorage.setItem('portal_token', session.access_token);
+                    }
+                    navigate('/portal/dashboard', { replace: true });
+                }
+            } catch (error) {
+                console.error('Session check failed', error);
+            }
+        };
+
+        checkSession();
+    }, [navigate]);
 
     const handleAuth = async (e) => {
         e.preventDefault();
