@@ -8,7 +8,6 @@ import {
     LogOut,
     Briefcase,
     LayoutDashboard,
-    Activity,
     FileText
 } from 'lucide-react';
 
@@ -18,7 +17,6 @@ import { useState, useEffect } from 'react';
 const ClientDashboard = () => {
     const navigate = useNavigate();
     const [activeProjects, setActiveProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState('');
 
     const handleLogout = async () => {
@@ -70,8 +68,6 @@ const ClientDashboard = () => {
                 setActiveProjects(formattedProjects);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
-            } finally {
-                setLoading(false);
             }
         };
 

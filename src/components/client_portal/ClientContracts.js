@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, CheckCircle, Download, PenTool, AlertCircle, ChevronLeft, CreditCard } from 'lucide-react';
+import { FileText, Download, PenTool, AlertCircle, ChevronLeft, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { dataService } from '../../utils/dataService';
 import toast from 'react-hot-toast';
