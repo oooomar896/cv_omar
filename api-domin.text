@@ -1,0 +1,6 @@
+ApiUser=omar256
+ApiKey=PLACE_YOUR_API_KEY_HERE
+UserName=omar256
+ClientIp=YOUR_PUBLIC_IP
+# Namecheap API Documentation for Domain Check:
+# https://api.namecheap.com/xml.response?ApiUser=omar256&ApiKey=...&UserName=omar256&Command=namecheap.domains.check&ClientIp=...&DomainList=example.com
