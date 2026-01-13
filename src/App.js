@@ -1,58 +1,42 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import ErrorBoundary from './components/ErrorBoundary';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { lazy, Suspense, useEffect } from 'react';
+/* ... imports ... */
 
-import SEO from './components/common/SEO';
-import usePageTracking from './hooks/usePageTracking';
-import { Toaster } from 'react-hot-toast';
-import SEOStructuredData from './components/common/SEOStructuredData';
-
-// Lazy load components for better performance
-const Home = lazy(() => import('./components/Home'));
-const ProjectBuilderForm = lazy(() => import('./components/platform/ProjectBuilderForm'));
-const RequestService = lazy(() => import('./components/platform/RequestService'));
-const DeveloperProfile = lazy(() => import('./components/DeveloperProfile'));
-const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
-const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
-const DashboardHome = lazy(() => import('./components/admin/DashboardHome'));
-const ManageProjects = lazy(() => import('./components/admin/ManageProjects'));
-const ManageSkills = lazy(() => import('./components/admin/ManageSkills'));
-const ManageNews = lazy(() => import('./components/admin/ManageNews'));
-const ManageMessages = lazy(() => import('./components/admin/ManageMessages'));
-const ManageRequests = lazy(() => import('./components/admin/ManageRequests'));
-const ManageUsers = lazy(() => import('./components/admin/ManageUsers'));
-const ManageSettings = lazy(() => import('./components/admin/ManageSettings'));
-const AnalyticsDashboard = lazy(() => import('./components/admin/AnalyticsDashboard'));
-const PortalLogin = lazy(() => import('./components/platform/PortalLogin'));
-const UserPortal = lazy(() => import('./components/platform/UserPortal'));
-const UIKitLibrary = lazy(() => import('./components/platform/UIKitLibrary'));
-const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
-const DomainSearch = lazy(() => import('./components/platform/DomainSearch'));
-const DomainManagement = lazy(() => import('./components/platform/DomainManagement'));
-const DomainCheckout = lazy(() => import('./components/platform/DomainCheckout'));
-const DNSManager = lazy(() => import('./components/platform/DNSManager'));
-const ProtectedRoute = lazy(() => import('./components/common/ProtectedRoute'));
-
-// Loading component
-const LoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-dark-950">
-    <div className="flex flex-col items-center gap-4">
-      <div className="relative">
-        <div className="w-16 h-16 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"></div>
-      </div>
-      <p className="text-gray-400 font-cairo">جاري التحميل...</p>
-    </div>
-  </div>
-);
+/* ... LoadingFallback ... */
 
 const AppContent = () => {
   usePageTracking();
   const { pathname } = useLocation();
   const isAdminPath = pathname.startsWith('/admin');
+
+  // Auto-seed data mechanism
+  useEffect(() => {
+    const seedData = async () => {
+      try {
+        const { dataService } = await import('./utils/dataService');
+        const news = dataService.getNews();
+
+        // Check if Maldia cert exists in current state
+        if (!news.some(n => n.title.includes('Maldia') || n.title.includes('Global'))) {
+          console.log('Auto-seeding Maldia Certificate...');
+          await dataService.addNews({
+            title: 'شهادة البحث والتطوير - Maldia Global',
+            content: 'الحصول على شهادة R&D Certificate من شركة Maldia Global International Technology كمطور Flutter بعد إتمام المهام البرمجية والوحدات المطلوبة بنجاح وتسليمها.',
+            date: '2022-06-15',
+            image: '/images/cert/maldia_cert.jpg',
+            // Note: fallbackIcon handling is local-logic mostly, but we save it if DB schema allows or it stays in local override
+            link: '#'
+          });
+        }
+      } catch (err) {
+        // Silent fail
+        console.log('Seeding check skipped');
+      }
+    };
+
+    // Delay to allow app to init
+    const timer = setTimeout(seedData, 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className='min-h-screen bg-dark-950 text-white font-cairo'>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Skeleton from './Skeleton';
 import { twMerge } from 'tailwind-merge';
+import { ImageOff } from 'lucide-react';
 
 const OptimizedImage = ({
     src,
@@ -9,6 +10,7 @@ const OptimizedImage = ({
     width,
     height,
     priority = false,
+    FallbackIcon = ImageOff, // Default icon if none provided
     ...props
 }) => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -38,12 +40,11 @@ const OptimizedImage = ({
             />
 
             {hasError && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
-                    {props.FallbackIcon ? (
-                        <props.FallbackIcon className="w-1/3 h-1/3 opacity-20" />
-                    ) : (
-                        <span className="text-xs text-center p-2">فشل تحميل الصورة</span>
-                    )}
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-800/80 backdrop-blur-sm border border-white/5">
+                    <div className="flex flex-col items-center gap-2 p-4 text-center">
+                        <FallbackIcon className="w-8 h-8 text-gray-600" strokeWidth={1.5} />
+                        <span className="text-[10px] text-gray-500 font-mono">Image N/A</span>
+                    </div>
                 </div>
             )}
         </div>
