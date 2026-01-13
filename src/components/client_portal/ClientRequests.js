@@ -75,92 +75,122 @@ const ClientRequests = () => {
 
     return (
         <div className="min-h-screen bg-dark-900 text-white font-cairo p-4 md:p-8" dir="rtl">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <div className="flex items-center gap-4">
-                        <Link to="/portal/dashboard" className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-                            <ChevronLeft size={24} />
-                        </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold flex items-center gap-2">
-                                <LayoutList className="text-blue-400" />
-                                طلباتي
-                            </h1>
-                            <p className="text-gray-400 text-sm">تتبع وإدارة جميع طلبات المشاريع والخدمات</p>
+            <div className="max-w-7xl mx-auto">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <div className="flex items-center gap-4 mb-2">
+                            <Link to="/portal/dashboard" className="p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all border border-white/5">
+                                <ChevronLeft size={20} />
+                            </Link>
+                            <h1 className="text-4xl font-extrabold text-white tracking-tight">قائمة الطلبات</h1>
                         </div>
-                    </div>
+                        <p className="text-gray-400 flex items-center gap-2 pr-12">
+                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                            تتبع حالة طلباتك والمشاريع قيد المراجعة
+                        </p>
+                    </motion.div>
 
                     <button
                         onClick={() => navigate('/builder')}
-                        className="px-6 py-2.5 bg-primary-600 hover:bg-primary-500 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary-500/20 transition-all"
+                        className="group relative px-8 py-4 bg-primary-600 hover:bg-primary-500 text-dark-900 rounded-2xl font-black text-sm transition-all shadow-xl shadow-primary-500/20 active:scale-95 flex items-center gap-2"
                     >
-                        <Plus size={18} />
-                        طلب مشروع جديد
+                        <Plus size={20} />
+                        <span>إرسال طلب جديد</span>
                     </button>
                 </div>
 
-                {/* Filters */}
-                <div className="glass-panel p-4 rounded-2xl mb-6 flex items-center gap-4">
-                    <Search className="text-gray-500" size={20} />
-                    <input
-                        type="text"
-                        placeholder="البحث في الطلبات..."
-                        className="bg-transparent border-none focus:outline-none text-white w-full"
-                    />
+                {/* Filters & Search */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div className="md:col-span-2 glass-panel p-2 rounded-3xl border border-white/5 bg-dark-800/40 flex items-center gap-4 group focus-within:border-primary-500/30 transition-all">
+                        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-400">
+                            <Search size={20} />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="ابحث عن مشروع بالاسم أو النوع..."
+                            className="bg-transparent border-none focus:outline-none text-white w-full font-medium placeholder:text-gray-600"
+                        />
+                    </div>
+                    <div className="glass-panel p-2 rounded-3xl border border-white/5 bg-dark-800/40 flex items-center gap-2">
+                        <div className="flex-1 py-3 px-4 rounded-2xl bg-white/5 text-gray-400 text-xs font-bold text-center border border-white/5 cursor-pointer hover:bg-white/10 transition-all">الكل</div>
+                        <div className="flex-1 py-3 px-4 rounded-2xl text-gray-600 text-xs font-bold text-center cursor-pointer hover:text-gray-400 transition-all">قيد المراجعة</div>
+                        <div className="flex-1 py-3 px-4 rounded-2xl text-gray-600 text-xs font-bold text-center cursor-pointer hover:text-gray-400 transition-all">نشط</div>
+                    </div>
                 </div>
 
-                {/* List */}
-                <div className="space-y-4">
-                    {requests.map((req, idx) => (
-                        <motion.div
-                            key={req.id || idx}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="glass-panel p-6 rounded-2xl group hover:border-primary-500/30 transition-all border border-white/5 relative overflow-hidden"
-                        >
-                            {/* Decorative ID Background */}
-                            <span className="absolute -left-4 -bottom-4 text-[100px] font-black text-white/5 pointer-events-none select-none">
-                                {String(idx + 1).padStart(2, '0')}
-                            </span>
+                {/* List of Requests */}
+                <div className="grid grid-cols-1 gap-6">
+                    {loading ? (
+                        [1, 2, 3].map(i => (
+                            <div key={i} className="h-32 rounded-3xl bg-white/5 animate-pulse border border-white/5"></div>
+                        ))
+                    ) : requests.length > 0 ? (
+                        requests.map((req, idx) => (
+                            <motion.div
+                                key={req.id || idx}
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="group relative"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                            <div className="flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
-                                <div className="flex items-center gap-4 w-full md:w-auto">
-                                    <div className="w-12 h-12 rounded-xl bg-dark-800 flex items-center justify-center border border-white/5 group-hover:border-primary-500/50 transition-colors">
-                                        <FileText size={20} className="text-gray-400 group-hover:text-primary-400 transition-colors" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-white text-lg">{req.project_name || req.title}</h3>
-                                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                                            <span>{req.project_type || req.type}</span>
-                                            <span>•</span>
-                                            <span className="font-mono">{new Date(req.created_at || Date.now()).toLocaleDateString()}</span>
+                                <div className="relative glass-panel p-8 rounded-[2.5rem] border border-white/5 bg-dark-800/20 hover:bg-dark-800/40 transition-all flex flex-col md:flex-row items-center gap-8 group-hover:border-white/10">
+                                    <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-dark-700 to-dark-900 border border-white/5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                        <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400">
+                                            <FileText size={28} />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex items-center justify-between w-full md:w-auto gap-8">
-                                    <div className="text-center">
-                                        <div className="text-xs text-gray-500 mb-1">الميزانية</div>
-                                        <div className="font-mono font-bold text-white">{req.budget || '-'}</div>
+                                    <div className="flex-1 text-center md:text-right">
+                                        <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
+                                            <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors uppercase tracking-tight">
+                                                {req.project_name || req.title}
+                                            </h3>
+                                            {getStatusBadge(req.status)}
+                                        </div>
+                                        <div className="flex items-center justify-center md:justify-start gap-4 text-xs font-bold text-gray-500 uppercase tracking-widest">
+                                            <span className="flex items-center gap-1.5"><LayoutList size={14} /> {req.project_type || req.type}</span>
+                                            <span className="w-1 h-1 rounded-full bg-gray-800"></span>
+                                            <span className="flex items-center gap-1.5 font-mono"><Clock size={14} /> {new Date(req.created_at || Date.now()).toLocaleDateString('ar-SA')}</span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        {getStatusBadge(req.status)}
+
+                                    <div className="flex items-center gap-10 shrink-0 border-t md:border-t-0 md:border-r border-white/5 pt-6 md:pt-0 md:pr-10 w-full md:w-auto">
+                                        <div className="text-center md:text-right">
+                                            <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-1 font-bold">الميزانية المقديرة</div>
+                                            <div className="text-xl font-black text-white font-mono tracking-tighter">{req.budget || 'غير محدد'}</div>
+                                        </div>
+                                        <button
+                                            onClick={() => setSelectedRequest(req)}
+                                            className="px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black text-sm border border-white/5 transition-all active:scale-95 group/btn"
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                عرض التفاصيل
+                                                <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                                            </span>
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => setSelectedRequest(req)}
-                                        className="px-4 py-2 bg-white/5 rounded-lg text-sm text-white hover:bg-white/10 transition-colors"
-                                    >
-                                        التفاصيل
-                                    </button>
                                 </div>
+                            </motion.div>
+                        ))
+                    ) : (
+                        <div className="glass-panel rounded-[3rem] p-20 text-center border border-white/5 bg-dark-800/20">
+                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-700">
+                                <LayoutList size={40} />
                             </div>
-                        </motion.div>
-                    ))}
-
-                    {requests.length === 0 && !loading && (
-                        <div className="text-center py-20 text-gray-600">
-                            لا توجد طلبات حتى الآن. ابدأ بطلب مشروع جديد!
+                            <h3 className="text-2xl font-bold text-gray-400 mb-2">لا توجد طلبات حتى الآن</h3>
+                            <p className="text-gray-500 mb-10 max-w-sm mx-auto">ابدأ ببناء مشروعك الأول من خلال المحرك الذكي الخاص بنا في دقائق معدودة.</p>
+                            <button
+                                onClick={() => navigate('/builder')}
+                                className="px-10 py-4 bg-primary-600 shadow-xl shadow-primary-500/20 text-dark-900 rounded-2xl font-black transition-all hover:scale-105 active:scale-95"
+                            >
+                                إطلاق مشروع جديد
+                            </button>
                         </div>
                     )}
                 </div>
@@ -169,62 +199,92 @@ const ClientRequests = () => {
             {/* Request Details Modal */}
             <AnimatePresence>
                 {selectedRequest && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 isolate">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 isolate">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setSelectedRequest(null)}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                            className="absolute inset-0 bg-dark-950/90 backdrop-blur-xl"
                         />
                         <motion.div
-                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            initial={{ scale: 0.9, opacity: 0, y: 40 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-2xl p-0 relative z-10 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+                            exit={{ scale: 0.9, opacity: 0, y: 40 }}
+                            className="bg-dark-900 border border-white/10 rounded-[3rem] w-full max-w-3xl p-0 relative z-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col max-h-full"
                         >
-                            <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-dark-900 sticky top-0 z-20">
-                                <h2 className="text-xl font-bold text-white">تفاصيل الطلب</h2>
-                                <button onClick={() => setSelectedRequest(null)} className="p-2 hover:bg-white/10 rounded-full text-gray-400">✕</button>
+                            <div className="p-8 border-b border-white/5 flex justify-between items-center bg-dark-800/50 backdrop-blur-md sticky top-0 z-20">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-400 border border-primary-500/20">
+                                        <FileText size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-black text-white">تفاصيل الطلب</h2>
+                                        <p className="text-xs text-gray-400 font-mono tracking-widest uppercase">Request Configuration</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedRequest(null)}
+                                    className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-full text-gray-500 hover:text-white transition-all border border-transparent hover:border-white/10"
+                                >
+                                    ✕
+                                </button>
                             </div>
 
-                            <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
-                                <div>
-                                    <h3 className="text-sm font-bold text-gray-400 mb-2">اسم المشروع</h3>
-                                    <p className="text-lg font-bold text-white">{selectedRequest.project_name || selectedRequest.title}</p>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-dark-800 p-4 rounded-xl">
-                                        <span className="text-xs text-gray-500 block mb-1">نوع المشروع</span>
-                                        <span className="text-white font-medium">{selectedRequest.project_type || selectedRequest.type}</span>
+                            <div className="p-8 overflow-y-auto custom-scrollbar space-y-10">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                                        <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-black">اسم المشروع</div>
+                                        <div className="text-lg font-bold text-white leading-tight">{selectedRequest.project_name || selectedRequest.title}</div>
                                     </div>
-                                    <div className="bg-dark-800 p-4 rounded-xl">
-                                        <span className="text-xs text-gray-500 block mb-1">تاريخ الطلب</span>
-                                        <span className="text-white font-medium font-mono">{new Date(selectedRequest.created_at || Date.now()).toLocaleDateString()}</span>
+                                    <div className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                                        <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-black">نوع العمل</div>
+                                        <div className="text-lg font-bold text-primary-400 leading-tight">{selectedRequest.project_type || selectedRequest.type}</div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-sm font-bold text-gray-400 mb-3">وصف المشروع</h3>
-                                    <div className="bg-dark-950 p-4 rounded-xl text-gray-300 text-sm leading-relaxed whitespace-pre-wrap border border-gray-800">
-                                        {selectedRequest.description || 'لا يوجد وصف متاح.'}
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="w-1.5 h-6 bg-primary-500 rounded-full"></div>
+                                        <h3 className="text-sm font-black text-white uppercase tracking-wider">وصف المتطلبات</h3>
+                                    </div>
+                                    <div className="bg-dark-950/50 p-6 rounded-3xl text-gray-400 text-sm leading-relaxed whitespace-pre-wrap border border-white/5 italic">
+                                        {selectedRequest.description || 'لا يوجد وصف مفصل متاح لهذا الطلب.'}
                                     </div>
                                 </div>
 
                                 {selectedRequest.specificAnswers && Object.keys(selectedRequest.specificAnswers).length > 0 && (
                                     <div>
-                                        <h3 className="text-sm font-bold text-gray-400 mb-3">تفاصيل إضافية</h3>
-                                        <div className="grid grid-cols-1 gap-2">
+                                        <div className="flex items-center gap-2 mb-6">
+                                            <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+                                            <h3 className="text-sm font-black text-white uppercase tracking-wider">المواصفات المختارة</h3>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             {Object.entries(selectedRequest.specificAnswers).map(([key, value]) => (
-                                                <div key={key} className="flex justify-between items-center p-3 bg-white/5 rounded-lg border border-white/5">
-                                                    <span className="text-xs text-gray-400">{key}</span>
-                                                    <span className="text-sm font-bold text-white">{String(value)}</span>
+                                                <div key={key} className="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5 group hover:bg-white/[0.07] transition-all">
+                                                    <span className="text-[10px] text-gray-500 font-bold uppercase">{key}</span>
+                                                    <span className="text-xs font-black text-gray-200">{String(value)}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
+
+                                <div className="grid grid-cols-2 gap-4 pt-10 border-t border-white/5">
+                                    <div className="text-right">
+                                        <div className="text-[10px] text-gray-600 uppercase font-black mb-1">تاريخ الإرسال</div>
+                                        <div className="text-sm font-bold text-gray-400 font-mono">{new Date(selectedRequest.created_at || Date.now()).toLocaleDateString('ar-SA')}</div>
+                                    </div>
+                                    <div className="text-left">
+                                        <div className="text-[10px] text-gray-600 uppercase font-black mb-1">الميزانية المتوقعة</div>
+                                        <div className="text-sm font-bold text-emerald-400 font-mono">{selectedRequest.budget || '---'}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-8 bg-dark-950/50 border-t border-white/5 flex gap-4">
+                                <button className="flex-1 py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-black text-sm transition-all">تحميل كملف PDF</button>
+                                <button className="flex-1 py-4 bg-primary-600 hover:bg-primary-500 text-dark-900 rounded-2xl font-black text-sm transition-all shadow-lg shadow-primary-500/10">تعديل الطلب</button>
                             </div>
                         </motion.div>
                     </div>

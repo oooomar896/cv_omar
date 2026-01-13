@@ -60,92 +60,128 @@ const ClientContracts = () => {
 
     return (
         <div className="min-h-screen bg-dark-900 text-white font-cairo p-4 md:p-8" dir="rtl">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex items-center gap-4 mb-8">
-                    <Link to="/portal/dashboard" className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-                        <ChevronLeft size={24} />
-                    </Link>
-                    <div>
-                        <h1 className="text-2xl font-bold flex items-center gap-2">
-                            <FileText className="text-purple-400" />
-                            العقود والاتفاقيات
-                        </h1>
-                        <p className="text-gray-400 text-sm">مراجعة وتوقيع العقود الخاصة بمشاريعك</p>
+            <div className="max-w-7xl mx-auto">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <div className="flex items-center gap-4 mb-2">
+                            <Link to="/portal/dashboard" className="p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all border border-white/5">
+                                <ChevronLeft size={20} />
+                            </Link>
+                            <h1 className="text-4xl font-extrabold text-white tracking-tight">الوثائق القانونية</h1>
+                        </div>
+                        <p className="text-gray-400 flex items-center gap-2 pr-12">
+                            <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                            توقيع ومراجعة العقود والاتفاقيات التقنية
+                        </p>
+                    </motion.div>
+
+                    <div className="flex items-center gap-3 bg-dark-800/40 p-2 rounded-2xl border border-white/5 backdrop-blur-md">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 text-purple-400 text-xs font-bold uppercase tracking-widest border border-purple-500/10">
+                            Verified Legal
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid gap-6">
-                    {contracts.length === 0 && !loading && (
-                        <div className="text-center py-12 text-gray-500">لا توجد عقود حالياً</div>
-                    )}
-
-                    {contracts.map((contract) => (
-                        <motion.div
-                            key={contract.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={`glass-panel p-6 rounded-2xl border ${contract.status === 'pending' ? 'border-amber-500/30 bg-amber-500/5' : 'border-white/5'}`}
-                        >
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                <div className="flex items-start gap-4">
-                                    <div className={`p-4 rounded-xl ${contract.status === 'signed' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
-                                        <FileText size={32} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-white mb-1">{contract.title}</h3>
-                                        <p className="text-sm text-gray-400 mb-2">مشروع: {contract.project}</p>
-                                        <div className="flex items-center gap-3 text-xs">
-                                            <span className="bg-white/5 px-2 py-1 rounded-md text-gray-400 font-mono">{contract.date}</span>
-                                            {contract.amount && <span className="bg-white/5 px-2 py-1 rounded-md text-gray-300 font-bold">{contract.amount}</span>}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-3 w-full md:w-auto">
-                                    {contract.status === 'pending' ? (
-                                        <div className="flex gap-3 w-full md:w-auto">
-                                            <button className="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-sm">
-                                                <Download size={16} />
-                                                <span>مسودة PDF</span>
-                                            </button>
-                                            <button
-                                                onClick={() => handleSign(contract.id)}
-                                                className="flex-1 px-6 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all flex items-center justify-center gap-2 text-sm"
-                                            >
-                                                <PenTool size={16} />
-                                                <span>توقيع الآن</span>
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-4">
-                                            <div className="text-right hidden md:block">
-                                                <div className="text-xs text-gray-400 mb-1">تم التوقيع في</div>
-                                                <div className="text-xs font-mono text-emerald-400">{contract.signed_at || 'Maldia Platform'}</div>
-                                            </div>
-                                            <button className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-2 cursor-default">
-                                                <CheckCircle size={18} />
-                                                <span className="text-sm font-bold hidden md:inline">معتمد</span>
-                                            </button>
-                                            <Link
-                                                to="/portal/finance"
-                                                className="px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-500/20 flex items-center gap-2 transition-all"
-                                            >
-                                                <CreditCard size={18} />
-                                                <span className="text-sm font-bold">سداد الدفعات</span>
-                                            </Link>
-                                        </div>
-                                    )}
-                                </div>
+                <div className="grid gap-8">
+                    {loading ? (
+                        [1, 2].map(i => (
+                            <div key={i} className="h-40 rounded-[2.5rem] bg-white/5 animate-pulse border border-white/5"></div>
+                        ))
+                    ) : contracts.length === 0 ? (
+                        <div className="glass-panel rounded-[3rem] p-20 text-center border border-white/5 bg-dark-800/20">
+                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-700">
+                                <FileText size={40} />
                             </div>
+                            <h3 className="text-2xl font-bold text-gray-400">لا توجد عقود حالياً</h3>
+                            <p className="text-gray-500 mt-2">سيتم إصدار عقودك فور تفعيل طلبات المشاريع.</p>
+                        </div>
+                    ) : (
+                        contracts.map((contract, idx) => (
+                            <motion.div
+                                key={contract.id}
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className={`relative group`}
+                            >
+                                <div className={`absolute inset-0 bg-gradient-to-r ${contract.status === 'pending' ? 'from-amber-600/10' : 'from-emerald-600/10'} to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity`} />
 
-                            {contract.status === 'pending' && (
-                                <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2 text-amber-400 text-xs">
-                                    <AlertCircle size={14} />
-                                    <span>يرجى مراجعة العقد وتوقيعه للبدء في المرحلة التالية من المشروع.</span>
+                                <div className={`relative glass-panel p-8 rounded-[2.5rem] border ${contract.status === 'pending' ? 'border-amber-500/30' : 'border-white/5'} bg-dark-800/20 hover:bg-dark-800/40 transition-all flex flex-col lg:flex-row items-center gap-8`}>
+                                    <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center shrink-0 shadow-2xl transition-transform group-hover:scale-105 ${contract.status === 'signed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                        }`}>
+                                        <FileText size={40} strokeWidth={1.5} />
+                                    </div>
+
+                                    <div className="flex-1 text-center lg:text-right">
+                                        <div className="flex flex-col lg:flex-row items-center gap-3 mb-3">
+                                            <h3 className="text-2xl font-black text-white">{contract.title}</h3>
+                                            <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${contract.status === 'signed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse'
+                                                }`}>
+                                                {contract.status === 'signed' ? 'تم التوقيع' : 'بانتظار توقيعك'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-center lg:justify-start gap-4 text-sm font-medium text-gray-500">
+                                            <span className="flex items-center gap-2 underline underline-offset-4 decoration-white/10 opacity-80 decoration-2">مشروع: {contract.project}</span>
+                                            <span className="w-1 h-1 rounded-full bg-gray-800"></span>
+                                            <span className="font-mono">{contract.date}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-6 shrink-0 border-t lg:border-t-0 lg:border-r border-white/5 pt-8 lg:pt-0 lg:pr-8 w-full lg:w-auto">
+                                        {contract.status === 'pending' ? (
+                                            <div className="grid grid-cols-2 lg:flex gap-4 w-full">
+                                                <button className="px-6 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black text-xs border border-white/10 transition-all flex items-center justify-center gap-2">
+                                                    <Download size={18} />
+                                                    <span>مراجعة</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleSign(contract.id)}
+                                                    className="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-dark-900 font-black text-xs shadow-xl shadow-amber-500/20 hover:scale-[1.03] active:scale-95 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    <PenTool size={18} />
+                                                    <span>توقيع العقد</span>
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-6 w-full lg:w-auto justify-between lg:justify-end">
+                                                <div className="text-right">
+                                                    <div className="text-[10px] text-gray-600 font-black uppercase tracking-widest mb-1">تاريخ الاعتماد التقني</div>
+                                                    <div className="text-xs font-black text-emerald-400 font-mono tracking-tight">{contract.signed_at || 'Digital ID Verified'}</div>
+                                                </div>
+                                                <div className="flex gap-4">
+                                                    <button className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all border border-white/5">
+                                                        <Download size={20} />
+                                                    </button>
+                                                    <Link
+                                                        to="/portal/finance"
+                                                        className="px-6 py-4 rounded-2xl bg-primary-600 hover:bg-primary-500 text-dark-900 font-black text-xs shadow-xl shadow-primary-500/20 active:scale-95 transition-all flex items-center gap-2"
+                                                    >
+                                                        <CreditCard size={18} />
+                                                        <span>تتبع المالية</span>
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
-                        </motion.div>
-                    ))}
+
+                                {contract.status === 'pending' && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="mt-6 flex items-center gap-3 text-amber-400 bg-amber-500/5 p-4 rounded-2xl border border-amber-500/10 text-xs font-bold"
+                                    >
+                                        <AlertCircle size={16} />
+                                        <span>توقيعك على هذا العقد يمثل موافقتك الرسمية للبدء في مراحل التطوير التقني فوراً.</span>
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

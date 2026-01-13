@@ -7,8 +7,9 @@ import {
     CreditCard,
     LogOut,
     Briefcase,
-    ArrowRight,
-    Activity
+    LayoutDashboard,
+    Activity,
+    FileText
 } from 'lucide-react';
 
 import { useNavigate, Link } from 'react-router-dom';
@@ -122,60 +123,131 @@ const ClientDashboard = () => {
             </nav>
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Welcome Section */}
-                <div className="mb-10 relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
-                    <h1 className="text-3xl font-bold mb-2">مرحباً، أحمد 👋</h1>
-                    <p className="text-gray-400">تابع تقدم مشاريعك الحالية والسابقة من هنا.</p>
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">
+                            أهلاً بك، <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-400">{userName}</span> 👋
+                        </h1>
+                        <p className="text-gray-400 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            لديك {activeProjects.length} مشاريع نشطة حالياً تحت التنفيذ
+                        </p>
+                    </motion.div>
+
+                    <div className="flex items-center gap-4 bg-dark-800/40 p-2 rounded-2xl border border-white/5 backdrop-blur-md">
+                        <button className="p-3 rounded-xl hover:bg-white/5 text-gray-400 transition-all relative">
+                            <Bell size={20} />
+                            <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-dark-800"></span>
+                        </button>
+                        <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all font-bold text-sm group"
+                        >
+                            <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            <span>تسجيل الخروج</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Projects List */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="flex justify-between items-center mb-2">
-                            <h2 className="text-xl font-bold flex items-center gap-2">
-                                <Activity className="text-primary-500" /> المشاريع النشطة
-                            </h2>
-                        </div>
+                {/* Quick Stats / Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                    {[
+                        { label: 'المشاريع النشطة', value: activeProjects.length, icon: LayoutDashboard, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+                        { label: 'بإنتظار التوقيع', value: '1', icon: FileText, color: 'text-amber-400', bg: 'bg-amber-400/10' },
+                        { label: 'دفعات مستحقة', value: '0', icon: CreditCard, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+                        { label: 'تنبيهات جارية', value: '3', icon: Bell, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+                    ].map((stat, idx) => (
+                        <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="glass-panel p-6 rounded-3xl border border-white/5 bg-dark-800/30 hover:bg-dark-800/50 transition-all group cursor-default"
+                        >
+                            <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                <stat.icon size={24} />
+                            </div>
+                            <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                            <div className="text-sm text-gray-500">{stat.label}</div>
+                        </motion.div>
+                    ))}
+                </div>
 
-                        {activeProjects.map((project) => (
+                {/* Projects Grid */}
+                <div className="mb-8">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold text-white">المشاريع الحالية</h2>
+                        <Link to="/portal/requests" className="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1 font-bold">
+                            طلب مشروع جديد +
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {activeProjects.map((project, idx) => (
                             <motion.div
                                 key={project.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-primary-500/30 transition-all group relative overflow-hidden"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="group relative"
                             >
-                                <div className="absolute top-0 left-0 w-1 h-full bg-primary-500"></div>
-                                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <h3 className="text-lg font-bold text-white group-hover:text-primary-400 transition-colors">
-                                                {project.name}
-                                            </h3>
-                                            <span className="px-2 py-0.5 bg-white/5 rounded text-xs text-gray-400 border border-white/10">{project.type}</span>
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
+
+                                <div className="relative glass-panel rounded-[2.5rem] border border-white/5 bg-dark-800/40 p-8 overflow-hidden hover:border-primary-500/30 transition-all">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="p-4 bg-primary-500/10 text-primary-400 rounded-3xl">
+                                            <div className="w-8 h-8 flex items-center justify-center">
+                                                {project.type.includes('Web') ? <LayoutDashboard size={24} /> : <FileText size={24} />}
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-4 text-sm text-gray-400">
-                                            <span>الهدف القادم: <span className="text-gray-300">{project.nextMilestone}</span></span>
+                                        <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${project.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                                            'bg-primary-500/10 text-primary-400 border border-primary-500/20'
+                                            }`}>
+                                            {project.status}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary-400 transition-colors">
+                                        {project.name}
+                                    </h3>
+                                    <p className="text-gray-400 text-sm mb-6 line-clamp-1">{project.type}</p>
+
+                                    <div className="space-y-4 mb-8">
+                                        <div className="flex justify-between text-sm mb-1">
+                                            <span className="text-gray-500">نسبة الإنجاز</span>
+                                            <span className="text-white font-mono">{project.progress}%</span>
+                                        </div>
+                                        <div className="h-2 w-full bg-dark-900 rounded-full overflow-hidden border border-white/5">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${project.progress}%` }}
+                                                className="h-full bg-gradient-to-r from-primary-600 to-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                                            />
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-6 w-full md:w-auto">
-                                        <div className="text-center">
-                                            <div className="text-xs text-gray-500 mb-1">الإنجاز</div>
-                                            <div className="font-bold text-lg text-white font-mono">{project.progress}%</div>
+                                    <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5">
+                                        <div>
+                                            <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">المرحلة القادمة</div>
+                                            <div className="text-xs font-bold text-gray-300 truncate">{project.nextMilestone}</div>
                                         </div>
-                                        <Link
-                                            to={`/portal/projects/${project.id}`}
-                                            className="px-6 py-3 bg-white/5 hover:bg-primary-500 hover:text-white rounded-xl text-sm font-bold transition-all flex items-center gap-2"
-                                        >
-                                            <span>عرض التفاصيل</span>
-                                            <ArrowRight size={16} />
-                                        </Link>
+                                        <div>
+                                            <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">تاريخ التسليم</div>
+                                            <div className="text-xs font-bold text-gray-300 font-mono">{project.dueDate}</div>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* Progress Bar Background */}
-                                <div className="absolute bottom-0 left-0 h-1 bg-white/5 w-full">
-                                    <div className="h-full bg-primary-500" style={{ width: `${project.progress}%` }}></div>
+
+                                    <button
+                                        onClick={() => navigate(`/portal/projects/${project.id}`)}
+                                        className="w-full mt-8 py-4 rounded-2xl bg-white/5 hover:bg-primary-500 hover:text-dark-900 transition-all font-bold text-sm border border-white/5 hover:border-primary-500"
+                                    >
+                                        عرض تفاصيل المشروع
+                                    </button>
                                 </div>
                             </motion.div>
                         ))}
