@@ -196,10 +196,10 @@ const ManageRequests = () => {
                 )}
             </div>
 
-            {/* Modal */}
+            {/* Modal - Improved Layout & Data Display */}
             <AnimatePresence>
                 {selectedRequest && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 isolate">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -208,153 +208,182 @@ const ManageRequests = () => {
                             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                         />
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-2xl p-8 relative z-10 shadow-2xl overflow-y-auto max-h-[90vh]"
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-dark-900 border border-gray-800 rounded-3xl w-full max-w-4xl p-0 relative z-10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         >
-                            <h2 className="text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
-                                {selectedRequest.project_name}
-                            </h2>
-
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-dark-800 p-4 rounded-xl">
-                                        <span className="text-xs text-gray-500 block mb-1">العميل</span>
-                                        <span className="text-white font-medium">{selectedRequest.user_email}</span>
+                            {/* Modal Header */}
+                            <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-dark-900 sticky top-0 z-20">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-white mb-1">
+                                        {selectedRequest.project_name}
+                                    </h2>
+                                    <div className="flex items-center gap-2 text-sm text-gray-400 font-mono">
+                                        {selectedRequest.id}
                                     </div>
-                                    <div className="bg-dark-800 p-4 rounded-xl">
-                                        <span className="text-xs text-gray-500 block mb-1">النوع</span>
-                                        <span className="text-white font-medium">{selectedRequest.project_type}</span>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedRequest(null)}
+                                    className="p-2 hover:bg-white/10 rounded-full transition-colors font-bold text-gray-400 hover:text-white"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Modal Content - Scrollable */}
+                            <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
+
+                                {/* Client & Type Info */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="bg-dark-800 p-4 rounded-xl border border-gray-700/50">
+                                        <span className="text-xs text-gray-500 block mb-1">العميل</span>
+                                        <div className="flex items-center gap-2 text-white font-medium truncate" dir="ltr">
+                                            <Mail size={14} className="text-primary-500" />
+                                            {selectedRequest.user_email}
+                                        </div>
+                                    </div>
+                                    <div className="bg-dark-800 p-4 rounded-xl border border-gray-700/50">
+                                        <span className="text-xs text-gray-500 block mb-1">نوع المشروع</span>
+                                        <div className="flex items-center gap-2 text-white font-medium">
+                                            {selectedRequest.project_type === 'web' && <Layout size={14} className="text-blue-500" />}
+                                            {selectedRequest.project_type === 'mobile' && <Smartphone size={14} className="text-purple-500" />}
+                                            {selectedRequest.project_type}
+                                        </div>
+                                    </div>
+                                    <div className="bg-dark-800 p-4 rounded-xl border border-gray-700/50">
+                                        <span className="text-xs text-gray-500 block mb-1">تاريخ الطلب</span>
+                                        <div className="text-white font-medium font-mono">
+                                            {new Date(selectedRequest.created_at || selectedRequest.timestamp).toLocaleDateString('en-GB')}
+                                        </div>
                                     </div>
                                 </div>
 
+                                {/* Description */}
                                 <div>
-                                    <span className="text-sm text-gray-400 block mb-2">الوصف الكامل</span>
-                                    <div className="bg-dark-950 p-6 rounded-2xl text-gray-300 leading-relaxed whitespace-pre-wrap font-mono text-sm border border-gray-800">
+                                    <h3 className="text-sm font-bold text-gray-400 mb-3 flex items-center gap-2">
+                                        <FileText size={16} /> وصف المشروع
+                                    </h3>
+                                    <div className="bg-dark-950 p-6 rounded-2xl text-gray-300 leading-relaxed whitespace-pre-wrap font-sans text-sm border border-gray-800">
                                         {selectedRequest.description}
                                     </div>
                                 </div>
 
-                                {extractPhone(selectedRequest.description) && (
-                                    <div className="flex gap-4 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl items-center">
-                                        <Smartphone className="text-emerald-500" />
-                                        <div>
-                                            <span className="text-sm text-gray-400 block">رقم الهاتف المستخرج</span>
-                                            <span className="text-emerald-400 font-bold font-mono text-lg" dir="ltr">
-                                                {extractPhone(selectedRequest.description)}
-                                            </span>
+                                {/* Specific Answers (Custom Details) */}
+                                {selectedRequest.specificAnswers && Object.keys(selectedRequest.specificAnswers).length > 0 && (
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-400 mb-3 flex items-center gap-2">
+                                            <CheckCircle2 size={16} /> تفاصيل إضافية
+                                        </h3>
+                                        <div className="bg-dark-950 p-6 rounded-2xl border border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {Object.entries(selectedRequest.specificAnswers).map(([key, value]) => (
+                                                <div key={key} className="flex flex-col gap-1 p-3 bg-white/5 rounded-xl border border-white/5">
+                                                    <span className="text-xs text-primary-400 font-mono opacity-70">{key}</span>
+                                                    <span className="text-sm font-bold text-white">
+                                                        {typeof value === 'boolean' ? (value ? 'نعم' : 'لا') : String(value)}
+                                                    </span>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 )}
 
-                                {/* Status Management */}
-                                <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6 mb-6">
-                                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                        <CheckCircle2 size={20} className="text-emerald-500" />
-                                        <span>حالة المشروع العامة</span>
-                                    </h3>
-                                    <div className="flex gap-2">
-                                        {['pending_review', 'in_progress', 'completed', 'cancelled'].map((st) => (
+                                {/* Admin Actions Section */}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {/* Status & Contract */}
+                                    <div className="space-y-4">
+                                        <div className="bg-dark-800 border border-gray-700 rounded-2xl p-5">
+                                            <h3 className="text-sm font-bold text-white mb-4">حالة الطلب</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {['pending_review', 'in_progress', 'completed', 'cancelled'].map((st) => (
+                                                    <button
+                                                        key={st}
+                                                        onClick={async () => {
+                                                            try {
+                                                                await dataService.updateGeneratedProject(selectedRequest.id, { status: st });
+                                                                toast.success('تم تحديث حالة المتشروع');
+                                                                setSelectedRequest(prev => ({ ...prev, status: st }));
+                                                                setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, status: st } : r));
+                                                            } catch (e) {
+                                                                toast.error('فشل التحديث');
+                                                            }
+                                                        }}
+                                                        className={`px-3 py-2 rounded-lg text-xs font-bold transition-all border ${selectedRequest.status === st
+                                                            ? 'bg-primary-500 text-white border-primary-500'
+                                                            : 'bg-dark-900 text-gray-400 border-gray-700 hover:border-gray-500'
+                                                            }`}
+                                                    >
+                                                        {st === 'pending_review' ? 'مراجعة' :
+                                                            st === 'in_progress' ? 'تنفيذ' :
+                                                                st === 'completed' ? 'مكتمل' : 'إلغاء'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-dark-800 border border-gray-700 rounded-2xl p-5">
+                                            <h3 className="text-sm font-bold text-white mb-4">العقود</h3>
                                             <button
-                                                key={st}
                                                 onClick={async () => {
+                                                    if (!window.confirm('هل أنت متأكد من إصدار عقد لهذا المشروع؟')) return;
                                                     try {
-                                                        await dataService.updateGeneratedProject(selectedRequest.id, { status: st });
-                                                        toast.success('تم تحديث حالة المشروع');
-                                                        setSelectedRequest(prev => ({ ...prev, status: st }));
-                                                        setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, status: st } : r));
+                                                        await dataService.createContract({
+                                                            user_email: selectedRequest.user_email,
+                                                            project_id: selectedRequest.id,
+                                                            title: `عقد تنفيذ مشروع: ${selectedRequest.project_name}`,
+                                                            project: selectedRequest.project_name,
+                                                            amount: '50,000 SAR',
+                                                            date: new Date().toISOString().split('T')[0]
+                                                        });
+                                                        toast.success('تم إصدار العقد وربطه بحساب العميل');
                                                     } catch (e) {
-                                                        toast.error('فشل التحديث');
+                                                        console.error(e);
+                                                        toast.error('حدث خطأ أثناء إصدار العقد');
                                                     }
                                                 }}
-                                                className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${selectedRequest.status === st
-                                                    ? 'bg-primary-500 text-white border-primary-500'
-                                                    : 'bg-dark-900 text-gray-400 border-gray-800 hover:border-gray-600'
-                                                    }`}
+                                                className="w-full py-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center gap-2 transition-all font-bold text-sm"
                                             >
-                                                {st === 'pending_review' ? 'قيد المراجعة' :
-                                                    st === 'in_progress' ? 'قيد التنفيذ' :
-                                                        st === 'completed' ? 'مكتمل' : 'ملغي'}
+                                                <FileText size={16} />
+                                                <span>إصدار عقد جديد</span>
                                             </button>
-                                        ))}
+                                        </div>
                                     </div>
 
-                                    {/* Admin Actions */}
-                                    <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6 mb-6">
-                                        <h3 className="text-lg font-bold text-white mb-4">إجراءات إدارية</h3>
-                                        <button
-                                            onClick={async () => {
-                                                if (!window.confirm('هل أنت متأكد من إصدار عقد لهذا المشروع؟')) return;
-                                                try {
-                                                    await dataService.createContract({
-                                                        user_email: selectedRequest.user_email,
-                                                        project_id: selectedRequest.id,
-                                                        title: `عقد تنفيذ مشروع: ${selectedRequest.project_name}`,
-                                                        project: selectedRequest.project_name, // Optional, for local context
-                                                        amount: '50,000 SAR', // Default for demo
-                                                        date: new Date().toISOString().split('T')[0]
-                                                    });
-                                                    toast.success('تم إصدار العقد وربطه بحساب العميل');
-                                                } catch (e) {
-                                                    console.error(e);
-                                                    toast.error('حدث خطأ أثناء إصدار العقد');
-                                                }
-                                            }}
-                                            className="w-full py-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center gap-2 transition-all font-bold"
-                                        >
-                                            <FileText size={18} />
-                                            <span>إصدار عقد إلكتروني للمشروع</span>
-                                        </button>
+                                    {/* Timeline Stages */}
+                                    <div className="bg-dark-800 border border-gray-700 rounded-2xl p-5">
+                                        <h3 className="text-sm font-bold text-white mb-4">المرحلة الحالية</h3>
+                                        <div className="space-y-2">
+                                            {ROADMAP_STAGES.map((stage) => {
+                                                const isCurrent = (selectedRequest.project_stage || 'analysis') === stage.id;
+                                                return (
+                                                    <button
+                                                        key={stage.id}
+                                                        onClick={() => updateStage(stage.id)}
+                                                        className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between group ${isCurrent
+                                                            ? 'bg-primary-500/10 border-primary-500 text-primary-400'
+                                                            : 'bg-dark-900 border-gray-800 text-gray-500 hover:border-gray-600'
+                                                            }`}
+                                                    >
+                                                        <span className="font-bold text-xs">{stage.label}</span>
+                                                        {isCurrent && <CheckCircle2 size={16} className="text-primary-500" />}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Stage Management */}
-                                <div className="bg-dark-950 border border-gray-800 rounded-2xl p-6">
-                                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                        <Layout size={20} className="text-primary-500" />
-                                        <span>تقدم المشروع (Timeline)</span>
-                                    </h3>
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {ROADMAP_STAGES.map((stage) => {
-                                            const isCurrent = (selectedRequest.project_stage || 'analysis') === stage.id;
-                                            return (
-                                                <button
-                                                    key={stage.id}
-                                                    onClick={() => updateStage(stage.id)}
-                                                    className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between ${isCurrent
-                                                        ? 'bg-primary-500/10 border-primary-500 text-primary-400'
-                                                        : 'bg-dark-900 border-gray-800 text-gray-400 hover:border-gray-600'
-                                                        }`}
-                                                >
-                                                    <span className="font-bold text-sm">{stage.label}</span>
-                                                    {isCurrent && <CheckCircle2 size={18} />}
-                                                </button>
-                                            );
-                                        })}
+                                {selectedRequest.files && (
+                                    <div className="pt-6 border-t border-gray-800">
+                                        <h3 className="text-sm font-bold text-white mb-4">الملفات والموارد</h3>
+                                        <div className="bg-dark-950 rounded-2xl border border-gray-800 overflow-hidden h-[300px]">
+                                            <FileViewer
+                                                files={selectedRequest.files}
+                                                onDownload={() => downloadProjectBlueprint(selectedRequest)}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            {selectedRequest.files && (
-                                <div className="mt-6 border-t border-gray-800 pt-6">
-                                    <h3 className="text-lg font-bold text-white mb-4">المخطط التقني (Blueprint)</h3>
-                                    <div className="bg-dark-950 rounded-2xl border border-gray-800 overflow-hidden max-h-[400px] overflow-y-auto">
-                                        <FileViewer
-                                            files={selectedRequest.files}
-                                            onDownload={() => downloadProjectBlueprint(selectedRequest)}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="mt-6 border-t border-gray-800 pt-6">
-                                <h3 className="text-lg font-bold text-white mb-4">بيئة التطوير (IDE)</h3>
-                                <LiveCodeEditor project={selectedRequest} userRole="admin" />
-                            </div>
-
-                            <div className="mt-6 border-t border-gray-800 pt-6">
-                                <ProjectChat project={selectedRequest} userRole="admin" />
+                                )}
                             </div>
                         </motion.div>
                     </div>

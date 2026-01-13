@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
     Globe,
     Smartphone,
@@ -25,6 +26,7 @@ import { downloadProjectBlueprint } from '../../utils/fileUtils';
 import toast from 'react-hot-toast';
 
 const ProjectBuilderForm = () => {
+    const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -193,11 +195,30 @@ const ProjectBuilderForm = () => {
 
     if (generatedProject) {
         return (
-            <FileViewer
-                files={generatedProject.files}
-                qaReport={qaReport}
-                onDownload={handleDownload}
-            />
+            <div className="space-y-8">
+                <FileViewer
+                    files={generatedProject.files}
+                    qaReport={qaReport}
+                    onDownload={handleDownload}
+                />
+
+                <div className="flex justify-center gap-4">
+                    <button
+                        onClick={() => navigate('/portal/requests')}
+                        className="bg-dark-800 border border-gray-700 hover:bg-dark-700 text-white px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2"
+                    >
+                        <Briefcase size={20} />
+                        الذهاب لطلباتي
+                    </button>
+                    <button
+                        onClick={handleDownload}
+                        className="bg-primary-600 hover:bg-primary-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary-500/20 flex items-center gap-2"
+                    >
+                        <Zap size={20} />
+                        تحميل ملفات المشروع
+                    </button>
+                </div>
+            </div>
         );
     }
 
