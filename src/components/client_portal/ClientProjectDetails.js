@@ -6,12 +6,8 @@ import {
     CheckCircle,
     Clock,
     CreditCard,
-    ArrowRight,
-    Calendar,
-    Code,
-    Smartphone
+    ArrowRight
 } from 'lucide-react';
-import { supabase } from '../../utils/supabaseClient';
 
 const ClientProjectDetails = () => {
     const { id } = useParams();
