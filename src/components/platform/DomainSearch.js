@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Globe, CheckCircle, XCircle, Loader, TrendingUp, ShoppingCart } from 'lucide-react';
+import { Search, Globe, CheckCircle, XCircle, Loader, TrendingUp, ShoppingCart, AlertCircle } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -163,6 +163,17 @@ const DomainSearch = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-12"
                 >
+                    {/* BETA NOTICE */}
+                    <div className="bg-accent-500/10 border border-accent-500/20 rounded-xl p-4 mb-8 flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-accent-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                            <h3 className="text-accent-400 font-bold text-sm">ميزة قيد التطوير (Beta)</h3>
+                            <p className="text-gray-400 text-xs mt-1">
+                                خدمة الدومينات تعمل حالياً في وضع المحاكاة. عمليات البحث والشراء لا تتم فعلياً على الإنترنت.
+                                سيتم تفعيل الربط المباشر قريباً.
+                            </p>
+                        </div>
+                    </div>
                     <div className="flex justify-between items-center mb-6">
                         <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-6 py-2">
                             <Globe className="w-5 h-5 text-primary-400" />

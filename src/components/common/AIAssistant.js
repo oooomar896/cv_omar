@@ -65,7 +65,10 @@ const AIAssistant = () => {
                                     <Sparkles size={20} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-sm font-cairo">مساعد عمر الذكي</h4>
+                                    <h4 className="font-bold text-sm font-cairo flex items-center gap-2">
+                                        مساعد عمر الذكي
+                                        <span className="bg-white/20 text-white text-[9px] px-1.5 py-0.5 rounded font-mono">BETA</span>
+                                    </h4>
                                     <p className="text-[10px] opacity-80 uppercase tracking-widest font-mono">Expert AI Support</p>
                                 </div>
                             </div>

@@ -39,9 +39,9 @@ const Navbar = () => {
 
   const navItems = [
     { name: 'الرئيسية', href: '/' },
-    { name: 'باني المشاريع (AI)', href: '/builder', isHighlight: true },
+    { name: 'باني المشاريع (AI)', href: '/builder', isHighlight: true, beta: true },
     { name: 'مكتبة المكونات', href: '/uikit' },
-    { name: 'الدومينات', href: '/domains/search' },
+    { name: 'الدومينات', href: '/domains/search', beta: true },
     { name: 'طلب مشروع', href: '/request' },
     { name: 'المطور', href: '/developer' },
     { name: 'بوابة العميل', href: '/portal/login', isSecondary: true },
@@ -110,7 +110,7 @@ const Navbar = () => {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`text-sm font-bold font-cairo transition-all py-2 ${item.isHighlight
+                  className={`text-sm font-bold font-cairo transition-all py-2 relative flex items-center gap-2 ${item.isHighlight
                     ? 'text-primary-500 border border-primary-500/30 rounded-xl bg-primary-500/5 px-4 hover:bg-primary-500 hover:text-white shadow-lg shadow-primary-500/5'
                     : item.isSecondary
                       ? 'text-gray-400 border border-gray-700 rounded-xl px-4 hover:border-primary-500 hover:text-white'
@@ -118,6 +118,11 @@ const Navbar = () => {
                     }`}
                 >
                   {item.name}
+                  {item.beta && (
+                    <span className="bg-accent-500/10 text-accent-400 text-[10px] px-1.5 py-0.5 rounded border border-accent-500/20 ml-1 font-mono tracking-tighter">
+                      DESC
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -232,12 +237,19 @@ const Navbar = () => {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`block w-full text-right px-6 py-4 rounded-2xl text-base font-bold font-cairo transition-all ${item.isHighlight
+                  className={`block w-full text-right px-6 py-4 rounded-2xl text-base font-bold font-cairo transition-all flex items-center justify-between ${item.isHighlight
                     ? 'bg-primary-500 text-white shadow-lg'
                     : 'text-gray-300 hover:bg-white/5 active:bg-white/10'
                     }`}
                 >
-                  {item.name}
+                  <span className="flex items-center gap-2">
+                    {item.name}
+                  </span>
+                  {item.beta && (
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ml-2 ${item.isHighlight ? 'bg-white/20 border-white/30 text-white' : 'bg-accent-500/10 border-accent-500/20 text-accent-400'}`}>
+                      DESC
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
