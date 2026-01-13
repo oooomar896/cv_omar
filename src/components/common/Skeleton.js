@@ -16,4 +16,4 @@ const Skeleton = ({ className, ...props }) => {
     );
 };
 
-export { Skeleton };
+export default Skeleton;

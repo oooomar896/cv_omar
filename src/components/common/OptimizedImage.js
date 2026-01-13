@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Skeleton } from './Skeleton';
+import Skeleton from './Skeleton';
 import { twMerge } from 'tailwind-merge';
 
 const OptimizedImage = ({
