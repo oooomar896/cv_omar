@@ -67,7 +67,7 @@ const ClientDashboard = () => {
                 <div className="mb-8 relative">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
                     <h1 className="text-3xl font-bold mb-2">مرحباً، أحمد 👋</h1>
-                    <p className="text-gray-400">إليك نظرة عامة على سير العمل في مشروعك "<span className="text-primary-400">{projectStatus.name}</span>".</p>
+                    <p className="text-gray-400">إليك نظرة عامة على سير العمل في مشروعك &quot;<span className="text-primary-400">{projectStatus.name}</span>&quot;.</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -107,8 +107,8 @@ const ClientDashboard = () => {
                                     {timeline.map((item, index) => (
                                         <div key={item.id} className="flex flex-col items-center min-w-[100px] group cursor-default">
                                             <div className={`w-9 h-9 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${item.status === 'completed' ? 'bg-primary-500 border-primary-900 text-white' :
-                                                    item.status === 'active' ? 'bg-dark-900 border-primary-500 text-primary-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
-                                                        'bg-dark-800 border-gray-700 text-gray-600'
+                                                item.status === 'active' ? 'bg-dark-900 border-primary-500 text-primary-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
+                                                    'bg-dark-800 border-gray-700 text-gray-600'
                                                 }`}>
                                                 {item.status === 'completed' ? <CheckCircle size={16} /> :
                                                     item.status === 'active' ? <Clock size={16} className="animate-spin-slow" /> :
