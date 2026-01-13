@@ -110,14 +110,14 @@ const DEFAULT_DATA = {
             title: 'مشاركة في مؤتمر التقنية السعودي 2024',
             content: 'شاركت كمتحدث في مؤتمر التقنية السعودي حول "مستقبل تطوير التطبيقات باستخدام Flutter والذكاء الاصطناعي"، بحضور أكثر من 500 مطور ومهتم بالتقنية من مختلف أنحاء المملكة.',
             date: '2024-09-15',
-            image: '/images/news/conference.svg'
+            image: '/images/news/conference.png'
         },
         {
             id: 'n7',
             title: 'شهادة البرمجة والتطوير - Maldia Global',
             content: 'الحصول على شهادة R&D Certificate من شركة Maldia Global International Technology كمطور Flutter بعد إتمام المهام البرمجية والوحدات المطلوبة بنجاح وتسليمها.',
             date: '2022-06-15',
-            image: '/images/cert/maldia_cert.jpg', // Placeholder enabling fallback icon until image is added
+            image: '/images/cert/maldia_cert.jpeg', // Corrected extension
             fallbackIcon: 'Award', // Hint for the UI to show an Award icon
             link: '#'
         }
