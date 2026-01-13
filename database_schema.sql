@@ -61,18 +61,28 @@ create policy "Users can insert own transactions" on domain_transactions for ins
 drop policy if exists "Admins can view all transactions" on domain_transactions;
 create policy "Admins can view all transactions" on domain_transactions for select using (true);
 
--- 4. Admins Table (Optional if using Metadata, but good for management)
+-- 4. Admins Table
 create table if not exists admins (
   id uuid default uuid_generate_v4() primary key,
   email text unique not null,
+  password text not null, -- Added password column
   role text default 'admin',
   created_at timestamp with time zone default now()
 );
 
--- Insert initial admin (Safe insert)
-insert into admins (email, role)
-values ('oooomar896@gmail.com', 'super_admin')
-on conflict (email) do nothing;
+-- Ensure password column exists if table was created previously without it
+do $$
+begin
+  if not exists (select 1 from information_schema.columns where table_name = 'admins' and column_name = 'password') then
+    alter table admins add column password text;
+  end if;
+end $$;
+
+-- Insert initial admin (Safe insert/update)
+insert into admins (email, password, role)
+values ('oooomar896@gmail.com', 'Omar@2597798', 'super_admin')
+on conflict (email) do update 
+set password = 'Omar@2597798', role = 'super_admin';
 
 alter table admins enable row level security;
 drop policy if exists "Read admins" on admins;
