@@ -11,8 +11,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
 import { downloadProjectBlueprint } from '../../utils/fileUtils';
-import { dataService } from '../../utils/dataService';
-import { downloadProjectBlueprint } from '../../utils/fileUtils';
+
 import toast from 'react-hot-toast';
 import Skeleton from '../../components/common/Skeleton';
 import FileViewer from '../platform/FileViewer';

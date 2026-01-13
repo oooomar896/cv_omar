@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Mail, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Toast from '../common/Toast';
+import toast from 'react-hot-toast';
 import { dataService } from '../../utils/dataService';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -24,21 +23,20 @@ const AdminLogin = () => {
             const admin = await dataService.loginAdmin(trimmedEmail, trimmedPassword);
 
             if (!admin) {
-                setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور.', type: 'error' });
+                toast.error('خطأ في البريد الإلكتروني أو كلمة المرور.');
                 setIsLoading(false);
                 return;
             }
 
             localStorage.setItem('admin_token', 'supabase_admin_session_active');
             localStorage.setItem('admin_user', JSON.stringify({ email: admin.email, role: admin.role }));
-            setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
-            setToast({ show: true, message: 'تم تسجيل الدخول بنجاح!', type: 'success' });
+            toast.success('تم تسجيل الدخول بنجاح!');
             navigate('/admin', { replace: true });
 
         } catch (error) {
             console.error("Login failed:", error);
             console.error("Error details:", error.message, error.code);
-            setToast({ show: true, message: 'خطأ في البريد الإلكتروني أو كلمة المرور (أو خطأ في الاتصال).', type: 'error' });
+            toast.error('خطأ في البريد الإلكتروني أو كلمة مور (أو خطأ في الاتصال).');
             setIsLoading(false);
         }
     };
@@ -65,13 +63,7 @@ const AdminLogin = () => {
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
-                    {toast.show && (
-                        <Toast
-                            message={toast.message}
-                            type={toast.type}
-                            onClose={() => setToast({ ...toast, show: false })}
-                        />
-                    )}
+
 
                     <div className="space-y-2">
                         <label htmlFor="admin_email" className="text-sm text-gray-400 mr-2">البريد الإلكتروني</label>

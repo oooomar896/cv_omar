@@ -2,7 +2,7 @@ import { Settings, Shield, Bell, Database, Save, User, Laptop, Upload, DownloadC
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
-import { dataService } from '../../utils/dataService';
+
 import toast from 'react-hot-toast';
 
 const ManageSettings = () => {
