@@ -7,7 +7,8 @@ import {
     Mail,
     Layout,
     CheckCircle2,
-    FileText
+    FileText,
+    Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -22,6 +23,7 @@ import LiveCodeEditor from '../platform/LiveCodeEditor';
 const ROADMAP_STAGES = [
     { id: 'analysis', label: 'تحليل المتطلبات' },
     { id: 'design', label: 'التصميم والواجهات' },
+    { id: 'contract', label: 'توقيع العقد' },
     { id: 'dev', label: 'مرحلة البرمجة' },
     { id: 'qa', label: 'فحص الجودة' },
     { id: 'launch', label: 'الإطلاق النهائي' }
@@ -83,9 +85,45 @@ const ManageRequests = () => {
         }
     };
 
+    const handleFileUpload = async (e, stageId) => {
+        const file = e.target.files[0];
+        if (!file || !selectedRequest) return;
+
+        try {
+            toast.loading('جاري رفع الملف...', { id: 'upload' });
+
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const fileData = {
+                    name: file.name,
+                    size: (file.size / 1024).toFixed(2) + ' KB',
+                    type: file.type,
+                    stage: stageId,
+                    url: reader.result
+                };
+
+                const updated = await dataService.addProjectFile(selectedRequest.id, fileData);
+                setSelectedRequest(updated);
+                setRequests(prev => prev.map(r => r.id === updated.id ? updated : r));
+
+                await dataService.sendNotification({
+                    user_email: selectedRequest.user_email,
+                    title: 'ملف جديد متاح 📁',
+                    message: `قام المطور برفع ملف جديد لمرحلة (${ROADMAP_STAGES.find(s => s.id === stageId)?.label}): ${file.name}`,
+                    type: 'info',
+                    link: `/portal/project/${selectedRequest.id}`
+                });
+
+                toast.success('تم رفع الملف بنجاح!', { id: 'upload' });
+            };
+            reader.readAsDataURL(file);
+        } catch (error) {
+            toast.error('فشل في رفع الملف', { id: 'upload' });
+        }
+    };
+
     return (
         <div className="space-y-6 font-cairo" dir="rtl">
-
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
                 <div className="relative w-full md:w-96">
@@ -390,36 +428,66 @@ const ManageRequests = () => {
                                             {ROADMAP_STAGES.map((stage) => {
                                                 const isCurrent = (selectedRequest.project_stage || 'analysis') === stage.id;
                                                 return (
-                                                    <button
-                                                        key={stage.id}
-                                                        onClick={async () => {
-                                                            try {
-                                                                await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: stage.id });
+                                                    <div key={stage.id} className="space-y-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={async () => {
+                                                                try {
+                                                                    await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: stage.id });
 
-                                                                // Notify Client
-                                                                await dataService.sendNotification({
-                                                                    user_email: selectedRequest.user_email,
-                                                                    title: 'تقدم في المشروع! 🚀',
-                                                                    message: `انتقل مشروعك (${selectedRequest.project_name}) إلى مرحلة: ${stage.label}`,
-                                                                    type: 'success',
-                                                                    link: `/portal/project/${selectedRequest.id}`
-                                                                });
+                                                                    // Notify Client
+                                                                    await dataService.sendNotification({
+                                                                        user_email: selectedRequest.user_email,
+                                                                        title: 'تقدم في المشروع! 🚀',
+                                                                        message: `انتقل مشروعك (${selectedRequest.project_name}) إلى مرحلة: ${stage.label}`,
+                                                                        type: 'success',
+                                                                        link: `/portal/project/${selectedRequest.id}`
+                                                                    });
 
-                                                                toast.success(`تم التحديث لمرحلة ${stage.label}`);
-                                                                setSelectedRequest(prev => ({ ...prev, project_stage: stage.id }));
-                                                                setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, project_stage: stage.id } : r));
-                                                            } catch (e) {
-                                                                toast.error('فشل تحديث المرحلة');
-                                                            }
-                                                        }}
-                                                        className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between group ${isCurrent
-                                                            ? 'bg-primary-500/10 border-primary-500 text-primary-400'
-                                                            : 'bg-dark-900 border-gray-800 text-gray-500 hover:border-gray-600'
-                                                            }`}
-                                                    >
-                                                        <span className="font-bold text-xs">{stage.label}</span>
-                                                        {isCurrent && <CheckCircle2 size={16} className="text-primary-500" />}
-                                                    </button>
+                                                                    toast.success(`تم التحديث لمرحلة ${stage.label}`);
+                                                                    setSelectedRequest(prev => ({ ...prev, project_stage: stage.id }));
+                                                                    setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, project_stage: stage.id } : r));
+                                                                } catch (e) {
+                                                                    toast.error('فشل تحديث المرحلة');
+                                                                }
+                                                            }}
+                                                            className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between group cursor-pointer ${isCurrent
+                                                                ? 'bg-primary-500/10 border-primary-500 text-primary-400'
+                                                                : 'bg-dark-900 border-gray-800 text-gray-500 hover:border-gray-600'
+                                                                }`}
+                                                        >
+                                                            <span className="font-bold text-xs">{stage.label}</span>
+                                                            <div className="flex items-center gap-2">
+                                                                {isCurrent && <CheckCircle2 size={16} className="text-primary-500" />}
+                                                                <button
+                                                                    type="button"
+                                                                    className="p-1 hover:bg-white/10 rounded-md cursor-pointer text-gray-400 hover:text-white transition-colors"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        document.getElementById(`file-stage-${stage.id}`).click();
+                                                                    }}
+                                                                >
+                                                                    <Plus size={14} />
+                                                                </button>
+                                                                <input
+                                                                    id={`file-stage-${stage.id}`}
+                                                                    type="file"
+                                                                    hidden
+                                                                    onChange={(e) => handleFileUpload(e, stage.id)}
+                                                                />
+                                                            </div>
+                                                        </button>
+                                                        {selectedRequest.files?.some(f => f.stage === stage.id) && (
+                                                            <div className="pr-4 py-1 space-y-1">
+                                                                {selectedRequest.files.filter(f => f.stage === stage.id).map((f, i) => (
+                                                                    <div key={i} className="text-[10px] text-gray-500 flex items-center gap-1">
+                                                                        <FileText size={10} />
+                                                                        <span className="truncate max-w-[150px]">{f.name}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 );
                                             })}
                                         </div>

@@ -60,6 +60,8 @@ const AppContent = () => {
   usePageTracking();
   const { pathname } = useLocation();
   const isAdminPath = pathname.startsWith('/admin');
+  const isPortalPath = pathname.startsWith('/portal');
+  const hideNavbar = isAdminPath || isPortalPath;
 
   // Auto-seed data mechanism
   useEffect(() => {
@@ -93,7 +95,7 @@ const AppContent = () => {
 
   return (
     <div className='min-h-screen bg-dark-950 text-white font-cairo'>
-      {!isAdminPath && <Navbar />}
+      {!hideNavbar && <Navbar />}
       <AnimatePresence mode='wait'>
         <Routes>
           <Route
@@ -204,7 +206,7 @@ const AppContent = () => {
           />
 
           <Route
-            path='/portal/projects/:id'
+            path='/portal/project/:id'
             element={
               <Suspense fallback={<LoadingFallback />}>
                 <SEO title="تفاصيل المشروع - بوابة العميل" />

@@ -16,10 +16,21 @@ const ProjectChat = ({ project, userRole = 'client' }) => {
     };
 
     useEffect(() => {
-        const email = userRole === 'admin'
-            ? localStorage.getItem('admin_user')
-            : localStorage.getItem('portal_user');
-        setCurrentUserEmail(email || '');
+        let email = '';
+        if (userRole === 'admin') {
+            const adminData = localStorage.getItem('admin_user');
+            if (adminData) {
+                try {
+                    const parsed = JSON.parse(adminData);
+                    email = parsed.email || '';
+                } catch (e) {
+                    email = adminData; // fallback
+                }
+            }
+        } else {
+            email = localStorage.getItem('portal_user') || '';
+        }
+        setCurrentUserEmail(email);
 
         const loadMessages = async () => {
             const data = await dataService.fetchProjectMessages(project.id);

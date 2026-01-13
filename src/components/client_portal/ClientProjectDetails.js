@@ -8,17 +8,28 @@ import {
     ArrowRight,
     Activity,
     FileText,
-    Download
+    Download,
+    Bell,
+    LogOut,
+    Menu,
+    ChevronUp
 } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
+import { dataService } from '../../utils/dataService';
 import LiveCodeEditor from '../platform/LiveCodeEditor';
 import ProjectChat from '../platform/ProjectChat';
+import ProjectDomainReg from '../platform/ProjectDomainReg';
+import { AnimatePresence } from 'framer-motion';
 
 const ClientProjectDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [projectData, setProjectData] = useState(null);
+    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+    const [userName, setUserName] = useState('');
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -28,6 +39,11 @@ const ClientProjectDetails = () => {
                     navigate('/portal/login');
                     return;
                 }
+                setUserName(email.split('@')[0]);
+
+                // Fetch Notifications for the bell
+                const notifs = await dataService.fetchNotifications(email);
+                setNotifications(notifs);
 
                 const { data: project, error } = await supabase
                     .from('generated_projects')
@@ -43,14 +59,17 @@ const ClientProjectDetails = () => {
 
                 if (project) {
                     const contract = project.contracts?.[0];
-                    const totalCost = contract?.budget ? parseFloat(contract.budget.replace(/[^0-9.]/g, '')) : 0;
+                    const rawBudget = contract?.budget || "0";
+                    const totalCost = typeof rawBudget === 'string'
+                        ? parseFloat(rawBudget.replace(/[^0-9.]/g, ''))
+                        : (typeof rawBudget === 'number' ? rawBudget : 0);
                     const paidAmount = 0;
 
                     const mappedData = {
                         ...project,
-                        name: project.name || 'مشروع بدون عنوان',
+                        name: project.project_name || 'مشروع بدون عنوان',
                         status: project.status,
-                        progress: getProgress(project.status),
+                        progress: getProgress(project.status, project.project_stage),
                         dueDate: contract?.delivery_date || 'غير محدد',
                         finance: {
                             total: totalCost,
@@ -58,11 +77,12 @@ const ClientProjectDetails = () => {
                             remaining: totalCost - paidAmount
                         },
                         timeline: [
-                            { id: 1, title: 'إنشاء الطلب', status: 'completed', date: new Date(project.created_at).toLocaleDateString('ar-SA') },
-                            { id: 2, title: 'مراجعة الإدارة', status: project.status === 'approved' || project.status === 'completed' || contract ? 'completed' : 'active', date: '-' },
-                            { id: 3, title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.status === 'approved' ? 'active' : 'pending'), date: '-' },
-                            { id: 4, title: 'التطوير والتنفيذ', status: project.status === 'development' ? 'active' : (project.status === 'completed' ? 'completed' : 'pending'), date: '-' },
-                            { id: 5, title: 'التسليم النهائي', status: project.status === 'completed' ? 'completed' : 'pending', date: contract?.delivery_date || '-' },
+                            { id: 1, id_code: 'analysis', title: 'تحليل المتطلبات', status: 'completed', date: new Date(project.created_at).toLocaleDateString('ar-SA') },
+                            { id: 2, id_code: 'design', title: 'التصميم والواجهات', status: (project.project_stage === 'design' || project.status === 'approved') ? 'completed' : 'active', date: '-' },
+                            { id: 3, id_code: 'contract', title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.project_stage === 'contract' ? 'active' : 'pending'), date: '-' },
+                            { id: 4, id_code: 'dev', title: 'التطوير والتنفيذ', status: project.project_stage === 'dev' ? 'active' : (project.status === 'completed' ? 'completed' : 'pending'), date: '-' },
+                            { id: 5, id_code: 'qa', title: 'فحص الجودة', status: project.project_stage === 'qa' ? 'active' : 'pending', date: '-' },
+                            { id: 6, id_code: 'launch', title: 'التسليم النهائي', status: project.status === 'completed' ? 'completed' : 'pending', date: contract?.delivery_date || '-' },
                         ]
                     };
                     setProjectData(mappedData);
@@ -77,33 +97,185 @@ const ClientProjectDetails = () => {
         fetchDetails();
     }, [id, navigate]);
 
-    const getProgress = (status) => {
+    const getProgress = (status, stage) => {
         if (status === 'completed') return 100;
-        if (status === 'development') return 60;
-        if (status === 'contract_signed') return 30;
-        if (status === 'approved') return 20;
-        return 10;
+        switch (stage) {
+            case 'analysis': return 10;
+            case 'design': return 30;
+            case 'contract': return 45;
+            case 'dev': return 75;
+            case 'qa': return 90;
+            case 'launch': return 98;
+            default: return 5;
+        }
+    };
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        localStorage.removeItem('portal_user');
+        localStorage.removeItem('portal_token');
+        navigate('/portal/login');
+    };
+
+    const markAllAsRead = async () => {
+        const unread = notifications.filter(n => !n.read);
+        for (const n of unread) {
+            await dataService.markNotificationRead(n.id);
+        }
+        // Refresh notifications
+        const email = localStorage.getItem('portal_user');
+        if (email) {
+            const notifs = await dataService.fetchNotifications(email);
+            setNotifications(notifs);
+        }
     };
 
     if (loading) return <div className="min-h-screen bg-dark-900 flex items-center justify-center text-white">جاري تحميل البيانات...</div>;
     if (!projectData) return <div className="min-h-screen bg-dark-900 flex items-center justify-center text-white">لم يتم العثور على المشروع</div>;
 
     return (
-        <div className="min-h-screen bg-dark-900 text-white font-cairo p-4 md:p-8" dir="rtl">
-            <div className="max-w-7xl mx-auto">
-
-                {/* Top Bar */}
-                <div className="flex items-center justify-between mb-10">
-                    <button
-                        onClick={() => navigate('/portal/dashboard')}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all border border-white/5 group"
+        <div className="min-h-screen bg-dark-900 text-white font-cairo" dir="rtl">
+            {/* Toggle Header Button - Floating when hidden */}
+            <AnimatePresence>
+                {!isHeaderVisible && (
+                    <motion.button
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        onClick={() => setIsHeaderVisible(true)}
+                        className="fixed left-6 top-6 z-[60] p-3 rounded-2xl bg-primary-500 text-dark-900 shadow-2xl shadow-primary-500/40 hover:scale-110 active:scale-95 transition-transform"
+                        title="إظهار القائمة"
                     >
-                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                        <span className="font-bold text-sm">العودة للوحة التحكم</span>
-                    </button>
-                    <div className="flex items-center gap-3">
-                        <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span className="text-sm text-gray-400 font-medium">تحديث حي للمشروع</span>
+                        <Menu size={24} />
+                    </motion.button>
+                )}
+            </AnimatePresence>
+
+            {/* Top Navigation Bar */}
+            <AnimatePresence>
+                {isHeaderVisible && (
+                    <motion.nav
+                        initial={{ y: -100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -100, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: "circOut" }}
+                        className="glass-panel border-b border-white/5 sticky top-0 z-50 bg-dark-900/80 backdrop-blur-xl"
+                    >
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between items-center h-20">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+                                        <span className="text-2xl font-black text-white">B</span>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-lg font-black text-white hidden md:block tracking-tight leading-none">بوابة باكورة</span>
+                                        <button
+                                            onClick={() => setIsHeaderVisible(false)}
+                                            className="text-[10px] text-gray-500 hover:text-primary-400 transition-colors flex items-center gap-1 hidden md:flex mt-1"
+                                        >
+                                            <ChevronUp size={12} />
+                                            <span>إخفاء القائمة</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => navigate('/portal/dashboard')}
+                                        className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all border border-white/5 group"
+                                    >
+                                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                        <span className="font-bold text-xs">العودة للوحة التحكم</span>
+                                    </button>
+
+                                    {/* Notification Bell */}
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => {
+                                                setShowNotifications(!showNotifications);
+                                                if (!showNotifications) markAllAsRead();
+                                            }}
+                                            className="p-3 rounded-2xl hover:bg-white/5 transition-all relative group border border-transparent hover:border-white/5"
+                                        >
+                                            <Bell size={22} className="text-gray-400 group-hover:text-primary-400 transition-colors" />
+                                            {notifications.some(n => !n.read) && (
+                                                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-dark-900 animate-pulse"></span>
+                                            )}
+                                        </button>
+
+                                        {/* Notifications Dropdown */}
+                                        <AnimatePresence>
+                                            {showNotifications && (
+                                                <>
+                                                    <button
+                                                        className="fixed inset-0 z-[60] w-full h-full cursor-default bg-transparent"
+                                                        onClick={() => setShowNotifications(false)}
+                                                    />
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                        exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                                                        className="absolute left-0 mt-4 w-80 bg-dark-800 border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden z-[70] backdrop-blur-xl"
+                                                    >
+                                                        <div className="p-5 border-b border-white/5 bg-white/2 flex justify-between items-center">
+                                                            <span className="font-bold">التنبيهات</span>
+                                                            <span className="text-[10px] px-2 py-1 bg-primary-500/10 text-primary-400 rounded-lg">{notifications.length} جديد</span>
+                                                        </div>
+                                                        <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                                                            {notifications.length === 0 ? (
+                                                                <div className="p-12 text-center text-gray-500 text-sm">أنت على اطلاع بكل شيء!</div>
+                                                            ) : (
+                                                                notifications.map((notif) => (
+                                                                    <button
+                                                                        key={notif.id}
+                                                                        onClick={() => {
+                                                                            if (notif.link) navigate(notif.link);
+                                                                            setShowNotifications(false);
+                                                                        }}
+                                                                        className={`w-full text-right p-5 border-b border-white/5 hover:bg-white/5 transition-colors block ${!notif.read ? 'bg-primary-500/5' : ''}`}
+                                                                    >
+                                                                        <div className="flex justify-between items-start mb-1">
+                                                                            <span className="text-sm font-bold text-white">{notif.title}</span>
+                                                                            <span className="text-[10px] text-gray-600">{new Date(notif.created_at).toLocaleDateString('ar-SA')}</span>
+                                                                        </div>
+                                                                        <p className="text-xs text-gray-400 leading-relaxed">{notif.message}</p>
+                                                                    </button>
+                                                                ))
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
+                                                </>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+
+                                    {/* User Actions */}
+                                    <div className="flex items-center gap-3 border-r border-white/10 pr-4 mr-2">
+                                        <div className="hidden sm:flex flex-col items-end">
+                                            <span className="text-sm font-bold text-white">{userName}</span>
+                                            <span className="text-[10px] text-primary-500 font-bold uppercase tracking-wider">عميل ذهبي</span>
+                                        </div>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="p-3 rounded-2xl bg-red-500/5 hover:bg-red-500/10 text-red-500 transition-all border border-red-500/10"
+                                            title="تسجيل الخروج"
+                                        >
+                                            <LogOut size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.nav>
+                )}
+            </AnimatePresence>
+
+            <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
+                {/* Secondary Bar for Project Context */}
+                <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/5">
+                    <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span className="text-sm text-gray-400 font-bold uppercase tracking-widest">متابعة حية للمشروع</span>
                     </div>
                 </div>
 
@@ -175,10 +347,24 @@ const ClientProjectDetails = () => {
                                                 <h4 className={`font-bold ${item.status === 'pending' ? 'text-gray-500' : 'text-white'}`}>{item.title}</h4>
                                                 <span className="text-[10px] font-mono text-gray-500 uppercase">{item.date}</span>
                                             </div>
-                                            <p className="text-xs text-gray-500">
-                                                {item.status === 'completed' ? 'تمت المهمة بنجاح' :
-                                                    item.status === 'active' ? 'نحن نعمل على هذا حالياً' : 'مرحلة مستقبلية'}
-                                            </p>
+                                            <div className="mt-2 space-y-2">
+                                                <p className="text-xs text-gray-500">
+                                                    {item.status === 'completed' ? 'تمت المهمة بنجاح' :
+                                                        item.status === 'active' ? 'نحن نعمل على هذا حالياً' : 'مرحلة مستقبلية'}
+                                                </p>
+                                                {projectData.files?.filter(f => f.stage === projectData.timeline[idx].id_code).map((file, fIdx) => (
+                                                    <a
+                                                        key={fIdx}
+                                                        href={file.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-2 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] hover:bg-emerald-500 hover:text-dark-900 transition-all w-fit"
+                                                    >
+                                                        <Download size={10} />
+                                                        <span>{file.name}</span>
+                                                    </a>
+                                                ))}
+                                            </div>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -226,16 +412,32 @@ const ClientProjectDetails = () => {
                             </div>
                         </motion.div>
 
+                        <ProjectDomainReg project={projectData} />
+
                         <div className="glass-panel p-6 rounded-[2rem] border border-white/5 bg-dark-800/20">
-                            <h4 className="text-sm font-bold text-white mb-4">وثائق المشروع</h4>
+                            <h4 className="text-sm font-bold text-white mb-4">كافة الملفات</h4>
                             <div className="space-y-2">
-                                <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center"><FileText size={16} /></div>
-                                        <span className="text-xs text-gray-300">عقد التنفيذ التقني.pdf</span>
-                                    </div>
-                                    <Download size={14} className="text-gray-500 group-hover:text-white" />
-                                </button>
+                                {projectData.files?.map((file, i) => (
+                                    <a
+                                        key={i}
+                                        href={file.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-500 flex items-center justify-center"><FileText size={16} /></div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-gray-300 truncate max-w-[120px]">{file.name}</span>
+                                                <span className="text-[8px] text-gray-500 uppercase">{file.stage}</span>
+                                            </div>
+                                        </div>
+                                        <Download size={14} className="text-gray-500 group-hover:text-white" />
+                                    </a>
+                                ))}
+                                {(!projectData.files || projectData.files.length === 0) && (
+                                    <p className="text-[10px] text-center text-gray-500 py-4">لا توجد ملفات مرفوعة حالياً</p>
+                                )}
                             </div>
                         </div>
                     </div>

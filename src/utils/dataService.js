@@ -727,7 +727,6 @@ class DataService {
             );
             this._set(STORAGE_KEYS.GENERATED_PROJECTS, projects);
 
-            // Log activity
             if (updates.project_stage) {
                 this.logActivity('update', `تم تحديث مرحلة المشروع #${id} إلى ${updates.project_stage}`);
             }
@@ -735,6 +734,38 @@ class DataService {
             return data;
         } catch (error) {
             console.error('Error updating generated project:', error);
+            throw error;
+        }
+    }
+
+    async addProjectFile(projectId, fileData) {
+        try {
+            const { data: project, error: fetchError } = await supabase
+                .from('generated_projects')
+                .select('files')
+                .eq('id', projectId)
+                .single();
+
+            if (fetchError) throw fetchError;
+
+            const existingFiles = project.files || [];
+            const newFiles = [...existingFiles, {
+                ...fileData,
+                id: Math.random().toString(36).substr(2, 9),
+                uploaded_at: new Date().toISOString()
+            }];
+
+            const { data, error } = await supabase
+                .from('generated_projects')
+                .update({ files: newFiles })
+                .eq('id', projectId)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error adding project file:', error);
             throw error;
         }
     }
@@ -1322,6 +1353,21 @@ class DataService {
             return data || [];
         } catch (error) {
             console.error('Error fetching page visits:', error);
+            return [];
+        }
+    }
+
+    async fetchDomainPricing() {
+        try {
+            const { data, error } = await supabase
+                .from('domain_pricing')
+                .select('*')
+                .eq('is_available', true);
+
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching pricing:', error);
             return [];
         }
     }
