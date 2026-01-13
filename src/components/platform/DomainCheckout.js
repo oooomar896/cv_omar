@@ -195,7 +195,7 @@ const DomainCheckout = () => {
 
                                         <div className="flex items-center gap-4">
                                             <div>
-                                                <label className="block text-gray-400 text-sm mb-2">المدة</label>
+                                                <div className="block text-gray-400 text-sm mb-2">المدة</div>
                                                 <select
                                                     value={item.years}
                                                     onChange={(e) => updateYears(item.domain, e.target.value)}

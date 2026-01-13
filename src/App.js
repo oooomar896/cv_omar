@@ -35,6 +35,7 @@ const AIAssistant = lazy(() => import('./components/common/AIAssistant'));
 const DomainSearch = lazy(() => import('./components/platform/DomainSearch'));
 const DomainManagement = lazy(() => import('./components/platform/DomainManagement'));
 const DomainCheckout = lazy(() => import('./components/platform/DomainCheckout'));
+const ProtectedRoute = lazy(() => import('./components/common/ProtectedRoute'));
 
 // Loading component
 const LoadingFallback = () => (
@@ -182,7 +183,9 @@ const AppContent = () => {
             element={
               <Suspense fallback={<LoadingFallback />}>
                 <SEO title="إدارة الدومينات - بوابة العميل" />
-                <DomainManagement />
+                <ProtectedRoute>
+                  <DomainManagement />
+                </ProtectedRoute>
               </Suspense>
             }
           />
