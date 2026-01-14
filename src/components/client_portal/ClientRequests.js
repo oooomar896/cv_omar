@@ -10,31 +10,7 @@ const ClientRequests = () => {
     const [loading, setLoading] = useState(true);
     const [selectedRequest, setSelectedRequest] = useState(null); // Added state for modal
 
-    // Mock for demo if no real data found
-    const MOCK_DATA = [
-        {
-            id: 'REQ-2024-001',
-            type: 'Mobile App Project',
-            title: 'تطبيق توصيل طلبات',
-            project_name: 'تطبيق توصيل طلبات',
-            created_at: '2023-12-01',
-            status: 'completed',
-            budget: '35,000 SAR',
-            project_type: 'Mobile App',
-            description: 'تطبيق متكامل لتوصيل الطلبات يشمل تطبيق العميل، تطبيق السائق، ولوحة تحكم للمطاعم.'
-        },
-        {
-            id: 'REQ-2024-008',
-            type: 'Web Platform',
-            title: 'منصة التجارة الإلكترونية AI',
-            project_name: 'منصة التجارة الإلكترونية AI',
-            created_at: '2024-01-02',
-            status: 'in_progress',
-            budget: '45,000 SAR',
-            project_type: 'Web',
-            description: 'منصة تجارة إلكترونية ذكية تستخدم الذكاء الاصطناعي لترشيح المنتجات وتحليل سلوك المستخدمين.'
-        }
-    ];
+
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -44,32 +20,31 @@ const ClientRequests = () => {
             if (userEmail) {
                 try {
                     const realData = await dataService.fetchUserProjects(userEmail);
-                    if (realData && realData.length > 0) {
-                        setRequests(realData);
-                    } else {
-                        setRequests(MOCK_DATA);
-                    }
+                    setRequests(realData || []);
                 } catch (err) {
                     console.error("Failed to load requests", err);
-                    setRequests(MOCK_DATA);
+                    setRequests([]);
                 }
             } else {
-                setRequests(MOCK_DATA);
+                setRequests([]);
             }
             setLoading(false);
         };
 
         fetchRequests();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getStatusBadge = (status) => {
-        switch (status) {
+        const normalizedStatus = status?.toLowerCase();
+        switch (normalizedStatus) {
             case 'completed': return <span className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg text-xs border border-emerald-500/20"><CheckCircle size={12} /> مكتمل</span>;
-            case 'in_progress': return <span className="flex items-center gap-1 text-blue-400 bg-blue-500/10 px-2 py-1 rounded-lg text-xs border border-blue-500/20"><Clock size={12} className="animate-spin-slow" /> قيد التنفيذ</span>;
+            case 'in_progress':
+            case 'development': return <span className="flex items-center gap-1 text-blue-400 bg-blue-500/10 px-2 py-1 rounded-lg text-xs border border-blue-500/20"><Clock size={12} className="animate-spin-slow" /> قيد التنفيذ</span>;
             case 'pending':
-            case 'pending_review': return <span className="flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2 py-1 rounded-lg text-xs border border-amber-500/20"><Clock size={12} /> قيد المراجعة</span>;
-            default: return <span className="text-gray-400 text-xs">غير معروف</span>;
+            case 'pending_review':
+            case 'draft': return <span className="flex items-center gap-1 text-amber-400 bg-amber-500/10 px-2 py-1 rounded-lg text-xs border border-amber-500/20"><Clock size={12} /> قيد المراجعة</span>;
+            case 'rejected': return <span className="flex items-center gap-1 text-rose-400 bg-rose-500/10 px-2 py-1 rounded-lg text-xs border border-rose-500/20">مرفوض</span>;
+            default: return <span className="text-gray-400 text-xs text-amber-400 bg-amber-500/10 px-2 py-1 rounded-lg border border-amber-500/20">قيد المراجعة</span>;
         }
     };
 
@@ -149,14 +124,14 @@ const ClientRequests = () => {
                                     <div className="flex-1 text-center md:text-right">
                                         <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                                             <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors uppercase tracking-tight">
-                                                {req.project_name || req.title}
+                                                {req.project_name || req.projectName || req.title || 'مشروع جديد'}
                                             </h3>
                                             {getStatusBadge(req.status)}
                                         </div>
                                         <div className="flex items-center justify-center md:justify-start gap-4 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                                            <span className="flex items-center gap-1.5"><LayoutList size={14} /> {req.project_type || req.type}</span>
+                                            <span className="flex items-center gap-1.5"><LayoutList size={14} /> {req.project_type || req.projectType || req.type}</span>
                                             <span className="w-1 h-1 rounded-full bg-gray-800"></span>
-                                            <span className="flex items-center gap-1.5 font-mono"><Clock size={14} /> {new Date(req.created_at || Date.now()).toLocaleDateString('ar-SA')}</span>
+                                            <span className="flex items-center gap-1.5 font-mono"><Clock size={14} /> {new Date(req.created_at || req.timestamp || Date.now()).toLocaleDateString('ar-SA')}</span>
                                         </div>
                                     </div>
 

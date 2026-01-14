@@ -596,79 +596,154 @@ class DataService {
         try {
             const { data, error } = await supabase.from('generated_projects').select('*').order('created_at', { ascending: false });
             if (error) throw error;
-            if (data.length > 0) this._set(STORAGE_KEYS.GENERATED_PROJECTS, data);
-            return data;
+
+            // Merge with local to preserve projects that failed to sync
+            const local = this.getGeneratedProjects();
+            const mergedMap = new Map();
+            local.forEach(p => mergedMap.set(p.id, p));
+            data.forEach(p => mergedMap.set(p.id, this._normalizeProjectData(p)));
+
+            const merged = Array.from(mergedMap.values());
+            this._set(STORAGE_KEYS.GENERATED_PROJECTS, merged);
+            return merged;
         } catch (err) {
-            console.error(err);
+            console.error('Fetch error:', err);
             return this.getGeneratedProjects();
         }
     }
 
+    _normalizeProjectData(p) {
+        return {
+            ...p,
+            userEmail: p.user_email,
+            projectName: p.project_name,
+            projectType: p.project_type,
+            projectStage: p.project_stage,
+            files: p.files || {},
+            timestamp: p.created_at || p.timestamp
+        };
+    }
+
     async fetchUserProjects(email) {
+        if (!email) return [];
+        const cleanEmail = email.toLowerCase().trim();
+
         try {
-            const { data, error } = await supabase
-                .from('generated_projects')
-                .select('*')
-                .eq('user_email', email)
-                .order('created_at', { ascending: false });
+            const { data: { session } } = await supabase.auth.getSession();
+            const userId = session?.user?.id;
 
-            if (error) throw error;
+            const query = supabase.from('generated_projects').select('*');
+            if (userId) {
+                query.or(`user_email.ilike.${cleanEmail},user_id.eq.${userId}`);
+            } else {
+                query.ilike('user_email', cleanEmail);
+            }
 
-            // Normalize for frontend
-            return (data || []).map(p => ({
-                ...p,
-                userEmail: p.user_email,
-                projectName: p.project_name,
-                projectType: p.project_type,
-                projectStage: p.project_stage,
-                files: p.files || {},
-                // Keep original keys too just in case
-            }));
+            const { data: dbData, error } = await query.order('created_at', { ascending: false });
+            if (error) console.warn('Supabase fetch failed, falling back to local:', error);
+
+            // Fetch from LocalStorage
+            const localProjects = this.getGeneratedProjects().filter(p =>
+                p.user_email?.toLowerCase() === cleanEmail ||
+                p.userEmail?.toLowerCase() === cleanEmail ||
+                p.email?.toLowerCase() === cleanEmail
+            );
+
+            // Merge and Normalize
+            const mergedMap = new Map();
+
+            // Add local ones first
+            localProjects.forEach(p => mergedMap.set(p.id || p.projectName, this._normalizeProjectData(p)));
+
+            // Add DB ones (overwrite local if same ID)
+            (dbData || []).forEach(p => mergedMap.set(p.id, this._normalizeProjectData(p)));
+
+            const final = Array.from(mergedMap.values()).sort((a, b) =>
+                new Date(b.timestamp || b.created_at) - new Date(a.timestamp || a.created_at)
+            );
+
+            // Sync local storage state for this user's view
+            this._set(STORAGE_KEYS.GENERATED_PROJECTS, final);
+
+            return final;
         } catch (err) {
             console.error('Error fetching user projects:', err);
-            return [];
+            return this.getGeneratedProjects().filter(p =>
+                p.userEmail?.toLowerCase() === cleanEmail || p.email?.toLowerCase() === cleanEmail
+            );
+        }
+    }
+
+    async getProjectById(id) {
+        try {
+            // Priority 1: Supabase
+            const { data } = await supabase
+                .from('generated_projects')
+                .select('*, contracts (*)')
+                .eq('id', id)
+                .maybeSingle();
+
+            if (data) return this._normalizeProjectData(data);
+
+            // Priority 2: LocalStorage
+            const local = this.getGeneratedProjects().find(p => p.id === id);
+            if (local) return this._normalizeProjectData(local);
+
+            return null;
+        } catch (err) {
+            const local = this.getGeneratedProjects().find(p => p.id === id);
+            return local ? this._normalizeProjectData(local) : null;
         }
     }
 
     async saveGeneratedProject(projectId, data) {
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const userId = session?.user?.id;
+            const cleanEmail = (data.user_email || data.userEmail || data.email)?.toLowerCase()?.trim();
+
             const projectData = {
-                user_email: data.userEmail,
-                project_name: data.projectName,
-                project_type: data.projectType,
-                features: data.features,
-                description: data.description,
-                status: 'pending',
-                files: data.files,
-                project_stage: data.projectStage || 'analysis'
+                user_email: cleanEmail,
+                project_name: data.project_name || data.projectName || data.title || 'مشروع جديد',
+                project_type: data.project_type || data.projectType || 'web',
+                features: data.features || [],
+                description: data.description || '',
+                status: data.status || 'pending',
+                files: data.files || {},
+                project_stage: data.project_stage || data.projectStage || 'analysis',
+                github_url: data.github_url || null
             };
+
+            if (userId) projectData.user_id = userId;
 
             const { data: savedData, error } = await supabase.from('generated_projects').insert([projectData]).select().single();
             if (error) throw error;
 
-            const normalized = {
-                ...data,
-                id: savedData.id,
-                timestamp: savedData.created_at,
-                projectType: savedData.project_type,
-                projectName: savedData.project_name
-            };
-
-            const projects = this.getGeneratedProjects();
-            this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, normalized]);
-            return normalized;
+            return this._normalizeProject(savedData, data);
         } catch (err) {
             console.error('Error saving generated project:', err);
-            // Fallback
-            const projects = this.getGeneratedProjects();
-            const newProject = {
+
+            // Deduplicated fallback to localStorage
+            const projects = this.getGeneratedProjects().filter(p => p.id !== projectId);
+            const newProject = this._normalizeProjectData({
                 ...data,
                 id: projectId,
-                timestamp: new Date().toISOString()
-            };
+                created_at: new Date().toISOString()
+            });
+
             this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, newProject]);
             return newProject;
         }
+    }
+
+    _normalizeProject(savedData) {
+        const normalized = this._normalizeProjectData(savedData);
+
+        // Update local storage to reflect the DB record immediately
+        const projects = this.getGeneratedProjects().filter(p => p.id !== savedData.id);
+        this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, normalized]);
+
+        return normalized;
     }
 
     // Chat System

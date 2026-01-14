@@ -20,6 +20,7 @@ import LiveCodeEditor from '../platform/LiveCodeEditor';
 import ProjectChat from '../platform/ProjectChat';
 import ProjectDomainReg from '../platform/ProjectDomainReg';
 import { AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 const ClientProjectDetails = () => {
     const { id } = useParams();
@@ -45,21 +46,12 @@ const ClientProjectDetails = () => {
                 const notifs = await dataService.fetchNotifications(email);
                 setNotifications(notifs);
 
-                const { data: project, error } = await supabase
-                    .from('generated_projects')
-                    .select(`
-                        *,
-                        contracts (*)
-                    `)
-                    .eq('id', id)
-                    .eq('user_email', email)
-                    .single();
-
-                if (error) throw error;
+                // Fetch Project by ID (Hybrid Local + Remote)
+                const project = await dataService.getProjectById(id);
 
                 if (project) {
                     const contract = project.contracts?.[0];
-                    const rawBudget = contract?.budget || "0";
+                    const rawBudget = contract?.budget || project.budget || "0";
                     const totalCost = typeof rawBudget === 'string'
                         ? parseFloat(rawBudget.replace(/[^0-9.]/g, ''))
                         : (typeof rawBudget === 'number' ? rawBudget : 0);
@@ -67,9 +59,9 @@ const ClientProjectDetails = () => {
 
                     const mappedData = {
                         ...project,
-                        name: project.project_name || 'مشروع بدون عنوان',
-                        status: project.status,
-                        progress: getProgress(project.status, project.project_stage),
+                        name: project.projectName || project.project_name || 'مشروع بدون عنوان',
+                        status: project.status || 'pending',
+                        progress: getProgress(project.status, project.projectStage || project.project_stage),
                         dueDate: contract?.delivery_date || 'غير محدد',
                         finance: {
                             total: totalCost,
@@ -77,18 +69,22 @@ const ClientProjectDetails = () => {
                             remaining: totalCost - paidAmount
                         },
                         timeline: [
-                            { id: 1, id_code: 'analysis', title: 'تحليل المتطلبات', status: 'completed', date: new Date(project.created_at).toLocaleDateString('ar-SA') },
-                            { id: 2, id_code: 'design', title: 'التصميم والواجهات', status: (project.project_stage === 'design' || project.status === 'approved') ? 'completed' : 'active', date: '-' },
-                            { id: 3, id_code: 'contract', title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.project_stage === 'contract' ? 'active' : 'pending'), date: '-' },
-                            { id: 4, id_code: 'dev', title: 'التطوير والتنفيذ', status: project.project_stage === 'dev' ? 'active' : (project.status === 'completed' ? 'completed' : 'pending'), date: '-' },
-                            { id: 5, id_code: 'qa', title: 'فحص الجودة', status: project.project_stage === 'qa' ? 'active' : 'pending', date: '-' },
+                            { id: 1, id_code: 'analysis', title: 'تحليل المتطلبات', status: 'completed', date: new Date(project.created_at || project.timestamp).toLocaleDateString('ar-SA') },
+                            { id: 2, id_code: 'design', title: 'التصميم والواجهات', status: (project.projectStage === 'design' || project.project_stage === 'design' || project.status === 'approved') ? 'completed' : 'active', date: '-' },
+                            { id: 3, id_code: 'contract', title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.projectStage === 'contract' || project.project_stage === 'contract' ? 'active' : 'pending'), date: '-' },
+                            { id: 4, id_code: 'dev', title: 'التطوير والتنفيذ', status: (project.projectStage === 'dev' || project.project_stage === 'dev') ? 'active' : (project.status === 'completed' ? 'completed' : 'pending'), date: '-' },
+                            { id: 5, id_code: 'qa', title: 'فحص الجودة', status: (project.projectStage === 'qa' || project.project_stage === 'qa') ? 'active' : 'pending', date: '-' },
                             { id: 6, id_code: 'launch', title: 'التسليم النهائي', status: project.status === 'completed' ? 'completed' : 'pending', date: contract?.delivery_date || '-' },
                         ]
                     };
                     setProjectData(mappedData);
+                } else {
+                    toast.error('لم يتم العثور على المشروع');
+                    navigate('/portal/requests');
                 }
             } catch (err) {
                 console.error('Error fetching project details:', err);
+                toast.error('فشل في تحميل تفاصيل المشروع');
             } finally {
                 setLoading(false);
             }
@@ -443,40 +439,53 @@ const ClientProjectDetails = () => {
                     </div>
                 </div>
 
-                {/* Live Editor Section */}
-                {(projectData.status === 'approved' || projectData.status === 'development' || projectData.status === 'contract_signed' || projectData.status === 'completed') && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-                        {/* Chat Section */}
-                        <div className="lg:col-span-1 h-[600px]">
-                            <ProjectChat project={projectData} userRole="client" />
-                        </div>
-
-                        {/* Code Editor Section */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="lg:col-span-2 glass-panel rounded-[3rem] border border-white/5 bg-dark-800/40 overflow-hidden shadow-2xl relative"
-                        >
-                            <div className="p-6 border-b border-white/5 bg-dark-900/50 flex items-center justify-between">
-                                <div className="flex items-center gap-6">
-                                    <div className="flex gap-1.5">
-                                        <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                                        <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                                        <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-                                    </div>
-                                    <div className="h-4 w-[1px] bg-white/10"></div>
-                                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Live Development Environment</span>
-                                </div>
-                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-[10px] font-bold text-primary-400 font-mono uppercase">
-                                    Real-time View
-                                </div>
-                            </div>
-                            <div className="h-[calc(100%-80px)] relative group">
-                                <LiveCodeEditor project={projectData} readOnly={true} />
-                            </div>
-                        </motion.div>
+                {/* Communication & Development Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    {/* Chat Section - Always Visible */}
+                    <div className="lg:col-span-1 h-[600px]">
+                        <ProjectChat project={projectData} userRole="client" />
                     </div>
-                )}
+
+                    {/* Code Editor Section - Conditional based on progress */}
+                    <div className="lg:col-span-2">
+                        {(projectData.status === 'approved' || projectData.status === 'development' || projectData.status === 'contract_signed' || projectData.status === 'completed') ? (
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="glass-panel rounded-[3rem] border border-white/5 bg-dark-800/40 overflow-hidden shadow-2xl relative h-full min-h-[500px]"
+                            >
+                                <div className="p-6 border-b border-white/5 bg-dark-900/50 flex items-center justify-between">
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex gap-1.5">
+                                            <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                            <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                            <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                                        </div>
+                                        <div className="h-4 w-[1px] bg-white/10"></div>
+                                        <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Live Development Environment</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-[10px] font-bold text-primary-400 font-mono uppercase">
+                                        Real-time View
+                                    </div>
+                                </div>
+                                <div className="h-[calc(100%-80px)] relative group">
+                                    <LiveCodeEditor project={projectData} readOnly={true} />
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <div className="glass-panel rounded-[3rem] border border-white/10 bg-dark-800/20 overflow-hidden shadow-2xl relative h-full flex flex-col items-center justify-center p-12 text-center min-h-[500px]">
+                                <div className="p-6 bg-primary-500/5 rounded-full mb-6">
+                                    <Activity className="text-primary-500/50" size={48} />
+                                </div>
+                                <h4 className="text-xl font-bold text-white/80 mb-2">بيئة التطوير المباشرة غير مفعلة</h4>
+                                <p className="text-gray-600 text-sm max-w-sm">ستتمكن من رؤية كود المشروع ومعاينته مباشرة هنا بمجرد اعتماد الطلب والبدء في مرحلة التنفيذ.</p>
+                                <div className="mt-8 px-6 py-2 rounded-xl bg-primary-500/10 text-primary-400 text-xs font-bold border border-primary-500/20">
+                                    بانتظار الموافقة على المشروع
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

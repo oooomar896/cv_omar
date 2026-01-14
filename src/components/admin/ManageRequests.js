@@ -8,7 +8,9 @@ import {
     Layout,
     CheckCircle2,
     FileText,
-    Plus
+    Plus,
+    Github,
+    Link as LinkIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -186,7 +188,14 @@ const ManageRequests = () => {
                                     </span>
                                 </div>
 
-                                <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{req.project_name}</h3>
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="text-lg font-bold text-white line-clamp-1">{req.project_name}</h3>
+                                    {req.github_url && (
+                                        <div className="flex items-center gap-1 text-primary-400" title="GitHub Linked">
+                                            <Github size={14} />
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="flex items-center gap-2 text-primary-400 text-xs font-mono mb-4 bg-primary-500/5 p-2 rounded-lg w-fit">
                                     <Mail size={12} />
                                     {req.user_email}
@@ -304,7 +313,7 @@ const ManageRequests = () => {
                                             {Object.entries(selectedRequest.specificAnswers).map(([key, value]) => (
                                                 <div key={key} className="flex flex-col gap-1 p-3 bg-white/5 rounded-xl border border-white/5">
                                                     <span className="text-xs text-primary-400 font-mono opacity-70">{key}</span>
-                                                    <span className="text-sm font-bold text-white">
+                                                    <span className="text-sm font-bold text-white uppercase">
                                                         {typeof value === 'boolean' ? (value ? 'نعم' : 'لا') : String(value)}
                                                     </span>
                                                 </div>
@@ -312,6 +321,45 @@ const ManageRequests = () => {
                                         </div>
                                     </div>
                                 )}
+
+                                {/* GitHub Integration */}
+                                <div className="bg-dark-800 border border-gray-700 rounded-2xl p-6">
+                                    <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                                        <Github size={18} className="text-gray-400" />
+                                        <span>مستودع GitHub (Repository)</span>
+                                    </h3>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="https://github.com/username/repo"
+                                            className="flex-1 bg-dark-900 border border-gray-700 rounded-xl px-4 py-2 text-sm text-white focus:border-primary-500 outline-none font-mono"
+                                            defaultValue={selectedRequest.github_url}
+                                            onBlur={async (e) => {
+                                                const url = e.target.value;
+                                                if (url !== selectedRequest.github_url) {
+                                                    try {
+                                                        await dataService.updateGeneratedProject(selectedRequest.id, { github_url: url });
+                                                        toast.success('تم تحديث رابط GitHub');
+                                                        setSelectedRequest(prev => ({ ...prev, github_url: url }));
+                                                    } catch (err) {
+                                                        toast.error('فشل تحديث الرابط');
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                        {selectedRequest.github_url && (
+                                            <a
+                                                href={selectedRequest.github_url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="p-2 bg-dark-700 hover:bg-dark-600 rounded-xl text-primary-400 transition-all"
+                                            >
+                                                <LinkIcon size={20} />
+                                            </a>
+                                        )}
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 mt-2">سيتمكن العميل من رؤية الكود وتقدم العمل مباشرة من GitHub.</p>
+                                </div>
 
                                 {/* Admin Actions Section */}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -431,6 +479,10 @@ const ManageRequests = () => {
                                                     <div key={stage.id} className="space-y-2">
                                                         <button
                                                             type="button"
+                                                            className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between group cursor-pointer ${isCurrent
+                                                                ? 'bg-primary-500/10 border-primary-500 text-primary-400'
+                                                                : 'bg-dark-900 border-gray-800 text-gray-500 hover:border-gray-600'
+                                                                }`}
                                                             onClick={async () => {
                                                                 try {
                                                                     await dataService.updateGeneratedProject(selectedRequest.id, { project_stage: stage.id });
@@ -438,7 +490,7 @@ const ManageRequests = () => {
                                                                     // Notify Client
                                                                     await dataService.sendNotification({
                                                                         user_email: selectedRequest.user_email,
-                                                                        title: 'تقدم في المشروع! 🚀',
+                                                                        title: ' تقدم في المشروع! 🚀',
                                                                         message: `انتقل مشروعك (${selectedRequest.project_name}) إلى مرحلة: ${stage.label}`,
                                                                         type: 'success',
                                                                         link: `/portal/project/${selectedRequest.id}`
@@ -451,23 +503,21 @@ const ManageRequests = () => {
                                                                     toast.error('فشل تحديث المرحلة');
                                                                 }
                                                             }}
-                                                            className={`w-full text-right px-4 py-3 rounded-xl border transition-all flex items-center justify-between group cursor-pointer ${isCurrent
-                                                                ? 'bg-primary-500/10 border-primary-500 text-primary-400'
-                                                                : 'bg-dark-900 border-gray-800 text-gray-500 hover:border-gray-600'
-                                                                }`}
                                                         >
                                                             <span className="font-bold text-xs">{stage.label}</span>
                                                             <div className="flex items-center gap-2">
                                                                 {isCurrent && <CheckCircle2 size={16} className="text-primary-500" />}
                                                                 <button
                                                                     type="button"
-                                                                    className="p-1 hover:bg-white/10 rounded-md cursor-pointer text-gray-400 hover:text-white transition-colors"
+                                                                    title="رفع ملف لهذه المرحلة"
+                                                                    className="p-1.5 hover:bg-white/10 rounded-lg cursor-pointer text-gray-400 hover:text-white transition-colors"
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
-                                                                        document.getElementById(`file-stage-${stage.id}`).click();
+                                                                        const input = document.getElementById(`file-stage-${stage.id}`);
+                                                                        if (input) input.click();
                                                                     }}
                                                                 >
-                                                                    <Plus size={14} />
+                                                                    <Plus size={16} />
                                                                 </button>
                                                                 <input
                                                                     id={`file-stage-${stage.id}`}
@@ -494,7 +544,7 @@ const ManageRequests = () => {
                                     </div>
                                 </div>
 
-                                {selectedRequest.files && (
+                                {selectedRequest.files && selectedRequest.files.length > 0 && (
                                     <div className="pt-6 border-t border-gray-800">
                                         <h3 className="text-sm font-bold text-white mb-4">الملفات والموارد</h3>
                                         <div className="bg-dark-950 rounded-2xl border border-gray-800 overflow-hidden h-[300px]">

@@ -174,7 +174,7 @@ const ProjectBuilderForm = () => {
             const report = await qaAgent.reviewProject();
 
             // 3. حفظ المشروع في قاعدة البيانات
-            dataService.saveGeneratedProject(`proj_${Date.now()}`, {
+            await dataService.saveGeneratedProject(`proj_${Date.now()}`, {
                 userEmail: formData.email,
                 userName: formData.userName,
                 projectType: formData.type,

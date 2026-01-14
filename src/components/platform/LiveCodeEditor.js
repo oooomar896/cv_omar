@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { Save, FileCode, CheckCircle, RefreshCw, Trash2, Plus, ChevronDown, ChevronRight, Folder, Play, Code2 } from 'lucide-react';
+import { Save, FileCode, CheckCircle, RefreshCw, Trash2, Plus, ChevronDown, ChevronRight, Folder, Play, Code2, Github, Layout } from 'lucide-react';
 import { dataService } from '../../utils/dataService';
 import toast from 'react-hot-toast';
 
@@ -300,10 +300,29 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
                 >
                     <div className="relative">
                         <Code2 size={24} strokeWidth={1.5} />
-                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-[#333]"></div>
                     </div>
                     {activePanel === 'git' && <div className="absolute left-0 top-2 bottom-2 w-1 bg-white rounded-r"></div>}
                 </button>
+
+                <button
+                    onClick={() => setActivePanel('github')}
+                    className={`p-3 rounded-md transition-all relative group ${activePanel === 'github' ? 'text-white' : 'text-gray-500 hover:text-white'}`}
+                    title="GitHub Integration"
+                >
+                    <Github size={24} strokeWidth={1.5} />
+                    {activePanel === 'github' && <div className="absolute left-0 top-2 bottom-2 w-1 bg-white rounded-r"></div>}
+                </button>
+
+                {isAdmin && (
+                    <button
+                        onClick={() => setActivePanel('status')}
+                        className={`p-3 rounded-md transition-all relative group ${activePanel === 'status' ? 'text-white' : 'text-gray-500 hover:text-white'}`}
+                        title="Project Stage"
+                    >
+                        <Layout size={24} strokeWidth={1.5} />
+                        {activePanel === 'status' && <div className="absolute left-0 top-2 bottom-2 w-1 bg-white rounded-r"></div>}
+                    </button>
+                )}
 
                 <div className="flex-1"></div>
                 <button className="p-3 text-gray-500 hover:text-white"><RefreshCw size={20} strokeWidth={1.5} /></button>
@@ -379,6 +398,82 @@ const LiveCodeEditor = ({ project, userRole = 'user' }) => {
                             <div className="text-gray-500 text-xs italic text-center py-4 bg-white/5 rounded">
                                 No unsaved changes detected
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {activePanel === 'github' && (
+                    <div className="flex-1 flex flex-col p-4 gap-4 overflow-y-auto">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Github size={18} className="text-gray-400" />
+                            <span className="text-xs font-bold text-gray-300 uppercase">GitHub Repo</span>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="bg-black/20 p-3 rounded-lg border border-white/5">
+                                <span className="text-[10px] text-gray-500 block mb-2 uppercase tracking-tighter font-black">Repository Link</span>
+                                <input
+                                    type="text"
+                                    placeholder="https://github.com/..."
+                                    className="w-full bg-[#3c3c3c] border border-gray-700 rounded px-2 py-1.5 text-[11px] text-white outline-none focus:border-blue-500 font-mono"
+                                    defaultValue={project?.github_url}
+                                    onBlur={async (e) => {
+                                        if (e.target.value === project?.github_url) return;
+                                        try {
+                                            await dataService.updateGeneratedProject(project.id, { github_url: e.target.value });
+                                            toast.success('تم تحديث رابط GitHub');
+                                        } catch (err) { toast.error('فشل التحديث'); }
+                                    }}
+                                />
+                            </div>
+
+                            <button className="w-full py-2 bg-dark-700 hover:bg-dark-600 border border-white/10 rounded flex items-center justify-center gap-2 text-xs text-gray-300 transition-all font-bold">
+                                <RefreshCw size={14} />
+                                <span>Fetch Repository</span>
+                            </button>
+
+                            <div className="text-[10px] text-gray-500 bg-blue-500/5 p-3 rounded border border-blue-500/10 leading-relaxed">
+                                <span className="text-blue-400 font-bold block mb-1 uppercase tracking-widest text-[8px]">GitSync Info</span>
+                                يتم ربط هذا المحرر آلياً بمستودع GitHub. أي تغيير يتم حفظه هنا، سيتم دفعه للمستودع.
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activePanel === 'status' && isAdmin && (
+                    <div className="flex-1 flex flex-col p-4 gap-4 overflow-y-auto">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Layout size={18} className="text-gray-400" />
+                            <span className="text-xs font-bold text-gray-300 uppercase">Project Stage</span>
+                        </div>
+
+                        <div className="space-y-2">
+                            {[
+                                { id: 'analysis', label: 'تحليل المتطلبات' },
+                                { id: 'design', label: 'التصميم والواجهات' },
+                                { id: 'contract', label: 'توقيع العقد' },
+                                { id: 'dev', label: 'مرحلة البرمجة' },
+                                { id: 'qa', label: 'فحص الجودة' },
+                                { id: 'launch', label: 'الإطلاق النهائي' }
+                            ].map(stage => {
+                                const isCurrent = (project?.project_stage || 'analysis') === stage.id;
+                                return (
+                                    <button
+                                        key={stage.id}
+                                        onClick={async () => {
+                                            try {
+                                                await dataService.updateGeneratedProject(project.id, { project_stage: stage.id });
+                                                toast.success(`تم التحديث لمرحلة ${stage.label}`);
+                                            } catch (err) { toast.error('Update failed'); }
+                                        }}
+                                        className={`w-full text-right px-3 py-2.5 rounded-lg border text-xs transition-all flex items-center justify-between group ${isCurrent ? 'bg-primary-500/10 border-primary-500 text-primary-400 font-bold' : 'bg-white/5 border-transparent text-gray-500 hover:bg-white/10 hover:text-gray-300'
+                                            }`}
+                                    >
+                                        <span className="font-cairo">{stage.label}</span>
+                                        {isCurrent && <CheckCircle size={14} />}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 )}

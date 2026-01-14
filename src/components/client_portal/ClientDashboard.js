@@ -61,15 +61,15 @@ const ClientDashboard = () => {
             const formattedProjects = projects.map(p => {
                 return {
                     id: p.id,
-                    name: p.project_name || 'مشروع بدون عنوان',
-                    progress: p.status === 'completed' ? 100 :
-                        (p.project_stage === 'analysis' ? 10 :
-                            p.project_stage === 'design' ? 30 :
-                                p.project_stage === 'dev' ? 60 :
-                                    p.project_stage === 'qa' ? 85 : 95),
-                    status: p.status,
-                    type: p.project_type || 'Web App',
-                    nextMilestone: getNextMilestone(p.status, p.project_stage),
+                    name: p.project_name || p.projectName || 'مشروع بدون عنوان',
+                    progress: (p.status === 'completed' || p.project_stage === 'launch') ? 100 :
+                        ((p.project_stage === 'analysis' || p.projectStage === 'analysis') ? 10 :
+                            (p.project_stage === 'design' || p.projectStage === 'design') ? 30 :
+                                (p.project_stage === 'dev' || p.projectStage === 'dev') ? 60 :
+                                    (p.project_stage === 'qa' || p.projectStage === 'qa') ? 85 : 95),
+                    status: p.status || 'pending',
+                    type: p.project_type || p.projectType || 'Web App',
+                    nextMilestone: getNextMilestone(p.status, p.project_stage || p.projectStage),
                     dueDate: 'قيد التحديد'
                 };
             });

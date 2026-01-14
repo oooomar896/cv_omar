@@ -59,13 +59,17 @@ const RequestService = () => {
         setIsLoading(true);
 
         try {
-            // Save Lead (User Info)
-            await dataService.addUser({
-                name: formData.name,
-                email: formData.email,
-                phone: formData.phone,
-                role: 'client'
-            });
+            // Save Lead (User Info) - Non-blocking to ensure request success
+            try {
+                await dataService.addUser({
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    role: 'client'
+                });
+            } catch (leadError) {
+                console.warn('Lead creation failed (non-critical):', leadError);
+            }
 
             // Save Request
             await dataService.saveGeneratedProject(`req_${Date.now()}`, {

@@ -28,7 +28,7 @@ const ProjectDomainReg = ({ project }) => {
                 domain: searchTerm.toLowerCase() + ext,
                 extension: ext,
                 available: Math.random() > 0.4,
-                price: pricing.find(p => p.extension === ext)?.purchase_price || 50
+                price: pricing.find(p => p.tld === ext)?.price_per_year || 50
             }));
             setSearchResults(searchResults);
         } catch (e) {
