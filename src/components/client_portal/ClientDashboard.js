@@ -59,9 +59,17 @@ const ClientDashboard = () => {
 
             // Transform data for UI
             const formattedProjects = projects.map(p => {
+                const getDisplayName = () => {
+                    if (p.project_name && p.project_name !== 'مشروع جديد' && p.project_name !== 'New Project') return p.project_name;
+                    if (p.projectName && p.projectName !== 'مشروع جديد' && p.projectName !== 'New Project') return p.projectName;
+                    if (p.title) return p.title;
+                    if (p.description) return p.description.split(' ').slice(0, 5).join(' ');
+                    return 'مشروع جديد';
+                };
+
                 return {
                     id: p.id,
-                    name: p.project_name || p.projectName || 'مشروع بدون عنوان',
+                    name: getDisplayName(),
                     progress: (p.status === 'completed' || p.project_stage === 'launch') ? 100 :
                         ((p.project_stage === 'analysis' || p.projectStage === 'analysis') ? 10 :
                             (p.project_stage === 'design' || p.projectStage === 'design') ? 30 :
