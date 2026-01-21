@@ -12,10 +12,17 @@ import {
     Bell,
     LogOut,
     Menu,
-    ChevronUp
+    ChevronUp,
+    Sparkles,
+    Target,
+    BarChart3,
+    Lightbulb,
+    ShieldAlert,
+    Code2
 } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';
 import { dataService } from '../../utils/dataService';
+import { downloadProjectBlueprint, downloadCursorRules } from '../../utils/fileUtils';
 import LiveCodeEditor from '../platform/LiveCodeEditor';
 import ProjectChat from '../platform/ProjectChat';
 import ProjectDomainReg from '../platform/ProjectDomainReg';
@@ -42,20 +49,35 @@ const ClientProjectDetails = () => {
                 }
                 setUserName(email.split('@')[0]);
 
-                // Fetch Notifications for the bell
                 const notifs = await dataService.fetchNotifications(email);
                 setNotifications(notifs);
 
-                // Fetch Project by ID (Hybrid Local + Remote)
                 const project = await dataService.getProjectById(id);
 
                 if (project) {
                     const contract = project.contracts?.[0];
-                    const rawBudget = contract?.budget || project.budget || "0";
+                    const rawBudget = contract?.budget || project.budget || project.estimatedCost?.min || "0";
                     const totalCost = typeof rawBudget === 'string'
                         ? parseFloat(rawBudget.replace(/[^0-9.]/g, ''))
                         : (typeof rawBudget === 'number' ? rawBudget : 0);
+
                     const paidAmount = 0;
+
+                    // Build Dynamic Roadmap from AI Phases if available
+                    const dynamicPhases = project.phases ? project.phases.map((phase, idx) => ({
+                        id: idx + 1,
+                        id_code: phase.id || `phase_${idx}`,
+                        title: phase.name,
+                        status: idx === 0 ? 'completed' : (project.projectStage === phase.id ? 'active' : 'pending'),
+                        date: phase.duration || '-'
+                    })) : [
+                        { id: 1, id_code: 'analysis', title: 'تحليل المتطلبات', status: 'completed', date: new Date(project.created_at || project.timestamp).toLocaleDateString('ar-SA') },
+                        { id: 2, id_code: 'design', title: 'التصميم والواجهات', status: (project.projectStage === 'design' || project.status === 'approved') ? 'completed' : 'active', date: '-' },
+                        { id: 3, id_code: 'contract', title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.projectStage === 'contract' ? 'active' : 'pending'), date: '-' },
+                        { id: 4, id_code: 'dev', title: 'التطوير والتنفيذ', status: project.projectStage === 'dev' ? 'active' : 'pending', date: '-' },
+                        { id: 5, id_code: 'qa', title: 'فحص الجودة', status: project.projectStage === 'qa' ? 'active' : 'pending', date: '-' },
+                        { id: 6, id_code: 'launch', title: 'التسليم النهائي', status: project.status === 'completed' ? 'completed' : 'pending', date: contract?.delivery_date || '-' },
+                    ];
 
                     const mappedData = {
                         ...project,
@@ -68,14 +90,7 @@ const ClientProjectDetails = () => {
                             paid: paidAmount,
                             remaining: totalCost - paidAmount
                         },
-                        timeline: [
-                            { id: 1, id_code: 'analysis', title: 'تحليل المتطلبات', status: 'completed', date: new Date(project.created_at || project.timestamp).toLocaleDateString('ar-SA') },
-                            { id: 2, id_code: 'design', title: 'التصميم والواجهات', status: (project.projectStage === 'design' || project.project_stage === 'design' || project.status === 'approved') ? 'completed' : 'active', date: '-' },
-                            { id: 3, id_code: 'contract', title: 'توقيع العقد', status: contract?.status === 'signed' ? 'completed' : (project.projectStage === 'contract' || project.project_stage === 'contract' ? 'active' : 'pending'), date: '-' },
-                            { id: 4, id_code: 'dev', title: 'التطوير والتنفيذ', status: (project.projectStage === 'dev' || project.project_stage === 'dev') ? 'active' : (project.status === 'completed' ? 'completed' : 'pending'), date: '-' },
-                            { id: 5, id_code: 'qa', title: 'فحص الجودة', status: (project.projectStage === 'qa' || project.project_stage === 'qa') ? 'active' : 'pending', date: '-' },
-                            { id: 6, id_code: 'launch', title: 'التسليم النهائي', status: project.status === 'completed' ? 'completed' : 'pending', date: contract?.delivery_date || '-' },
-                        ]
+                        timeline: dynamicPhases
                     };
                     setProjectData(mappedData);
                 } else {
@@ -316,6 +331,47 @@ const ClientProjectDetails = () => {
                             </div>
                         </motion.div>
 
+                        {/* AI Strategic Analysis (NEW) */}
+                        {projectData.analysis && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                            >
+                                <AnalysisMiniCard
+                                    icon={Target}
+                                    title="فرصة السوق"
+                                    value={projectData.analysis.marketPotential || 'عالي'}
+                                    color="text-emerald-400"
+                                />
+                                <AnalysisMiniCard
+                                    icon={BarChart3}
+                                    title="المنافسة"
+                                    value={projectData.analysis.competition || 'متوسط'}
+                                    color="text-amber-400"
+                                />
+                                <AnalysisMiniCard
+                                    icon={Lightbulb}
+                                    title="التقنية"
+                                    value={projectData.analysis.suggestedStack || 'حديثة'}
+                                    color="text-indigo-400"
+                                />
+                            </motion.div>
+                        )}
+
+                        {projectData.analysis?.businessValue && (
+                            <div className="glass-panel p-6 rounded-[2rem] border border-white/5 bg-dark-800/20 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-[50px] rounded-full"></div>
+                                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                    <Sparkles size={16} className="text-indigo-400" />
+                                    <span>القيمة الاستراتيجية للمشروع</span>
+                                </h4>
+                                <p className="text-xs text-gray-400 leading-relaxed">
+                                    {projectData.analysis.businessValue}
+                                </p>
+                            </div>
+                        )}
+
                         {/* Timeline */}
                         <div className="glass-panel p-8 rounded-[2.5rem] border border-white/5 bg-dark-800/30">
                             <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
@@ -411,29 +467,71 @@ const ClientProjectDetails = () => {
                         <ProjectDomainReg project={projectData} />
 
                         <div className="glass-panel p-6 rounded-[2rem] border border-white/5 bg-dark-800/20">
-                            <h4 className="text-sm font-bold text-white mb-4">كافة الملفات</h4>
-                            <div className="space-y-2">
-                                {projectData.files?.map((file, i) => (
-                                    <a
-                                        key={i}
-                                        href={file.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-500 flex items-center justify-center"><FileText size={16} /></div>
-                                            <div className="flex flex-col">
-                                                <span className="text-xs text-gray-300 truncate max-w-[120px]">{file.name}</span>
-                                                <span className="text-[8px] text-gray-500 uppercase">{file.stage}</span>
-                                            </div>
+                            <h4 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                                <Download size={16} className="text-primary-400" />
+                                <span>مخرجات المشروع</span>
+                            </h4>
+                            <div className="space-y-3">
+                                <button
+                                    onClick={() => downloadProjectBlueprint(projectData)}
+                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center"><FileText size={16} /></div>
+                                        <div className="flex flex-col text-right">
+                                            <span className="text-[10px] text-gray-300">مخطط المشروع الكامل</span>
+                                            <span className="text-[8px] text-gray-500 uppercase">BluePrint (MD)</span>
                                         </div>
-                                        <Download size={14} className="text-gray-500 group-hover:text-white" />
-                                    </a>
-                                ))}
-                                {(!projectData.files || projectData.files.length === 0) && (
-                                    <p className="text-[10px] text-center text-gray-500 py-4">لا توجد ملفات مرفوعة حالياً</p>
-                                )}
+                                    </div>
+                                    <Download size={14} className="text-gray-500 group-hover:text-white" />
+                                </button>
+
+                                <button
+                                    onClick={() => downloadCursorRules(projectData)}
+                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><Code2 size={16} /></div>
+                                        <div className="flex flex-col text-right">
+                                            <span className="text-[10px] text-gray-300">قواعد Cursor الذكية</span>
+                                            <span className="text-[8px] text-gray-500 uppercase">.cursorrules</span>
+                                        </div>
+                                    </div>
+                                    <Download size={14} className="text-gray-500 group-hover:text-white" />
+                                </button>
+                            </div>
+
+                            <div className="mt-6 pt-4 border-t border-white/5">
+                                <h4 className="text-[10px] font-bold text-gray-500 mb-4 uppercase tracking-widest">كافة الملفات المرفوعة</h4>
+                                <div className="space-y-2">
+                                    {projectData.files && typeof projectData.files === 'object' && !Array.isArray(projectData.files) ? (
+                                        <div className="text-[10px] text-gray-400 bg-black/20 p-3 rounded-lg border border-white/5 text-center italic">
+                                            الملفات متوفرة في قسم البرمجة المباشرة وفي المخطط الكامل أعلاه
+                                        </div>
+                                    ) : (
+                                        projectData.files_list?.map((file, i) => (
+                                            <a
+                                                key={i}
+                                                href={file.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 group"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-500 flex items-center justify-center"><FileText size={16} /></div>
+                                                    <div className="flex flex-col text-right">
+                                                        <span className="text-xs text-gray-300 truncate max-w-[120px]">{file.name}</span>
+                                                        <span className="text-[8px] text-gray-500 uppercase">{file.stage}</span>
+                                                    </div>
+                                                </div>
+                                                <Download size={14} className="text-gray-500 group-hover:text-white" />
+                                            </a>
+                                        ))
+                                    )}
+                                    {(!projectData.files || (Array.isArray(projectData.files) && projectData.files.length === 0)) && (
+                                        <p className="text-[10px] text-center text-gray-500 py-4 font-cairo">لا توجد ملفات مرفوعة حالياً</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -490,5 +588,17 @@ const ClientProjectDetails = () => {
         </div>
     );
 };
+
+const AnalysisMiniCard = ({ icon: Icon, title, value, color }) => (
+    <div className="glass-panel p-5 rounded-[1.5rem] border border-white/5 bg-dark-800/40 flex items-center gap-4">
+        <div className={`p-3 rounded-xl bg-white/5 ${color}`}>
+            <Icon size={20} />
+        </div>
+        <div>
+            <span className="text-[10px] text-gray-500 block mb-0.5 uppercase tracking-wide font-bold">{title}</span>
+            <span className={`text-sm font-black ${color}`}>{value}</span>
+        </div>
+    </div>
+);
 
 export default ClientProjectDetails;

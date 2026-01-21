@@ -12,7 +12,11 @@ import {
     Palette,
     Terminal,
     Briefcase,
-    Mic
+    Mic,
+    Upload,
+    Save,
+    Trash2,
+    FileText
 } from 'lucide-react';
 import { PROJECT_TYPES, FORM_STEPS, DYNAMIC_QUESTIONS, AI_AGENTS, COUNTRY_CODES } from '../../constants/platformConstants';
 import AnalysisPreview from './AnalysisPreview';
@@ -21,7 +25,7 @@ import FileViewer from './FileViewer';
 import { qaAgent } from '../../utils/qaAgentLogic';
 import { dataService } from '../../utils/dataService';
 import { supabase } from '../../utils/supabaseClient';
-import { downloadProjectBlueprint } from '../../utils/fileUtils';
+import { downloadProjectBlueprint, uploadFile } from '../../utils/fileUtils';
 import toast from 'react-hot-toast';
 
 const ProjectBuilderForm = () => {
@@ -39,8 +43,13 @@ const ProjectBuilderForm = () => {
         agent: 'expert',
         description: '',
         specificAnswers: {},
+        userName: '',
+        userPhone: '',
         email: '',
+        uploadedFiles: []
     });
+    const [draftId] = useState(`draft_${Date.now()}`);
+    const [isSavingDraft, setIsSavingDraft] = useState(false);
 
     const toggleVoiceInput = () => {
         if (!('webkitSpeechRecognition' in window)) {
@@ -85,55 +94,111 @@ const ProjectBuilderForm = () => {
     };
 
     useEffect(() => {
-        const loadUser = async () => {
+        const loadInitialData = async () => {
             try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                if (error) {
-                    console.warn("Session check warning:", error);
-                    return;
+                // 1. Check for existing draft
+                const lastDraft = dataService.getProjectDraft('last_builder_draft');
+                if (lastDraft) {
+                    setFormData(lastDraft.formData);
+                    setCurrentStep(lastDraft.currentStep);
+                    toast.success('تم استعادة مسودة العمل السابقة', { icon: '📝' });
                 }
+
+                // 2. Load Auth User
+                const { data: { session } } = await supabase.auth.getSession();
                 if (session?.user?.email) {
                     setFormData(prev => ({
                         ...prev,
-                        email: session.user.email
+                        email: session.user.email,
+                        userName: session.user.user_metadata?.full_name || prev.userName
                     }));
                 }
             } catch (err) {
-                console.error("Auth session check failed:", err);
+                console.error("Initialization failed:", err);
             }
         };
-        loadUser();
+        loadInitialData();
     }, []);
+
+    // Auto-save draft
+    useEffect(() => {
+        if (currentStep > 0 && !isProcessing && !generatedProject) {
+            const timer = setTimeout(() => {
+                setIsSavingDraft(true);
+                dataService.saveProjectDraft('last_builder_draft', { formData, currentStep });
+                setTimeout(() => setIsSavingDraft(false), 1000);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [formData, currentStep, isProcessing, generatedProject]);
 
     const handleTypeSelect = (type) => {
         setFormData({ ...formData, type, specificAnswers: {} });
     };
 
     const handleNext = () => {
-        if (currentStep === 3) {
-            // التحقق من صحة البيانات قبل الانتقال للتحليل
-            if (!formData.userName || !formData.email) {
-                toast.error('يرجى إكمال بياناتك (الاسم والبريد الإلكتروني) للمتابعة');
+        if (currentStep === 0) {
+            if (!formData.type) {
+                toast.error('يرجى اختيار نوع المشروع للمتابعة');
                 return;
             }
-            setShowAnalysis(true);
+            setCurrentStep(1);
         } else if (currentStep === 1) {
-            // التحقق من إجابة الأسئلة المخصصة
             const questions = DYNAMIC_QUESTIONS[formData.type] || [];
             if (Object.keys(formData.specificAnswers).length < questions.length) {
                 toast.error('يرجى الإجابة على جميع الأسئلة للمتابعة');
                 return;
             }
-            setCurrentStep(currentStep + 1);
-        } else if (currentStep === 2) {
             if (!formData.description || formData.description.length < 10) {
-                toast.error('يرجى كتابة وصف أطول لفكرتك لضمان جودة التحليل');
+                toast.error('يرجى كتابة وصف قصير لمشروعك');
                 return;
             }
-            setCurrentStep(currentStep + 1);
-        } else {
-            setCurrentStep(currentStep + 1);
+            setCurrentStep(2);
+        } else if (currentStep === 2) {
+            // Assets step is optional but we can add validation if needed
+            setCurrentStep(3);
+        } else if (currentStep === 3) {
+            if (!formData.userName || !formData.email) {
+                toast.error('يرجى إكمال بياناتك للمتابعة');
+                return;
+            }
+            setShowAnalysis(true);
         }
+    };
+
+    const handleFileUpload = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        setIsProcessing(true);
+        const toastId = toast.loading('جاري رفع الملفات...');
+
+        try {
+            const uploadPromises = files.map(async (file) => {
+                const path = `${formData.email || 'guest'}/${Date.now()}_${file.name}`;
+                const url = await uploadFile(supabase, 'project-assets', path, file);
+                return { name: file.name, url, size: file.size, type: file.type };
+            });
+
+            const uploadedResults = await Promise.all(uploadPromises);
+            setFormData(prev => ({
+                ...prev,
+                uploadedFiles: [...prev.uploadedFiles, ...uploadedResults]
+            }));
+            toast.success('تم رفع الملفات بنجاح', { id: toastId });
+        } catch (err) {
+            console.error('Upload error:', err);
+            toast.error('فشل رفع بعض الملفات', { id: toastId });
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const removeFile = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            uploadedFiles: prev.uploadedFiles.filter((_, i) => i !== index)
+        }));
     };
 
     const handleBack = () => {
@@ -183,16 +248,23 @@ const ProjectBuilderForm = () => {
             await dataService.saveGeneratedProject(`proj_${Date.now()}`, {
                 userEmail: formData.email,
                 userName: formData.userName,
+                userPhone: formData.userPhone,
                 projectType: formData.type,
-                project_name: generatedName,
                 projectName: generatedName,
                 description: formData.description,
                 specificAnswers: formData.specificAnswers,
-                ...result
+                analysis: result.analysis || {},
+                ...result,
+                files: result.files || {}
             });
 
             setGeneratedProject(result);
             setQaReport(report);
+
+            // 4. مسح المسودة وإضافة إشعار نجاح
+            dataService.clearProjectDraft('last_builder_draft');
+            toast.success('تم إنشاء مشروعك بنجاح! يمكنك الآن استعراض التفاصيل', { duration: 5000 });
+
         } catch (err) {
             console.error('AI Generation Failed:', err);
             toast.error('حدث خطأ أثناء تحليل المشروع، يرجى المحاولة مرة أخرى.');
@@ -360,13 +432,33 @@ const ProjectBuilderForm = () => {
                             <div className="relative z-10">
                                 <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
                                     <span className="w-1.5 h-8 bg-primary-500 rounded-full inline-block"></span>
-                                    دعنا نحدد التفاصيل
+                                    دعنا نحدد التفاصيل والمتطلبات
                                     <span className="text-gray-500 text-lg font-medium self-end mb-1">
                                         ( {formData.type === PROJECT_TYPES.WEB ? 'للموقع' : formData.type === PROJECT_TYPES.MOBILE ? 'للتطبيق' : 'للبوت'} )
                                     </span>
                                 </h3>
 
                                 <div className="space-y-10">
+                                    {/* Description Field moved here */}
+                                    <div className="space-y-4">
+                                        <div className="flex justify-between items-end">
+                                            <label className="text-lg font-bold text-gray-200 block">وصف الفكرة والمميزات</label>
+                                            <button
+                                                onClick={toggleVoiceInput}
+                                                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                                            >
+                                                <Mic size={14} />
+                                                <span>{isListening ? 'جاري الاستماع...' : 'إدخال صوتي'}</span>
+                                            </button>
+                                        </div>
+                                        <textarea
+                                            className="w-full h-32 bg-dark-900 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-primary-500 transition-all resize-none"
+                                            placeholder="اشرح فكرتك باختصار..."
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        />
+                                    </div>
+
                                     {questions.map((q, idx) => (
                                         <motion.div
                                             key={q.id}
@@ -429,138 +521,191 @@ const ProjectBuilderForm = () => {
                 );
             }
 
-            case 2: // Step: Description
+            case 2: // Step: Assets & Files
                 return (
-                    <div className="max-w-4xl mx-auto space-y-6">
-                        <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-2">
-                            <div>
-                                <h3 className="text-2xl font-black text-white mb-2">وصف الفكرة والمميزات</h3>
-                                <p className="text-gray-400 text-sm">صف مشروعك بحرية، سيقوم الذكاء الاصطناعي بتحليل النص واستخراج المتطلبات.</p>
-                            </div>
-                            <button
-                                onClick={toggleVoiceInput}
-                                className={`px-5 py-3 rounded-2xl transition-all flex items-center gap-3 font-bold shadow-lg ${isListening
-                                    ? 'bg-red-500 text-white animate-pulse shadow-red-500/30'
-                                    : 'bg-dark-800 text-gray-300 hover:text-white hover:bg-dark-700 border border-white/10'
-                                    }`}
-                            >
-                                {isListening ? (
-                                    <>
-                                        <span className="relative flex h-3 w-3">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-                                        </span>
-                                        <span>جاري الاستماع...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Mic size={18} />
-                                        <span>تسجيل صوتي</span>
-                                    </>
-                                )}
-                            </button>
-                        </div>
+                    <div className="max-w-3xl mx-auto space-y-8">
+                        <div className="glass-panel p-8 rounded-[2.5rem] border border-white/5 bg-dark-800/40 backdrop-blur-xl relative overflow-hidden">
+                            <div className="relative z-10">
+                                <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
+                                    <span className="w-1.5 h-8 bg-primary-500 rounded-full inline-block"></span>
+                                    الهوية والملفات المرفقة
+                                </h3>
 
-                        <div className="relative group">
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-[1.7rem] opacity-30 group-hover:opacity-100 transition duration-500 blur"></div>
-                            <textarea
-                                className="relative w-full h-64 bg-dark-900 border border-white/10 rounded-3xl p-8 text-white focus:outline-none focus:bg-dark-800 transition-all resize-none text-lg leading-relaxed placeholder:text-gray-600 shadow-2xl"
-                                placeholder="مثلاً: أريد بناء متجر للعطور يدعم الدفع بالبطاقة ويحتوي على ميزة ترشيح العطور بالذكاء الاصطناعي بناءً على إجابات العميل..."
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            />
-                            <div className="absolute bottom-6 left-6 text-xs text-gray-500 font-mono bg-dark-900/80 px-3 py-1 rounded-lg border border-white/5 backdrop-blur-sm">
-                                {formData.description.length} حرف
-                            </div>
-                        </div>
+                                <div className="space-y-8">
+                                    {/* Color Palette Choice */}
+                                    <div className="space-y-4">
+                                        <label className="text-lg font-bold text-gray-200 block">الألوان المقترحة (اختياري)</label>
+                                        <div className="grid grid-cols-4 gap-4">
+                                            {[
+                                                { id: 'modern', name: 'عصري', colors: ['#3b82f6', '#1e293b'] },
+                                                { id: 'eco', name: 'بيئي', colors: ['#10b981', '#064e3b'] },
+                                                { id: 'luxury', name: 'فخم', colors: ['#f59e0b', '#000000'] },
+                                                { id: 'creative', name: 'إبداعي', colors: ['#ec4899', '#4c1d95'] }
+                                            ].map(palette => (
+                                                <button
+                                                    key={palette.id}
+                                                    onClick={() => setFormData(prev => ({ ...prev, palette: palette.id }))}
+                                                    className={`p-3 rounded-2xl border transition-all ${formData.palette === palette.id ? 'border-primary-500 bg-primary-500/10' : 'border-white/5 bg-dark-900/40'}`}
+                                                >
+                                                    <div className="flex gap-1 mb-2">
+                                                        {palette.colors.map(c => <div key={c} className="w-full h-8 rounded-lg" style={{ backgroundColor: c }} />)}
+                                                    </div>
+                                                    <span className="text-xs font-bold text-gray-400">{palette.name}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-500">
-                            <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
-                                <CheckCircle2 size={14} className="text-primary-500" />
-                                <span>تحليل تلقائي للمميزات</span>
-                            </div>
-                            <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
-                                <CheckCircle2 size={14} className="text-primary-500" />
-                                <span>اقتراح التقنيات المناسبة</span>
-                            </div>
-                            <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
-                                <CheckCircle2 size={14} className="text-primary-500" />
-                                <span>تقدير أولي للميزانية والوقت</span>
+                                    {/* File Upload Area */}
+                                    <div className="space-y-4">
+                                        <label className="text-lg font-bold text-gray-200 block">رفع شعار أو ملفات توضيحية</label>
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                multiple
+                                                onChange={handleFileUpload}
+                                                className="hidden"
+                                                id="file-upload"
+                                            />
+                                            <label
+                                                htmlFor="file-upload"
+                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/10 rounded-3xl hover:border-primary-500/50 hover:bg-primary-500/5 transition-all cursor-pointer group"
+                                            >
+                                                <Upload className="w-10 h-10 text-gray-500 group-hover:text-primary-500 mb-4 transition-colors" />
+                                                <span className="text-gray-400 group-hover:text-white font-bold transition-colors">اسحب الملفات هنا أو اضغط للاختيار</span>
+                                                <span className="text-[10px] text-gray-600 mt-2">PDF, PNG, JPG, ZIP (Max 10MB)</span>
+                                            </label>
+                                        </div>
+
+                                        {/* Uploaded Files List */}
+                                        <AnimatePresence>
+                                            {formData.uploadedFiles.length > 0 && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="grid grid-cols-1 gap-3"
+                                                >
+                                                    {formData.uploadedFiles.map((file, idx) => (
+                                                        <div key={idx} className="flex items-center justify-between p-4 bg-dark-900/60 rounded-2xl border border-white/5">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="p-2 bg-primary-500/10 text-primary-400 rounded-lg">
+                                                                    <FileText size={18} />
+                                                                </div>
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-sm font-bold text-white truncate max-w-[200px]">{file.name}</span>
+                                                                    <span className="text-[10px] text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => removeFile(idx)}
+                                                                className="p-2 text-gray-500 hover:text-red-500 transition-colors"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 );
 
-            case 3: // Step: Final Review & User Info
+            case 3: // Step: Review & User Info
                 return (
-                    <div className="max-w-lg mx-auto py-8">
-                        <div className="text-center mb-10">
-                            <div className="inline-flex p-5 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-[2rem] mb-6 border border-emerald-500/20 shadow-xl shadow-emerald-500/10">
-                                <CheckCircle2 className="h-10 w-10 text-emerald-400" />
-                            </div>
-                            <h3 className="text-3xl font-black text-white mb-3">خطوة أخيرة!</h3>
-                            <p className="text-gray-400 text-sm max-w-xs mx-auto">لإنشاء حسابك وحفظ المشروع، يرجى إكمال البيانات التالية</p>
-                        </div>
+                    <div className="max-w-4xl mx-auto py-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                            {/* Summary Card */}
+                            <div className="glass-panel p-8 rounded-[2.5rem] border border-white/10 bg-dark-800/60 order-2 lg:order-1">
+                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                    <FileText size={20} className="text-primary-500" />
+                                    مخلص المشروع
+                                </h3>
 
-                        <div className="space-y-6 bg-dark-800/50 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-sm">
-                            <div className="space-y-2">
-                                <label htmlFor="user-name" className="text-xs font-bold text-gray-400 mr-2 uppercase tracking-wide">الاسم الكامل</label>
-                                <div className="relative">
-                                    <input
-                                        id="user-name"
-                                        required
-                                        type="text"
-                                        className="w-full px-6 py-4 bg-dark-900/80 border border-white/10 rounded-2xl text-white focus:border-primary-500 focus:bg-dark-900 transition-all outline-none"
-                                        placeholder="أدخل اسمك"
-                                        value={formData.userName || ''}
-                                        onChange={(e) => setFormData({ ...formData, userName: e.target.value })}
-                                    />
+                                <div className="space-y-6">
+                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                        <span className="text-[10px] text-gray-500 font-bold block mb-1">نوع المشروع</span>
+                                        <span className="text-sm font-bold text-primary-400 capitalize">{formData.type}</span>
+                                    </div>
+
+                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                        <span className="text-[10px] text-gray-500 font-bold block mb-1">المساعد الذكي</span>
+                                        <span className="text-sm font-bold text-white">{AI_AGENTS.find(a => a.id === formData.agent)?.name}</span>
+                                    </div>
+
+                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                        <span className="text-[10px] text-gray-500 font-bold block mb-1">وصف الفكرة</span>
+                                        <p className="text-xs text-gray-400 leading-relaxed line-clamp-3">{formData.description}</p>
+                                    </div>
+
+                                    {formData.uploadedFiles.length > 0 && (
+                                        <div className="p-4 bg-white/5 rounded-2xl">
+                                            <span className="text-[10px] text-gray-500 font-bold block mb-1">الملفات المرفقة</span>
+                                            <span className="text-xs text-white">{formData.uploadedFiles.length} ملف</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="user-email" className="text-xs font-bold text-gray-400 mr-2 uppercase tracking-wide">البريد الإلكتروني</label>
-                                <input
-                                    id="user-email"
-                                    required
-                                    type="email"
-                                    className="w-full px-6 py-4 bg-dark-900/80 border border-white/10 rounded-2xl text-white focus:border-primary-500 focus:bg-dark-900 transition-all outline-none font-sans"
-                                    placeholder="name@example.com"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                />
-                            </div>
+                            {/* User Info Form */}
+                            <div className="space-y-6 order-1 lg:order-2">
+                                <div className="text-right mb-6">
+                                    <h3 className="text-2xl font-black text-white mb-2">البيانات الشخصية</h3>
+                                    <p className="text-gray-400 text-sm">سنقوم بإنشاء حساب لك وربط المشروع ببريدك الإلكتروني</p>
+                                </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="user-phone" className="text-xs font-bold text-gray-400 mr-2 uppercase tracking-wide">رقم الهاتف</label>
-                                <div className="flex gap-3" dir="ltr">
-                                    <select
-                                        className="bg-dark-900/80 border border-white/10 rounded-2xl px-3 py-4 text-white focus:border-primary-500 outline-none w-32 text-xs font-sans"
-                                        value={countryCode}
-                                        onChange={(e) => {
-                                            const newCode = e.target.value;
-                                            setCountryCode(newCode);
-                                            setFormData({ ...formData, phone: `${newCode}${localPhone}` });
-                                        }}
-                                    >
-                                        {COUNTRY_CODES.map((country) => (
-                                            <option key={country.code} value={country.code}>
-                                                {country.flag} {country.code}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <input
-                                        id="user-phone"
-                                        type="tel"
-                                        className="flex-1 px-6 py-4 bg-dark-900/80 border border-white/10 rounded-2xl text-white focus:border-primary-500 focus:bg-dark-900 transition-all outline-none font-sans text-left"
-                                        placeholder="50xxxxxxx"
-                                        value={localPhone}
-                                        onChange={(e) => {
-                                            const val = e.target.value.replace(/\D/g, '');
-                                            setLocalPhone(val);
-                                            setFormData({ ...formData, phone: `${countryCode}${val}` });
-                                        }}
-                                    />
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label htmlFor="user-name" className="text-xs font-bold text-gray-500 mr-2 uppercase tracking-wide">الاسم الكامل</label>
+                                        <input
+                                            id="user-name"
+                                            required
+                                            type="text"
+                                            className="w-full px-6 py-4 bg-dark-900/80 border border-white/10 rounded-2xl text-white focus:border-primary-500 outline-none transition-all"
+                                            placeholder="أدخل اسمك"
+                                            value={formData.userName}
+                                            onChange={(e) => setFormData({ ...formData, userName: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="user-email" className="text-xs font-bold text-gray-500 mr-2 uppercase tracking-wide">البريد الإلكتروني</label>
+                                        <input
+                                            id="user-email"
+                                            required
+                                            type="email"
+                                            className="w-full px-6 py-4 bg-dark-900/80 border border-white/10 rounded-2xl text-white focus:border-primary-500 outline-none font-sans transition-all"
+                                            placeholder="name@example.com"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="user-phone" className="text-xs font-bold text-gray-500 mr-2 uppercase tracking-wide">رقم الهاتف</label>
+                                        <div className="flex gap-3" dir="ltr">
+                                            <select
+                                                className="bg-dark-900/80 border border-white/10 rounded-2xl px-3 py-4 text-white focus:border-primary-500 outline-none w-32 text-xs font-sans"
+                                                value={countryCode}
+                                                onChange={(e) => setCountryCode(e.target.value)}
+                                            >
+                                                {COUNTRY_CODES.map((country) => (
+                                                    <option key={country.code} value={country.code}>{country.flag} {country.code}</option>
+                                                ))}
+                                            </select>
+                                            <input
+                                                id="user-phone"
+                                                type="tel"
+                                                className="flex-1 px-6 py-4 bg-dark-900/80 border border-white/10 rounded-2xl text-white focus:border-primary-500 outline-none font-sans text-left"
+                                                placeholder="50xxxxxxx"
+                                                value={localPhone}
+                                                onChange={(e) => setLocalPhone(e.target.value.replace(/\D/g, ''))}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -583,6 +728,23 @@ const ProjectBuilderForm = () => {
                 <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
                     من الفكرة إلى الخطة التنفيذية في دقائق. اختر نوع المشروع، حدد التفاصيل، وسيقوم الذكاء الاصطناعي بالباقي.
                 </p>
+            </div>
+
+            {/* Draft Saved Indicator */}
+            <div className="flex justify-center mb-6 h-8">
+                <AnimatePresence>
+                    {isSavingDraft && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="flex items-center gap-2 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-500/20 shadow-lg shadow-emerald-500/5"
+                        >
+                            <Save size={10} />
+                            <span>تم حفظ مسودة العمل تلقائياً</span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Stepper */}

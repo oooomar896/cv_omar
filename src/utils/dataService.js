@@ -619,6 +619,10 @@ class DataService {
             projectName: p.project_name,
             projectType: p.project_type,
             projectStage: p.project_stage,
+            specificAnswers: p.specific_answers || p.specificAnswers || {},
+            analysis: p.analysis || {},
+            userName: p.user_name || p.userName || '',
+            userPhone: p.user_phone || p.userPhone || '',
             files: p.files || {},
             timestamp: p.created_at || p.timestamp
         };
@@ -704,10 +708,14 @@ class DataService {
 
             const projectData = {
                 user_email: cleanEmail,
+                user_name: data.userName || data.user_name || null,
+                user_phone: data.userPhone || data.user_phone || data.phone || null,
                 project_name: data.project_name || data.projectName || data.title || 'مشروع جديد',
                 project_type: data.project_type || data.projectType || 'web',
                 features: data.features || [],
                 description: data.description || '',
+                specific_answers: data.specificAnswers || data.specific_answers || {},
+                analysis: data.analysis || {},
                 status: data.status || 'pending',
                 files: data.files || {},
                 project_stage: data.project_stage || data.projectStage || 'analysis',
@@ -734,6 +742,28 @@ class DataService {
             this._set(STORAGE_KEYS.GENERATED_PROJECTS, [...projects, newProject]);
             return newProject;
         }
+    }
+
+    // Draft System
+    saveProjectDraft(draftId, draftData) {
+        const drafts = this._get('project_drafts', {});
+        drafts[draftId] = {
+            ...draftData,
+            updatedAt: new Date().toISOString()
+        };
+        this._set('project_drafts', drafts);
+        return true;
+    }
+
+    getProjectDraft(draftId) {
+        const drafts = this._get('project_drafts', {});
+        return drafts[draftId] || null;
+    }
+
+    clearProjectDraft(draftId) {
+        const drafts = this._get('project_drafts', {});
+        delete drafts[draftId];
+        this._set('project_drafts', drafts);
     }
 
     _normalizeProject(savedData) {

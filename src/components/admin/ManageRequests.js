@@ -10,7 +10,8 @@ import {
     FileText,
     Plus,
     Github,
-    Link as LinkIcon
+    Link as LinkIcon,
+    Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dataService } from '../../utils/dataService';
@@ -318,6 +319,33 @@ const ManageRequests = () => {
                                                     </span>
                                                 </div>
                                             ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* AI Analysis (New) */}
+                                {selectedRequest.analysis && Object.keys(selectedRequest.analysis).length > 0 && (
+                                    <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-2xl p-6">
+                                        <h3 className="text-sm font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                                            <Sparkles size={16} /> تحليل الذكاء الاصطناعي (BMAD)
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                            <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                                                <span className="text-[10px] text-gray-500 block mb-1">فرصة السوق</span>
+                                                <span className="text-xs text-indigo-300 font-bold">{selectedRequest.analysis.marketPotential}</span>
+                                            </div>
+                                            <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                                                <span className="text-[10px] text-gray-500 block mb-1">المنافسة</span>
+                                                <span className="text-xs text-indigo-300 font-bold">{selectedRequest.analysis.competition}</span>
+                                            </div>
+                                            <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                                                <span className="text-[10px] text-gray-500 block mb-1">التقنيات</span>
+                                                <span className="text-xs text-indigo-300 font-bold">{selectedRequest.analysis.suggestedStack}</span>
+                                            </div>
+                                            <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                                                <span className="text-[10px] text-gray-500 block mb-1">القيمة</span>
+                                                <span className="text-xs text-indigo-300 font-bold">{selectedRequest.analysis.businessValue}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 )}

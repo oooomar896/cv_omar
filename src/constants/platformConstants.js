@@ -13,8 +13,8 @@ export const AI_AGENTS = [
 export const FORM_STEPS = [
     { id: 'type', title: 'نوع المشروع' },
     { id: 'details', title: 'تفاصيل المشروع' },
-    { id: 'features', title: 'المميزات المطلوبة' },
-    { id: 'tech', title: 'التفضيلات التقنية' },
+    { id: 'assets', title: 'الهوية والملفات' },
+    { id: 'review', title: 'المراجعة والبدء' },
 ];
 
 export const DYNAMIC_QUESTIONS = {

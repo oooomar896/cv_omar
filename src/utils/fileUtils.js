@@ -35,3 +35,65 @@ export const downloadProjectBlueprint = (project) => {
         window.URL.revokeObjectURL(url);
     }, 100);
 };
+
+/**
+ * Utility for uploading files to Supabase Storage
+ */
+export const uploadFile = async (supabase, bucket, path, file) => {
+    try {
+        const { data, error } = await supabase.storage
+            .from(bucket)
+            .upload(path, file, {
+                upsert: true
+            });
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+            .from(bucket)
+            .getPublicUrl(data.path);
+
+        return publicUrl;
+    } catch (error) {
+        console.error('Upload failed:', error);
+        throw error;
+    }
+};
+
+/**
+ * Utility for downloading Cursor Rules (.cursorrules)
+ */
+export const downloadCursorRules = (project) => {
+    if (!project) return;
+
+    let content = `You are an expert AI software engineer. Your task is to develop and maintain the project: ${project.projectName || 'this project'}.
+    
+Current Project Stack: ${project.techStack || 'Modern Stack'}
+User Bio: ${project.userBio || 'Standard User'}
+
+# Development Principles
+- Focus on performance and maintainability.
+- Use modular architecture.
+- Follow Arabic localization standards if applicable.
+
+# Project Analysis (BMAD)
+- Market Opportunity: ${project.analysis?.marketPotential || 'N/A'}
+- Competition Strategy: ${project.analysis?.competition || 'N/A'}
+- Suggested Implementation: ${project.analysis?.suggestedStack || 'N/A'}
+
+# Files structure to follow:
+${Object.keys(project.files || {}).join('\n')}
+
+Always provide clear, commented code explainations in Arabic.
+`;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '.cursorrules';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+};
