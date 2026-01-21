@@ -17,7 +17,6 @@ import {
     Target,
     BarChart3,
     Lightbulb,
-    ShieldAlert,
     Code2
 } from 'lucide-react';
 import { supabase } from '../../utils/supabaseClient';

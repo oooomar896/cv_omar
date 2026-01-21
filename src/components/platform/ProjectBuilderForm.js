@@ -48,7 +48,6 @@ const ProjectBuilderForm = () => {
         email: '',
         uploadedFiles: []
     });
-    const [draftId] = useState(`draft_${Date.now()}`);
     const [isSavingDraft, setIsSavingDraft] = useState(false);
 
     const toggleVoiceInput = () => {
