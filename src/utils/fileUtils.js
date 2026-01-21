@@ -66,7 +66,7 @@ export const uploadFile = async (supabase, bucket, path, file) => {
 export const downloadCursorRules = (project) => {
     if (!project) return;
 
-    let content = `You are an expert AI software engineer. Your task is to develop and maintain the project: ${project.projectName || 'this project'}.
+    const content = `You are an expert AI software engineer. Your task is to develop and maintain the project: ${project.projectName || 'this project'}.
     
 Current Project Stack: ${project.techStack || 'Modern Stack'}
 User Bio: ${project.userBio || 'Standard User'}

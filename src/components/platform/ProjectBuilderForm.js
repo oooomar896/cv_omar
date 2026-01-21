@@ -442,7 +442,7 @@ const ProjectBuilderForm = () => {
                                     {/* Description Field moved here */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-end">
-                                            <label className="text-lg font-bold text-gray-200 block">وصف الفكرة والمميزات</label>
+                                            <label htmlFor="description" className="text-lg font-bold text-gray-200 block">وصف الفكرة والمميزات</label>
                                             <button
                                                 onClick={toggleVoiceInput}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white/5 text-gray-400 hover:text-white'}`}
@@ -452,6 +452,7 @@ const ProjectBuilderForm = () => {
                                             </button>
                                         </div>
                                         <textarea
+                                            id="description"
                                             className="w-full h-32 bg-dark-900 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-primary-500 transition-all resize-none"
                                             placeholder="اشرح فكرتك باختصار..."
                                             value={formData.description}
@@ -467,7 +468,7 @@ const ProjectBuilderForm = () => {
                                             transition={{ delay: idx * 0.1 }}
                                             className="space-y-4"
                                         >
-                                            <label className="text-lg font-bold text-gray-200 block">{q.question}</label>
+                                            <span className="text-lg font-bold text-gray-200 block">{q.question}</span>
 
                                             {q.type === 'boolean' ? (
                                                 <div className="grid grid-cols-2 gap-4">
@@ -534,7 +535,7 @@ const ProjectBuilderForm = () => {
                                 <div className="space-y-8">
                                     {/* Color Palette Choice */}
                                     <div className="space-y-4">
-                                        <label className="text-lg font-bold text-gray-200 block">الألوان المقترحة (اختياري)</label>
+                                        <span className="text-lg font-bold text-gray-200 block">الألوان المقترحة (اختياري)</span>
                                         <div className="grid grid-cols-4 gap-4">
                                             {[
                                                 { id: 'modern', name: 'عصري', colors: ['#3b82f6', '#1e293b'] },
@@ -558,7 +559,7 @@ const ProjectBuilderForm = () => {
 
                                     {/* File Upload Area */}
                                     <div className="space-y-4">
-                                        <label className="text-lg font-bold text-gray-200 block">رفع شعار أو ملفات توضيحية</label>
+                                        <span className="text-lg font-bold text-gray-200 block">رفع شعار أو ملفات توضيحية</span>
                                         <div className="relative">
                                             <input
                                                 type="file"
