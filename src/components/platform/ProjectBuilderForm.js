@@ -266,7 +266,8 @@ const ProjectBuilderForm = () => {
 
         } catch (err) {
             console.error('AI Generation Failed:', err);
-            toast.error('حدث خطأ أثناء تحليل المشروع، يرجى المحاولة مرة أخرى.');
+            const errorMessage = err.message || 'حدث خطأ غير متوقع';
+            toast.error(`فشل تحليل المشروع: ${errorMessage}`);
         } finally {
             setIsProcessing(false);
         }
