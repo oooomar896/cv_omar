@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import OpenAI from "https://esm.sh/openai@4.24.1"
+import Replicate from "https://esm.sh/replicate@0.25.2"
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -14,10 +14,12 @@ serve(async (req) => {
     }
 
     try {
-        const openAiKey = Deno.env.get('OPENAI_API_KEY');
-        if (!openAiKey) throw new Error('Missing OPENAI_API_KEY');
+        const replicateToken = Deno.env.get('REPLICATE_API_TOKEN');
+        if (!replicateToken) throw new Error('Missing REPLICATE_API_TOKEN');
 
-        const openai = new OpenAI({ apiKey: openAiKey });
+        const replicate = new Replicate({
+            auth: replicateToken,
+        });
 
         // 2. Auth Check (Optional but recommended)
         const supabaseClient = createClient(
@@ -26,7 +28,7 @@ serve(async (req) => {
             { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
         )
 
-        const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
+        // const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
         // if (authError || !user) throw new Error('Unauthorized'); // Enable if strictly needed
 
         // 3. Parse Request
@@ -40,7 +42,7 @@ serve(async (req) => {
         Description: ${description}
         Specific Requirements: ${JSON.stringify(specificAnswers)}
 
-        The response MUST be a JSON object with this EXACT structure:
+        The response MUST be a raw JSON object with this EXACT structure and nothing else. Do not verify, do not explain, just output JSON:
         {
           "projectName": "string",
           "summary": "string in Arabic",
@@ -64,19 +66,41 @@ serve(async (req) => {
         Ensure "files" contains a flat object where keys are file paths and values are stringified code.
         Create a robust starter kit code structure based on ${type}.
         All user-facing text and descriptions must be in Arabic.
+        IMPORTANT: Return ONLY the JSON object. No markdown formatting, no backticks.
         `;
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo-1106", // Faster for latency
-            response_format: { type: "json_object" },
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: `Please build the blueprint for: ${description}` }
-            ],
-            temperature: 0.7,
-        });
+        const input = {
+            top_k: 50,
+            top_p: 0.9,
+            prompt: `Please build the blueprint for: ${description}`,
+            system_prompt: systemPrompt,
+            max_tokens: 3000, // Generous limit for code generation
+            temperature: 0.7
+        };
 
-        const projectPlan = JSON.parse(completion.choices[0].message.content || '{}');
+        let output;
+        try {
+            output = await replicate.run("meta/meta-llama-3-70b-instruct", { input });
+        } catch (e) {
+            // Fallback to older model if alias fails or other error
+            console.error("Replicate Llama 3 failed, trying fallback...", e);
+            throw e;
+        }
+
+        // Replicate returns an array of strings
+        const completionText = Array.isArray(output) ? output.join('') : output;
+
+        // Clean up markdown code blocks if present (common in LLM output)
+        const cleanJson = completionText.replace(/```json\n?|\n?```/g, '').trim();
+
+        let projectPlan = {};
+        try {
+            projectPlan = JSON.parse(cleanJson);
+        } catch (e) {
+            console.error("JSON Parse Error", e);
+            console.log("Raw Output:", cleanJson);
+            throw new Error("Failed to parse AI response as JSON");
+        }
 
         return new Response(
             JSON.stringify(projectPlan),
