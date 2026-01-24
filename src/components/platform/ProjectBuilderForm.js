@@ -234,7 +234,10 @@ const ProjectBuilderForm = () => {
             });
 
             if (error) throw error;
-            if (result.error) throw new Error(result.error);
+            if (result.error) {
+                console.error("AI Service Error:", result.error, result.details);
+                throw new Error(result.error || 'فشل الاتصال بخدمة الذكاء الاصطناعي');
+            }
 
             console.log("AI Generation Result:", result);
 
