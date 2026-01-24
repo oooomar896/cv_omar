@@ -239,7 +239,7 @@ const ProjectBuilderForm = () => {
             console.log("AI Generation Result:", result);
 
             // 2. إنشاء تقرير الجودة
-            const report = await qaAgent.reviewProject();
+            const report = await qaAgent.reviewProject(result);
 
             // 3. حفظ المشروع في قاعدة البيانات
             const generatedName = formData.description ? formData.description.split(' ').slice(0, 4).join(' ') : 'مشروع جديد';

@@ -485,12 +485,12 @@ class DataService {
             // For now, simple insert
             const { data, error } = await supabase
                 .from('leads')
-                .insert([{
+                .upsert([{
                     name: user.name,
                     email: user.email,
                     role: user.role || 'user',
                     generated_projects: []
-                }])
+                }], { onConflict: 'email' })
                 .select()
                 .single();
 
