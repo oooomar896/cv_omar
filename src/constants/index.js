@@ -22,8 +22,8 @@ export const SITE_CONFIG = {
 
 // Statistics
 export const STATS = {
-  projects: '8+',
-  rating: '4.8',
+  projects: '20+',
+  rating: '4.9',
   downloads: '15K+',
 };
 

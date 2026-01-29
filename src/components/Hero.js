@@ -37,7 +37,7 @@ const Hero = () => {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className='text-2xl lg:text-3xl text-gray-300 font-medium'
               >
-                مطور تطبيقات ومهندس ذكاء اصطناعي
+                مدير تنفيذي برمجيات ومطور ذكاء اصطناعي
               </motion.h2>
 
               <motion.p
@@ -62,11 +62,11 @@ const Hero = () => {
               className='grid grid-cols-3 gap-6'
             >
               <div className='text-center'>
-                <div className='text-3xl font-bold text-primary-500'>8+</div>
+                <div className='text-3xl font-bold text-primary-500'>20+</div>
                 <div className='text-sm text-gray-400'>مشاريع منشورة</div>
               </div>
               <div className='text-center'>
-                <div className='text-3xl font-bold text-secondary-500'>4.8</div>
+                <div className='text-3xl font-bold text-secondary-500'>4.9</div>
                 <div className='text-sm text-gray-400'>تقييم المستخدمين</div>
               </div>
               <div className='text-center'>

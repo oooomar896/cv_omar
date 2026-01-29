@@ -66,11 +66,35 @@ const DEFAULT_DATA = {
     NEWS: [
         {
             id: 'n1',
-            title: 'انضمام إلى شركة باكورة التقنيات',
-            content: 'بدأت رحلتي المهنية الجديدة مع شركة باكورة التقنيات (BACURA Tec)، حيث أعمل على تطوير منتجات وخدمات رقمية مبتكرة تدعم المؤسسات في التحول التقني وتعزز حضورها الرقمي. أتطلع لتوظيف خبرتي في بناء تطبيقات متكاملة وتجارب مستخدم عالية الجودة لخدمة عملاء الشركة وشركائها.',
-            date: '2025-01-01',
+            title: 'شركة باكورة التقنية (bacura.sa)',
+            content: 'مدير تنفيذي بالبرمجيات - قيادة الفرق التقنية وتطوير الحلول البرمجية المبتكرة للمؤسسات والشركات، مع التركيز على الكفاءة والابتكار الرقمي.',
+            date: '2024-01-01',
             image: '/images/projects/logob.png',
             link: 'https://bacuratec.sa/'
+        },
+        {
+            id: 'n8',
+            title: 'شركة TPS (tps-ksa.com)',
+            content: 'مدير تنفيذي بالبرمجيات - الإشراف على المشاريع البرمجية الكبرى وتطوير الاستراتيجيات التقنية لضمان تقديم أفضل الحلول للعملاء.',
+            date: '2023-01-01',
+            image: '/images/projects/tps.png',
+            link: 'https://tps-ksa.com/'
+        },
+        {
+            id: 'n9',
+            title: 'شركة ملهمة العقارية (mulhimah.sa)',
+            content: 'مطور برمجيات تطبيقات ومنصات وأنظمة مؤسسة - بناء وتطوير المنصات العقارية المتقدمة والأنظمة المؤسسية التي تخدم قطاع العقارات في المملكة.',
+            date: '2022-06-01',
+            image: '/images/projects/molhimah.svg',
+            link: 'https://mulhimah.sa'
+        },
+        {
+            id: 'n10',
+            title: 'شركة تركية للاستثمار',
+            content: 'مطور تطبيقات استثمارية - تطوير حلول برمجية متخصصة في قطاع الاستثمار والتجارة، مع التركيز على دقة البيانات وتجربة المستخدم.',
+            date: '2021-01-01',
+            image: '/images/projects/investment.svg',
+            link: '#'
         },
         {
             id: 'n2',
@@ -98,27 +122,12 @@ const DEFAULT_DATA = {
             link: 'https://github.com/oooomar896'
         },
         {
-            id: 'n5',
-            title: 'وصول تطبيق Swap إلى 10,000 تحميل',
-            content: 'تطبيق المقايضة (Swap App) يتجاوز حاجز 10 آلاف تحميل على متجر Google Play مع تقييم 4.5 نجوم، ويستمر في النمو بفضل تجربة المستخدم المتميزة والميزات الفريدة التي يقدمها.',
-            date: '2024-10-05',
-            image: '/images/projects/swap-app.svg',
-            link: 'https://play.google.com/store/apps/details?id=com.molhimah.swap'
-        },
-        {
-            id: 'n6',
-            title: 'مشاركة في مؤتمر التقنية السعودي 2024',
-            content: 'شاركت كمتحدث في مؤتمر التقنية السعودي حول "مستقبل تطوير التطبيقات باستخدام Flutter والذكاء الاصطناعي"، بحضور أكثر من 500 مطور ومهتم بالتقنية من مختلف أنحاء المملكة.',
-            date: '2024-09-15',
-            image: '/images/news/conference.png'
-        },
-        {
             id: 'n7',
             title: 'شهادة البرمجة والتطوير - Maldia Global',
             content: 'الحصول على شهادة R&D Certificate من شركة Maldia Global International Technology كمطور Flutter بعد إتمام المهام البرمجية والوحدات المطلوبة بنجاح وتسليمها.',
             date: '2022-06-15',
-            image: '/images/cert/maldia_cert.jpeg', // Corrected extension
-            fallbackIcon: 'Award', // Hint for the UI to show an Award icon
+            image: '/images/cert/maldia_cert.jpeg',
+            fallbackIcon: 'Award',
             link: '#'
         }
     ],
