@@ -68,7 +68,7 @@ const DEFAULT_DATA = {
             id: 'n1',
             title: 'شركة باكورة التقنية (bacura.sa)',
             content: 'مدير تنفيذي بالبرمجيات - قيادة الفرق التقنية وتطوير الحلول البرمجية المبتكرة للمؤسسات والشركات، مع التركيز على الكفاءة والابتكار الرقمي.',
-            date: '2024-01-01',
+            date: '2025-01-01',
             image: '/images/projects/logob.png',
             link: 'https://bacuratec.sa/'
         },
@@ -76,7 +76,7 @@ const DEFAULT_DATA = {
             id: 'n8',
             title: 'شركة TPS (tps-ksa.com)',
             content: 'مدير تنفيذي بالبرمجيات - الإشراف على المشاريع البرمجية الكبرى وتطوير الاستراتيجيات التقنية لضمان تقديم أفضل الحلول للعملاء.',
-            date: '2023-01-01',
+            date: '2025-01-01',
             image: '/images/projects/tps.png',
             link: 'https://tps-ksa.com/'
         },
@@ -84,7 +84,7 @@ const DEFAULT_DATA = {
             id: 'n9',
             title: 'شركة ملهمة العقارية (mulhimah.sa)',
             content: 'مطور برمجيات تطبيقات ومنصات وأنظمة مؤسسة - بناء وتطوير المنصات العقارية المتقدمة والأنظمة المؤسسية التي تخدم قطاع العقارات في المملكة.',
-            date: '2022-06-01',
+            date: '2023-01-01',
             image: '/images/projects/molhimah.svg',
             link: 'https://mulhimah.sa'
         },
@@ -92,7 +92,7 @@ const DEFAULT_DATA = {
             id: 'n10',
             title: 'شركة تركية للاستثمار',
             content: 'مطور تطبيقات استثمارية - تطوير حلول برمجية متخصصة في قطاع الاستثمار والتجارة، مع التركيز على دقة البيانات وتجربة المستخدم.',
-            date: '2021-01-01',
+            date: '2020-01-01',
             image: '/images/projects/investment.svg',
             link: '#'
         },
