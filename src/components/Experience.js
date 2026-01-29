@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Briefcase, Calendar, ExternalLink, Building2 } from 'lucide-react';
+import { Calendar, ExternalLink, Building2 } from 'lucide-react';
 
 const Experience = () => {
     const experiences = [
@@ -8,7 +8,7 @@ const Experience = () => {
             website: 'bacura.sa',
             url: 'https://bacuratec.sa/',
             role: 'مدير تنفيذي بالبرمجيات',
-            period: '2024 - الحالي',
+            period: '2025 - الحالي',
             description: 'قيادة الفرق التقنية وتطوير الحلول البرمجية المبتكرة للمؤسسات والشركات، مع التركيز على الكفاءة والابتكار الرقمي والتحول التقني الشامل.',
             color: 'from-blue-500 to-cyan-500'
         },
@@ -17,7 +17,7 @@ const Experience = () => {
             website: 'tps-ksa.com',
             url: 'https://tps-ksa.com/',
             role: 'مدير تنفيذي بالبرمجيات',
-            period: '2023 - 2024',
+            period: '2025 - 2026',
             description: 'الإشراف على المشاريع البرمجية الكبرى وتطوير الاستراتيجيات التقنية لضمان تقديم أفضل الحلول للعملاء وتحقيق الأهداف الاستراتيجية.',
             color: 'from-purple-500 to-indigo-500'
         },
@@ -26,7 +26,7 @@ const Experience = () => {
             website: 'mulhimah.sa',
             url: 'https://mulhimah.sa',
             role: 'مطور برمجيات تطبيقات ومنصات وأنظمة مؤسسة',
-            period: '2022 - 2023',
+            period: '2023 - 2025',
             description: 'بناء وتطوير المنصات العقارية المتقدمة والأنظمة المؤسسية التي تخدم قطاع العقارات، مع تطوير تطبيقات موبايل وحلول ويب متكاملة.',
             color: 'from-emerald-500 to-teal-500'
         },
